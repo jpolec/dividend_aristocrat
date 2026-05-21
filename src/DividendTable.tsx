@@ -324,7 +324,100 @@ export function DividendTable() {
           </div>
         )}
 
-        <div className="overflow-x-auto rounded-md border">
+        {/* Mobile: sort selector + card list */}
+        <div className="md:hidden space-y-3">
+          <div className="flex items-center gap-2 text-sm">
+            <label className="text-xs text-muted-foreground shrink-0">Sort:</label>
+            <select
+              value={sortKey}
+              onChange={e => setSortKey(e.target.value as SortKey)}
+              className="h-9 flex-1 rounded-md border bg-background px-2 text-sm"
+            >
+              <option value="confidence">{t.thConfidence}</option>
+              <option value="yield">{t.thProjYield}</option>
+              <option value="ytd">{t.thYtd}</option>
+              <option value="oneYear">{t.thOneY}</option>
+              <option value="marketCap">{t.thMarketCap}</option>
+              <option value="lastAnnualDividend">{t.thAnnualDiv}</option>
+              <option value="totalPaid5y">{t.thTotal5y}</option>
+              <option value="yearsPaid">{t.thYearsPaid}</option>
+              <option value="symbol">{t.thSymbol}</option>
+            </select>
+            <button
+              onClick={() => setSortDir(d => (d === "asc" ? "desc" : "asc"))}
+              className="h-9 w-9 rounded-md border bg-background hover:bg-muted"
+              aria-label="Toggle sort direction"
+            >
+              {sortDir === "asc" ? "▲" : "▼"}
+            </button>
+          </div>
+
+          {filtered.map(r => {
+            const e = enriched.get(r.symbol);
+            return (
+              <div key={`m-${r.symbol}-${r.exchangeShortName}`} className="rounded-lg border bg-white p-4 shadow-sm">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-mono font-bold">{r.symbol}</span>
+                      <span className="text-xs text-muted-foreground">{r.exchangeShortName}</span>
+                    </div>
+                    <div className="text-sm font-medium truncate">{r.companyName}</div>
+                    <div className="text-xs text-muted-foreground truncate">{r.industry} · {r.sector ?? "—"}</div>
+                  </div>
+                  <div className="text-end shrink-0">
+                    <div className="text-base font-semibold tabular-nums">${fmtNum(r.price)}</div>
+                    <div className="text-lg font-bold text-emerald-600 tabular-nums">{fmtNum(yieldPct(r))}%</div>
+                  </div>
+                </div>
+
+                <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
+                  <div>
+                    <div className="text-muted-foreground">{t.thYtd}</div>
+                    <div className={`tabular-nums font-medium ${pctClass(e?.ytd)}`}>
+                      {e ? fmtPct(e.ytd) : <Skeleton />}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">{t.thOneY}</div>
+                    <div className={`tabular-nums font-medium ${pctClass(e?.oneYear)}`}>
+                      {e ? fmtPct(e.oneYear) : <Skeleton />}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">{t.thMarketCap}</div>
+                    <div className="tabular-nums">{fmtCap(r.marketCap)}</div>
+                  </div>
+                </div>
+
+                <div className="mt-3 pt-3 border-t flex items-center justify-between gap-2">
+                  <div className="text-xs">
+                    <span className="text-muted-foreground">{t.thYearsPaid}: </span>
+                    <span className="font-medium">
+                      {!e ? <Skeleton /> : e.yearsCovered === 0 ? "—" : `${e.yearsPaid}/${e.yearsCovered}`}
+                    </span>
+                  </div>
+                  <div className="flex-1 flex justify-end">
+                    {!e ? <Skeleton /> : e.yearsCovered === 0 ? (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    ) : (
+                      <ConfidenceBar value={e.confidence} />
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+
+          {!loading && filtered.length === 0 && (
+            <div className="rounded-lg border bg-white py-8 text-center text-muted-foreground">
+              {t.noResults}
+            </div>
+          )}
+        </div>
+
+        {/* Desktop: full table */}
+        <div className="hidden md:block overflow-x-auto rounded-md border">
           <table className="w-full text-sm">
             <thead className="bg-muted/50 text-xs uppercase">
               <tr>

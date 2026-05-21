@@ -1,10 +1,10 @@
 import { createContext, useContext } from "react";
 
 export type Lang = "pl" | "en" | "ar";
-export const LANGS: { code: Lang; label: string; dir: "ltr" | "rtl" }[] = [
-  { code: "pl", label: "Polski", dir: "ltr" },
-  { code: "en", label: "English", dir: "ltr" },
-  { code: "ar", label: "العربية", dir: "rtl" },
+export const LANGS: { code: Lang; label: string; short: string; dir: "ltr" | "rtl" }[] = [
+  { code: "pl", label: "Polski", short: "PL", dir: "ltr" },
+  { code: "en", label: "English", short: "EN", dir: "ltr" },
+  { code: "ar", label: "العربية", short: "AR", dir: "rtl" },
 ];
 
 export type Testimonial = { quote: string; author: string; location: string };

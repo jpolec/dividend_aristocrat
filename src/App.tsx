@@ -40,8 +40,10 @@ export function App() {
                 className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
                   lang === l.code ? "bg-primary text-primary-foreground" : "hover:bg-muted"
                 }`}
+                aria-label={l.label}
               >
-                {l.label}
+                <span className="sm:hidden">{l.short}</span>
+                <span className="hidden sm:inline">{l.label}</span>
               </button>
             ))}
           </div>

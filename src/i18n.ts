@@ -7,14 +7,39 @@ export const LANGS: { code: Lang; label: string; short: string; dir: "ltr" | "rt
   { code: "ar", label: "العربية", short: "AR", dir: "rtl" },
 ];
 
-export type Testimonial = { quote: string; author: string; location: string };
+export type Testimonial = { quote: string; author: string; location: string; country: string };
 
 type Dict = {
   heroHeadline: string;
   heroSubheadline: string;
   pricingLine: string;
   pricingCta: string;
+  heroCtaSecondary: string;
+  trustStripLabel: string;
+  trustStripCountries: string;
+  trustStripPoints: string[];
+  testimonialsTitle: string;
   testimonials: Testimonial[];
+  // compound chart
+  chartTitle: string;
+  chartIntro: string;
+  chartMonthly: string;
+  chartYield: string;
+  chartYears: string;
+  chartCurrency: string;
+  chartFinal: string;
+  chartContributed: string;
+  chartGrowth: string;
+  chartYearAxis: string;
+  chartDisclaimerNote: string;
+  // how it works
+  howTitle: string;
+  howSteps: { title: string; desc: string }[];
+  // faq
+  faqTitle: string;
+  faq: { q: string; a: string }[];
+  // footer
+  footerDisclaimer: string;
   title: string;
   subtitle: string;
   source: string;
@@ -68,38 +93,112 @@ type Dict = {
 };
 
 const en: Dict = {
-  heroHeadline: "Earn More Than Real Estate — With Less Capital and Less Risk",
+  heroHeadline: "Potentially Higher Income Than Real Estate — Starting With Much Less Money",
   heroSubheadline:
-    "Discover U.S. dividend stocks targeting 5–10% yearly income potential without buying property, dealing with tenants, or locking away millions in real estate.",
+    "We scan the U.S. market for dividend companies that may deliver strong recurring income — without the costs, complexity and illiquidity of property investing.",
   pricingLine:
-    "$5 / month — every week you receive the stocks worth entering, scored by 5-year payment consistency.",
-  pricingCta: "Start for $5/month",
+    "Start free for 30 days, then $5 / month. Cancel anytime.",
+  pricingCta: "Start Free for 30 Days",
+  heroCtaSecondary: "See This Week's Dividend Picks",
+  trustStripLabel: "Used by investors across",
+  trustStripCountries: "Saudi Arabia • UAE • Qatar • Kuwait • Egypt",
+  trustStripPoints: [
+    "Weekly screened dividend opportunities",
+    "Simple insights",
+    "No trading complexity",
+    "Cancel anytime",
+  ],
+  testimonialsTitle: "What investors say",
   testimonials: [
     {
       quote:
-        "I was considering buying another apartment in Dubai, but the rental yield barely justified the capital. This gave me a more flexible way to build income in dollars.",
+        "I was comparing apartment investments in Dubai, but the entry cost was too high. This gave me a much simpler way to start building dollar income from U.S. companies.",
       author: "Ahmed K.",
       location: "Dubai",
+      country: "AE",
     },
     {
       quote:
-        "With real estate I needed huge upfront capital. Here I started small and still built meaningful recurring dividend income.",
+        "I like that the ideas are simple and income-focused. I don't have time to analyze hundreds of stocks every week.",
       author: "Faisal A.",
       location: "Riyadh",
+      country: "SA",
     },
     {
       quote:
-        "I prefer this over property because I stay liquid. No tenants, no maintenance, no waiting years to exit.",
+        "Within two months I built my first dividend portfolio with less money than a property down payment.",
       author: "Omar H.",
       location: "Doha",
+      country: "QA",
     },
     {
       quote:
-        "The weekly picks save me hours of research. It feels like having a dividend analyst in my inbox.",
+        "I used to keep most of my savings in cash. Now I receive weekly dividend opportunities and slowly build recurring income.",
       author: "Khalid M.",
       location: "Kuwait City",
+      country: "KW",
+    },
+    {
+      quote:
+        "The weekly emails are short, practical and easy to understand even if you are not a professional investor.",
+      author: "Youssef R.",
+      location: "Cairo",
+      country: "EG",
     },
   ],
+  chartTitle: "What 1,000 / month could become",
+  chartIntro:
+    "Adjust monthly contribution, target yield and time horizon. This is an illustration of compounding — not a guarantee of returns.",
+  chartMonthly: "Monthly contribution",
+  chartYield: "Target annual yield",
+  chartYears: "Years",
+  chartCurrency: "Currency",
+  chartFinal: "Final portfolio value",
+  chartContributed: "Total contributed",
+  chartGrowth: "Growth from compounding",
+  chartYearAxis: "Year",
+  chartDisclaimerNote:
+    "Illustrative only. Assumes constant monthly contributions and the chosen annual return reinvested. Actual results vary.",
+  howTitle: "How it works",
+  howSteps: [
+    {
+      title: "We screen U.S. dividend stocks",
+      desc: "Our system scans dividend companies across the U.S. market for income potential, stability and attractive valuations.",
+    },
+    {
+      title: "You receive weekly picks",
+      desc: "Every week you get a curated list of dividend opportunities directly by email.",
+    },
+    {
+      title: "Build long-term income",
+      desc: "Start with a smaller amount than real estate and gradually build a diversified portfolio designed for recurring income.",
+    },
+  ],
+  faqTitle: "Questions investors ask",
+  faq: [
+    {
+      q: "Is this financial advice?",
+      a: "No. The platform provides educational research and dividend stock ideas for informational purposes only.",
+    },
+    {
+      q: "How much money do I need to start?",
+      a: "Many investors begin with far less capital than required for a real estate investment.",
+    },
+    {
+      q: "Are these U.S. stocks?",
+      a: "Yes. The platform focuses primarily on dividend-paying U.S. companies.",
+    },
+    {
+      q: "How often do I receive updates?",
+      a: "New dividend opportunities are sent weekly by email.",
+    },
+    {
+      q: "Can beginners use this?",
+      a: "Yes. The service is designed to be simple and easy to follow.",
+    },
+  ],
+  footerDisclaimer:
+    "Investing involves risk, including possible loss of capital. Dividend yields are not guaranteed and past performance does not guarantee future results. The platform provides research and educational content only and is not a licensed financial advisor.",
   title: "Dividend Companies",
   subtitle: "All actively traded dividend-paying companies. Source: api.quantjourney.cloud",
   source: "api.quantjourney.cloud",
@@ -151,38 +250,112 @@ const en: Dict = {
 };
 
 const pl: Dict = {
-  heroHeadline: "Zarabiaj więcej niż na nieruchomościach — przy mniejszym kapitale i niższym ryzyku",
+  heroHeadline:
+    "Potencjalnie wyższy dochód niż z nieruchomości — przy znacznie mniejszym kapitale",
   heroSubheadline:
-    "Amerykańskie spółki dywidendowe z potencjałem 5–10% rocznie. Bez kupowania mieszkań, bez najemców, bez zamrażania milionów w betonie.",
-  pricingLine:
-    "19 PLN / miesiąc — co tydzień dostajesz spółki, w które warto wejść, oceniane po stabilności wypłat z 5 lat.",
-  pricingCta: "Zacznij za 19 PLN/mies.",
+    "Skanujemy amerykański rynek pod kątem spółek dywidendowych, które mogą dawać stabilny, powtarzalny dochód — bez kosztów, formalności i niskiej płynności inwestycji w nieruchomości.",
+  pricingLine: "Pierwsze 30 dni za darmo, potem 19 PLN / mies. Rezygnacja w każdej chwili.",
+  pricingCta: "Zacznij za darmo (30 dni)",
+  heroCtaSecondary: "Zobacz typy z tego tygodnia",
+  trustStripLabel: "Używają inwestorzy z",
+  trustStripCountries: "Arabia Saudyjska • ZEA • Katar • Kuwejt • Egipt",
+  trustStripPoints: [
+    "Cotygodniowe okazje dywidendowe",
+    "Proste, czytelne analizy",
+    "Bez complications i tradingu",
+    "Rezygnujesz kiedy chcesz",
+  ],
+  testimonialsTitle: "Co mówią inwestorzy",
   testimonials: [
     {
       quote:
-        "Rozważałem kupno kolejnego mieszkania w Dubaju, ale stopa najmu ledwo uzasadniała kapitał. Tu mam bardziej elastyczny sposób budowania dochodu w dolarach.",
+        "Porównywałem zakup mieszkania w Dubaju, ale wejście było zbyt drogie. To dało mi prostszy sposób, by zacząć budować dochód w dolarach z amerykańskich spółek.",
       author: "Ahmed K.",
       location: "Dubaj",
+      country: "AE",
     },
     {
       quote:
-        "Przy nieruchomościach potrzebowałem ogromnego kapitału na start. Tu zacząłem od małych kwot i też zbudowałem realny, powtarzalny dochód z dywidend.",
+        "Lubię to, że pomysły są proste i skupione na dochodzie. Nie mam czasu analizować setek spółek co tydzień.",
       author: "Faisal A.",
       location: "Rijad",
+      country: "SA",
     },
     {
       quote:
-        "Wolę to od nieruchomości, bo zostaję płynny. Brak najemców, brak remontów, brak czekania latami na wyjście.",
+        "W ciągu dwóch miesięcy zbudowałem pierwszy portfel dywidendowy za mniej pieniędzy niż wkład własny do mieszkania.",
       author: "Omar H.",
       location: "Doha",
+      country: "QA",
     },
     {
       quote:
-        "Cotygodniowe typy oszczędzają mi godziny researchu. Mam wrażenie, że dostaję analityka dywidendowego prosto do skrzynki.",
+        "Trzymałem oszczędności w gotówce. Teraz co tydzień dostaję okazje dywidendowe i powoli buduję powtarzalny dochód.",
       author: "Khalid M.",
       location: "Kuwejt",
+      country: "KW",
+    },
+    {
+      quote:
+        "Maile są krótkie, praktyczne i zrozumiałe nawet jeśli nie jesteś zawodowym inwestorem.",
+      author: "Youssef R.",
+      location: "Kair",
+      country: "EG",
     },
   ],
+  chartTitle: "Ile może urosnąć 1 000 miesięcznie",
+  chartIntro:
+    "Pokrętła obok zmieniają wpłatę, oczekiwany yield i horyzont czasowy. To ilustracja procentu składanego — nie gwarancja zwrotu.",
+  chartMonthly: "Wpłata miesięczna",
+  chartYield: "Docelowy yield roczny",
+  chartYears: "Lata",
+  chartCurrency: "Waluta",
+  chartFinal: "Wartość końcowa portfela",
+  chartContributed: "Wpłacono łącznie",
+  chartGrowth: "Zysk z procentu składanego",
+  chartYearAxis: "Rok",
+  chartDisclaimerNote:
+    "Wyłącznie ilustracja. Zakłada stałe wpłaty i wybrany roczny zwrot reinwestowany. Rzeczywiste wyniki mogą się różnić.",
+  howTitle: "Jak to działa",
+  howSteps: [
+    {
+      title: "Skanujemy amerykańskie spółki dywidendowe",
+      desc: "System przegląda spółki z rynku USA pod kątem potencjału dochodowego, stabilności i atrakcyjnej wyceny.",
+    },
+    {
+      title: "Co tydzień dostajesz typy",
+      desc: "Wybraną listę okazji dywidendowych dostarczamy mailem co tydzień.",
+    },
+    {
+      title: "Budujesz długoterminowy dochód",
+      desc: "Zaczynasz z mniejszą kwotą niż przy nieruchomości i stopniowo budujesz zdywersyfikowany portfel dochodowy.",
+    },
+  ],
+  faqTitle: "Pytania, które padają najczęściej",
+  faq: [
+    {
+      q: "Czy to porada inwestycyjna?",
+      a: "Nie. Platforma dostarcza materiały edukacyjne i pomysły dywidendowe wyłącznie w celach informacyjnych.",
+    },
+    {
+      q: "Ile pieniędzy potrzebuję na start?",
+      a: "Wielu inwestorów zaczyna ze znacznie mniejszym kapitałem niż wymagałby zakup mieszkania.",
+    },
+    {
+      q: "Czy to spółki amerykańskie?",
+      a: "Tak. Platforma skupia się głównie na amerykańskich spółkach wypłacających dywidendy.",
+    },
+    {
+      q: "Jak często dostaję aktualizacje?",
+      a: "Nowe okazje dywidendowe wysyłamy raz w tygodniu mailem.",
+    },
+    {
+      q: "Czy poradzą sobie początkujący?",
+      a: "Tak. Serwis jest świadomie prosty i łatwy do śledzenia.",
+    },
+  ],
+  footerDisclaimer:
+    "Inwestowanie wiąże się z ryzykiem, w tym możliwością utraty kapitału. Stopy dywidend nie są gwarantowane, a wyniki historyczne nie są gwarancją przyszłych. Platforma dostarcza wyłącznie treści edukacyjne i badawcze — nie jest licencjonowanym doradcą finansowym.",
   title: "Spółki dywidendowe",
   subtitle: "Aktywnie notowane spółki wypłacające dywidendę. Źródło: api.quantjourney.cloud",
   source: "api.quantjourney.cloud",
@@ -234,38 +407,111 @@ const pl: Dict = {
 };
 
 const ar: Dict = {
-  heroHeadline: "اربح أكثر من العقارات — برأس مال أقل ومخاطر أقل",
+  heroHeadline: "دخل محتمل أعلى من العقارات — برأس مال أقل بكثير",
   heroSubheadline:
-    "اكتشف أسهم الشركات الأمريكية الموزعة لأرباح تستهدف عائدًا سنويًا من 5 إلى 10٪ دون شراء عقارات، أو التعامل مع المستأجرين، أو تجميد ملايين في العقارات.",
-  pricingLine:
-    "19 درهم إماراتي / 19 ريال سعودي / 19 ريال قطري شهريًا — كل أسبوع تتلقى الأسهم التي تستحق الاستثمار، مرتبة حسب استقرار التوزيعات على مدى 5 سنوات.",
-  pricingCta: "ابدأ بـ 19 درهمًا/شهر",
+    "نفحص السوق الأمريكي بحثًا عن شركات توزع أرباحًا قد توفّر دخلًا متكررًا قويًا، بدون تكاليف العقارات وتعقيداتها ونقص سيولتها.",
+  pricingLine: "ابدأ مجانًا لمدة 30 يومًا، ثم 19 درهمًا شهريًا. إلغاء في أي وقت.",
+  pricingCta: "ابدأ مجانًا لمدة 30 يومًا",
+  heroCtaSecondary: "شاهد اختيارات هذا الأسبوع",
+  trustStripLabel: "يستخدمها مستثمرون من",
+  trustStripCountries: "السعودية • الإمارات • قطر • الكويت • مصر",
+  trustStripPoints: [
+    "فرص توزيعات أرباح أسبوعية مفلترة",
+    "رؤى بسيطة وواضحة",
+    "بدون تعقيدات التداول",
+    "إلغاء في أي وقت",
+  ],
+  testimonialsTitle: "ماذا يقول المستثمرون",
   testimonials: [
     {
       quote:
-        "كنت أفكر في شراء شقة أخرى في دبي، لكن عائد الإيجار لم يكن يبرر رأس المال المطلوب. هذا أعطاني طريقة أكثر مرونة لبناء دخل بالدولار.",
+        "كنت أقارن الاستثمار في شقق دبي، لكن تكلفة الدخول كانت مرتفعة جدًا. هذا أعطاني طريقة أبسط بكثير لبناء دخل دولاري من شركات أمريكية.",
       author: "أحمد ك.",
       location: "دبي",
+      country: "AE",
     },
     {
       quote:
-        "العقارات تتطلب رأس مال ضخم من البداية. هنا بدأت بمبلغ صغير وما زلت أبني دخلًا متكررًا حقيقيًا من توزيعات الأرباح.",
+        "يعجبني أن الأفكار بسيطة وتركّز على الدخل. ليس لدي وقت لتحليل مئات الأسهم كل أسبوع.",
       author: "فيصل ع.",
       location: "الرياض",
+      country: "SA",
     },
     {
       quote:
-        "أفضّل هذا على العقارات لأنني أبقى سيولة. لا مستأجرين، ولا صيانة، ولا انتظار سنوات للخروج.",
+        "خلال شهرين بنيت أول محفظة توزيعات أرباح بمبلغ أقل من دفعة عقار أولى.",
       author: "عمر ح.",
       location: "الدوحة",
+      country: "QA",
     },
     {
       quote:
-        "الاختيارات الأسبوعية توفر عليّ ساعات من البحث. وكأن لدي محلل توزيعات أرباح في صندوق الوارد الخاص بي.",
+        "كنت أحتفظ بمعظم مدخراتي نقدًا. الآن أتلقى فرصًا توزيعات أرباح أسبوعيًا وأبني دخلًا متكررًا تدريجيًا.",
       author: "خالد م.",
       location: "مدينة الكويت",
+      country: "KW",
+    },
+    {
+      quote:
+        "الرسائل الأسبوعية قصيرة وعملية وسهلة الفهم حتى لو لم تكن مستثمرًا محترفًا.",
+      author: "يوسف ر.",
+      location: "القاهرة",
+      country: "EG",
     },
   ],
+  chartTitle: "إلى أين قد تصل 1000 شهريًا",
+  chartIntro:
+    "اضبط المساهمة الشهرية والعائد المستهدف والمدة الزمنية. هذا توضيح للفائدة المركبة — وليس ضمانًا للعائد.",
+  chartMonthly: "المساهمة الشهرية",
+  chartYield: "العائد السنوي المستهدف",
+  chartYears: "السنوات",
+  chartCurrency: "العملة",
+  chartFinal: "القيمة النهائية للمحفظة",
+  chartContributed: "إجمالي المساهمات",
+  chartGrowth: "النمو من الفائدة المركبة",
+  chartYearAxis: "السنة",
+  chartDisclaimerNote:
+    "للتوضيح فقط. يفترض مساهمات شهرية ثابتة وإعادة استثمار العائد المختار. النتائج الفعلية قد تختلف.",
+  howTitle: "كيف تعمل المنصة",
+  howSteps: [
+    {
+      title: "نفحص أسهم توزيعات الأرباح الأمريكية",
+      desc: "يفحص نظامنا الشركات الموزّعة للأرباح في السوق الأمريكي بحثًا عن إمكانات الدخل والاستقرار والتقييمات الجذابة.",
+    },
+    {
+      title: "تتلقى الاختيارات أسبوعيًا",
+      desc: "كل أسبوع تحصل على قائمة منسقة من فرص توزيعات الأرباح مباشرة عبر البريد الإلكتروني.",
+    },
+    {
+      title: "ابنِ دخلًا طويل الأجل",
+      desc: "ابدأ بمبلغ أقل من الاستثمار العقاري وابنِ تدريجيًا محفظة متنوعة مصممة للدخل المتكرر.",
+    },
+  ],
+  faqTitle: "أسئلة المستثمرين",
+  faq: [
+    {
+      q: "هل هذه استشارة مالية؟",
+      a: "لا. توفر المنصة أبحاثًا تعليمية وأفكار أسهم توزيعات أرباح لأغراض إعلامية فقط.",
+    },
+    {
+      q: "كم من المال أحتاج للبدء؟",
+      a: "يبدأ كثير من المستثمرين برأس مال أقل بكثير من المطلوب للاستثمار العقاري.",
+    },
+    {
+      q: "هل هذه أسهم أمريكية؟",
+      a: "نعم. تركّز المنصة بشكل رئيسي على الشركات الأمريكية الموزعة للأرباح.",
+    },
+    {
+      q: "ما تكرار التحديثات؟",
+      a: "ترسل فرص توزيعات الأرباح الجديدة أسبوعيًا عبر البريد الإلكتروني.",
+    },
+    {
+      q: "هل يمكن للمبتدئين استخدامها؟",
+      a: "نعم. الخدمة مصممة لتكون بسيطة وسهلة المتابعة.",
+    },
+  ],
+  footerDisclaimer:
+    "الاستثمار ينطوي على مخاطر، بما في ذلك احتمال خسارة رأس المال. عوائد توزيعات الأرباح غير مضمونة والأداء السابق لا يضمن نتائج مستقبلية. تقدم المنصة أبحاثًا ومحتوى تعليميًا فقط، وليست مستشارًا ماليًا مرخصًا.",
   title: "شركات توزيع الأرباح",
   subtitle: "جميع الشركات النشطة التي توزع أرباحًا. المصدر: api.quantjourney.cloud",
   source: "api.quantjourney.cloud",

@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { DividendTable } from "./DividendTable";
 import { SubscribeCard } from "./SubscribeCard";
 import { Hero } from "./Hero";
+import { CompoundChart } from "./CompoundChart";
+import { HowItWorks } from "./HowItWorks";
+import { FAQ } from "./FAQ";
+import { Footer } from "./Footer";
 import { Admin } from "./Admin";
 import { DICTS, LangCtx, LANGS, dirOf, type Lang } from "./i18n";
 import "./index.css";
@@ -49,10 +53,16 @@ export function App() {
           </div>
         </header>
 
-        <div className="grid gap-4 sm:gap-6">
+        <div className="grid gap-6 sm:gap-8">
           <Hero />
+          <CompoundChart />
+          <HowItWorks />
           <SubscribeCard />
-          <DividendTable />
+          <div id="picks">
+            <DividendTable />
+          </div>
+          <FAQ />
+          <Footer />
         </div>
       </div>
     </LangCtx.Provider>

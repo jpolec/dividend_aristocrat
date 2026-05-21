@@ -104,7 +104,7 @@ export function CompoundChart() {
           </div>
         </div>
 
-        {/* Big number cards */}
+        {/* Big number cards — gold + deep emerald palette */}
         <div className="grid gap-3 sm:grid-cols-3">
           <StatCard label={t.chartContributed} value={fmtNumber(finalPt.contributed, currency)} tone="muted" />
           <StatCard label={t.chartGrowth} value={fmtNumber(growth, currency)} tone="growth" />
@@ -116,8 +116,8 @@ export function CompoundChart() {
           <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto block">
             <defs>
               <linearGradient id="growthFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
-                <stop offset="100%" stopColor="#10b981" stopOpacity="0.05" />
+                <stop offset="0%" stopColor="#d97706" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="#fcd34d" stopOpacity="0.08" />
               </linearGradient>
             </defs>
 
@@ -129,22 +129,22 @@ export function CompoundChart() {
                 x2={W - PAD.right}
                 y1={PAD.top + innerH * (1 - f)}
                 y2={PAD.top + innerH * (1 - f)}
-                stroke="#e2e8f0"
+                stroke="#fde68a"
                 strokeDasharray="3 3"
               />
             ))}
 
-            {/* balance area */}
+            {/* balance area (gold) */}
             <path d={balanceArea} fill="url(#growthFill)" />
 
-            {/* contributions line (dashed) */}
+            {/* contributions line (dashed slate) */}
             <path d={contribPath} fill="none" stroke="#94a3b8" strokeWidth="2" strokeDasharray="5 4" />
 
-            {/* balance line */}
-            <path d={balancePath} fill="none" stroke="#059669" strokeWidth="2.5" />
+            {/* balance line (deep emerald) */}
+            <path d={balancePath} fill="none" stroke="#047857" strokeWidth="2.5" />
 
             {/* end point dot */}
-            <circle cx={xAt(points.length - 1)} cy={yAt(finalPt.balance)} r="5" fill="#059669" stroke="white" strokeWidth="2" />
+            <circle cx={xAt(points.length - 1)} cy={yAt(finalPt.balance)} r="5" fill="#047857" stroke="white" strokeWidth="2" />
 
             {/* x-axis year labels */}
             {points.map((p, i) => {
@@ -167,7 +167,7 @@ export function CompoundChart() {
           {/* Legend */}
           <div className="flex flex-wrap gap-4 px-4 pb-3 text-xs">
             <span className="flex items-center gap-2">
-              <span className="inline-block h-2 w-5 bg-emerald-600 rounded" />
+              <span className="inline-block h-2 w-5 bg-emerald-700 rounded" />
               {t.chartFinal}
             </span>
             <span className="flex items-center gap-2">
@@ -204,7 +204,7 @@ function Slider({
     <div className="flex flex-col gap-1">
       <div className="flex items-baseline justify-between">
         <label className="text-xs text-muted-foreground">{label}</label>
-        <span className="text-sm font-semibold tabular-nums text-emerald-700">{display}</span>
+        <span className="text-sm font-semibold tabular-nums text-amber-700">{display}</span>
       </div>
       <input
         type="range"
@@ -213,7 +213,7 @@ function Slider({
         max={max}
         step={step}
         onChange={e => onChange(Number(e.target.value))}
-        className="w-full accent-emerald-600"
+        className="w-full accent-amber-600"
       />
     </div>
   );
@@ -232,9 +232,9 @@ function StatCard({
 }) {
   const toneCls =
     tone === "primary"
-      ? "border-emerald-200 bg-emerald-50 text-emerald-900"
+      ? "border-emerald-300 bg-gradient-to-br from-emerald-50 to-emerald-100 text-emerald-900"
       : tone === "growth"
-        ? "border-amber-200 bg-amber-50 text-amber-900"
+        ? "border-amber-300 bg-gradient-to-br from-amber-50 to-amber-100 text-amber-900"
         : "border-slate-200 bg-slate-50 text-slate-800";
   return (
     <div className={`rounded-lg border px-4 py-3 ${toneCls}`}>

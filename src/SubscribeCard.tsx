@@ -128,7 +128,7 @@ export function SubscribeCard() {
               ))}
             </select>
           </div>
-          <Button type="submit" disabled={status === "submitting"} className="bg-emerald-600 hover:bg-emerald-700">
+          <Button type="submit" disabled={status === "submitting"} className="bg-emerald-700 hover:bg-emerald-800 text-white">
             {status === "submitting" ? t.subSubmitting : t.pricingCta}
           </Button>
         </form>

@@ -40,6 +40,8 @@ type Dict = {
   faq: { q: string; a: string }[];
   // footer
   footerDisclaimer: string;
+  disclaimerWarningTitle: string;
+  disclaimerParas: string[];
   title: string;
   subtitle: string;
   source: string;
@@ -199,6 +201,13 @@ const en: Dict = {
   ],
   footerDisclaimer:
     "Investing involves risk, including possible loss of capital. Dividend yields are not guaranteed and past performance does not guarantee future results. The platform provides research and educational content only and is not a licensed financial advisor.",
+  disclaimerWarningTitle: "THIS IS NOT INVESTMENT ADVICE",
+  disclaimerParas: [
+    "The information published on this platform is provided strictly for educational and informational purposes. It is NOT a recommendation, solicitation, or offer to buy, sell, or hold any financial instrument. None of the content constitutes investment advice within the meaning of MiFID II or any applicable national regulation.",
+    "We are NOT a licensed investment advisor, broker, dealer, asset manager, or financial planner. We do not have any individual relationship with users that constitutes investment advisory services. No content is personalized to your situation, objectives, risk tolerance, or financial circumstances.",
+    "Investing in stocks carries substantial risk, including the risk of total loss of capital. Dividend payments are NOT guaranteed and may be reduced, suspended, or eliminated by issuers at any time without notice. Past dividend performance, stock prices, and yields are not indicative of future results. Currency, country, and tax risks may further affect your returns.",
+    "You alone are responsible for your investment decisions. You should consult with a licensed financial advisor in your own jurisdiction before making any investment decision. Effective January 1, 2026, applicable regulations in certain jurisdictions further restrict the scope of permissible educational financial content. By using this platform you acknowledge that all material is general educational content only and you accept full responsibility for any action taken on its basis.",
+  ],
   title: "Dividend Companies",
   subtitle: "All actively traded dividend-paying companies. Source: api.quantjourney.cloud",
   source: "api.quantjourney.cloud",
@@ -356,6 +365,13 @@ const pl: Dict = {
   ],
   footerDisclaimer:
     "Inwestowanie wiąże się z ryzykiem, w tym możliwością utraty kapitału. Stopy dywidend nie są gwarantowane, a wyniki historyczne nie są gwarancją przyszłych. Platforma dostarcza wyłącznie treści edukacyjne i badawcze — nie jest licencjonowanym doradcą finansowym.",
+  disclaimerWarningTitle: "TO NIE JEST PORADA INWESTYCYJNA",
+  disclaimerParas: [
+    "Treści publikowane na tej platformie mają charakter wyłącznie edukacyjny i informacyjny. NIE stanowią rekomendacji, oferty ani zachęty do kupna, sprzedaży lub zatrzymania jakichkolwiek instrumentów finansowych w rozumieniu Ustawy o obrocie instrumentami finansowymi, ani porady inwestycyjnej w rozumieniu MiFID II i przepisów KNF.",
+    "Nie jesteśmy licencjonowanym doradcą inwestycyjnym, brokerem, dealerem, zarządzającym aktywami ani planistą finansowym. Nie świadczymy usług doradztwa inwestycyjnego wobec żadnego indywidualnego użytkownika. Żadne treści nie są dostosowane do Twojej sytuacji, celów, tolerancji ryzyka ani sytuacji finansowej.",
+    "Inwestowanie w akcje wiąże się ze znacznym ryzykiem, w tym ryzykiem całkowitej utraty kapitału. Wypłaty dywidend NIE są gwarantowane i mogą zostać obniżone, zawieszone lub zlikwidowane przez emitentów w dowolnym momencie, bez uprzedzenia. Historyczne stopy dywidend, ceny akcji i wyniki nie są gwarancją przyszłych. Ryzyko walutowe, krajowe i podatkowe może dodatkowo wpłynąć na zwroty.",
+    "Decyzje inwestycyjne podejmujesz wyłącznie na własną odpowiedzialność. Przed jakąkolwiek decyzją inwestycyjną skonsultuj się z licencjonowanym doradcą inwestycyjnym w swojej jurysdykcji. Od 1 stycznia 2026 r. obowiązujące przepisy w niektórych jurysdykcjach dalej ograniczają zakres dozwolonych treści edukacyjno-finansowych. Korzystając z platformy potwierdzasz, że wszystkie materiały mają charakter wyłącznie ogólnoedukacyjny i przyjmujesz pełną odpowiedzialność za jakiekolwiek działania podjęte na ich podstawie.",
+  ],
   title: "Spółki dywidendowe",
   subtitle: "Aktywnie notowane spółki wypłacające dywidendę. Źródło: api.quantjourney.cloud",
   source: "api.quantjourney.cloud",
@@ -512,6 +528,13 @@ const ar: Dict = {
   ],
   footerDisclaimer:
     "الاستثمار ينطوي على مخاطر، بما في ذلك احتمال خسارة رأس المال. عوائد توزيعات الأرباح غير مضمونة والأداء السابق لا يضمن نتائج مستقبلية. تقدم المنصة أبحاثًا ومحتوى تعليميًا فقط، وليست مستشارًا ماليًا مرخصًا.",
+  disclaimerWarningTitle: "هذه ليست استشارة استثمارية",
+  disclaimerParas: [
+    "المعلومات المنشورة على هذه المنصة مقدمة حصريًا لأغراض تعليمية ومعلوماتية. وهي ليست توصية أو دعوة أو عرضًا لشراء أو بيع أو الاحتفاظ بأي أداة مالية. لا يشكل أي محتوى استشارة استثمارية بمفهوم MiFID II أو أي لائحة وطنية مطبقة.",
+    "نحن لسنا مستشارًا استثماريًا مرخصًا أو وسيطًا أو تاجرًا أو مدير أصول أو مخططًا ماليًا. ليس لدينا أي علاقة فردية مع المستخدمين تشكل خدمات استشارية استثمارية. لا يوجد محتوى مخصص لوضعك أو أهدافك أو تحمّلك للمخاطر أو ظروفك المالية.",
+    "الاستثمار في الأسهم ينطوي على مخاطر كبيرة، بما في ذلك خطر الخسارة الكاملة لرأس المال. توزيعات الأرباح غير مضمونة وقد يتم تخفيضها أو تعليقها أو إلغاؤها من قبل الجهات المصدرة في أي وقت دون إشعار. الأداء السابق وأسعار الأسهم والعوائد ليست مؤشرًا على النتائج المستقبلية. قد تؤثر مخاطر العملة والدولة والضرائب على عائداتك أيضًا.",
+    "أنت وحدك مسؤول عن قراراتك الاستثمارية. يجب عليك استشارة مستشار مالي مرخص في منطقتك القضائية قبل اتخاذ أي قرار استثماري. اعتبارًا من 1 يناير 2026، تقيد اللوائح المعمول بها في بعض الولايات القضائية نطاق المحتوى التعليمي المالي المسموح به. باستخدامك لهذه المنصة، فإنك تقر بأن جميع المواد ذات طابع تعليمي عام فقط وتتحمل المسؤولية الكاملة عن أي إجراء تتخذه بناءً عليها.",
+  ],
   title: "شركات توزيع الأرباح",
   subtitle: "جميع الشركات النشطة التي توزع أرباحًا. المصدر: api.quantjourney.cloud",
   source: "api.quantjourney.cloud",

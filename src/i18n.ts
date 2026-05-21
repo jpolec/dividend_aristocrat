@@ -7,7 +7,12 @@ export const LANGS: { code: Lang; label: string; dir: "ltr" | "rtl" }[] = [
   { code: "ar", label: "العربية", dir: "rtl" },
 ];
 
+export type Testimonial = { quote: string; author: string; location: string };
+
 type Dict = {
+  heroHeadline: string;
+  heroSubheadline: string;
+  testimonials: Testimonial[];
   title: string;
   subtitle: string;
   source: string;
@@ -61,6 +66,35 @@ type Dict = {
 };
 
 const en: Dict = {
+  heroHeadline: "Earn More Than Real Estate — With Less Capital and Less Risk",
+  heroSubheadline:
+    "Discover U.S. dividend stocks targeting 5–10% yearly income potential without buying property, dealing with tenants, or locking away millions in real estate.",
+  testimonials: [
+    {
+      quote:
+        "I was considering buying another apartment in Dubai, but the rental yield barely justified the capital. This gave me a more flexible way to build income in dollars.",
+      author: "Ahmed K.",
+      location: "Dubai",
+    },
+    {
+      quote:
+        "With real estate I needed huge upfront capital. Here I started small and still built meaningful recurring dividend income.",
+      author: "Faisal A.",
+      location: "Riyadh",
+    },
+    {
+      quote:
+        "I prefer this over property because I stay liquid. No tenants, no maintenance, no waiting years to exit.",
+      author: "Omar H.",
+      location: "Doha",
+    },
+    {
+      quote:
+        "The weekly picks save me hours of research. It feels like having a dividend analyst in my inbox.",
+      author: "Khalid M.",
+      location: "Kuwait City",
+    },
+  ],
   title: "Dividend Companies",
   subtitle: "All actively traded dividend-paying companies. Source: api.quantjourney.cloud",
   source: "api.quantjourney.cloud",
@@ -112,6 +146,35 @@ const en: Dict = {
 };
 
 const pl: Dict = {
+  heroHeadline: "Zarabiaj więcej niż na nieruchomościach — przy mniejszym kapitale i niższym ryzyku",
+  heroSubheadline:
+    "Amerykańskie spółki dywidendowe z potencjałem 5–10% rocznie. Bez kupowania mieszkań, bez najemców, bez zamrażania milionów w betonie.",
+  testimonials: [
+    {
+      quote:
+        "Rozważałem kupno kolejnego mieszkania w Dubaju, ale stopa najmu ledwo uzasadniała kapitał. Tu mam bardziej elastyczny sposób budowania dochodu w dolarach.",
+      author: "Ahmed K.",
+      location: "Dubaj",
+    },
+    {
+      quote:
+        "Przy nieruchomościach potrzebowałem ogromnego kapitału na start. Tu zacząłem od małych kwot i też zbudowałem realny, powtarzalny dochód z dywidend.",
+      author: "Faisal A.",
+      location: "Rijad",
+    },
+    {
+      quote:
+        "Wolę to od nieruchomości, bo zostaję płynny. Brak najemców, brak remontów, brak czekania latami na wyjście.",
+      author: "Omar H.",
+      location: "Doha",
+    },
+    {
+      quote:
+        "Cotygodniowe typy oszczędzają mi godziny researchu. Mam wrażenie, że dostaję analityka dywidendowego prosto do skrzynki.",
+      author: "Khalid M.",
+      location: "Kuwejt",
+    },
+  ],
   title: "Spółki dywidendowe",
   subtitle: "Aktywnie notowane spółki wypłacające dywidendę. Źródło: api.quantjourney.cloud",
   source: "api.quantjourney.cloud",
@@ -163,6 +226,35 @@ const pl: Dict = {
 };
 
 const ar: Dict = {
+  heroHeadline: "اربح أكثر من العقارات — برأس مال أقل ومخاطر أقل",
+  heroSubheadline:
+    "اكتشف أسهم الشركات الأمريكية الموزعة لأرباح تستهدف عائدًا سنويًا من 5 إلى 10٪ دون شراء عقارات، أو التعامل مع المستأجرين، أو تجميد ملايين في العقارات.",
+  testimonials: [
+    {
+      quote:
+        "كنت أفكر في شراء شقة أخرى في دبي، لكن عائد الإيجار لم يكن يبرر رأس المال المطلوب. هذا أعطاني طريقة أكثر مرونة لبناء دخل بالدولار.",
+      author: "أحمد ك.",
+      location: "دبي",
+    },
+    {
+      quote:
+        "العقارات تتطلب رأس مال ضخم من البداية. هنا بدأت بمبلغ صغير وما زلت أبني دخلًا متكررًا حقيقيًا من توزيعات الأرباح.",
+      author: "فيصل ع.",
+      location: "الرياض",
+    },
+    {
+      quote:
+        "أفضّل هذا على العقارات لأنني أبقى سيولة. لا مستأجرين، ولا صيانة، ولا انتظار سنوات للخروج.",
+      author: "عمر ح.",
+      location: "الدوحة",
+    },
+    {
+      quote:
+        "الاختيارات الأسبوعية توفر عليّ ساعات من البحث. وكأن لدي محلل توزيعات أرباح في صندوق الوارد الخاص بي.",
+      author: "خالد م.",
+      location: "مدينة الكويت",
+    },
+  ],
   title: "شركات توزيع الأرباح",
   subtitle: "جميع الشركات النشطة التي توزع أرباحًا. المصدر: api.quantjourney.cloud",
   source: "api.quantjourney.cloud",

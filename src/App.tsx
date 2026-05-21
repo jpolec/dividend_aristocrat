@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { DividendTable } from "./DividendTable";
 import { SubscribeCard } from "./SubscribeCard";
+import { Hero } from "./Hero";
 import { Admin } from "./Admin";
 import { DICTS, LangCtx, LANGS, dirOf, type Lang } from "./i18n";
 import "./index.css";
@@ -47,7 +48,10 @@ export function App() {
         </header>
 
         <div className="grid gap-6">
-          <SubscribeCard />
+          <Hero />
+          <div id="subscribe">
+            <SubscribeCard />
+          </div>
           <DividendTable />
         </div>
       </div>

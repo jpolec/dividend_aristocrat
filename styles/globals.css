@@ -114,7 +114,15 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html,
   body {
-    @apply bg-background text-foreground;
+    @apply bg-white text-foreground;
+    min-height: 100vh;
+  }
+  /* Stay white in dark mode too — the user explicitly wants a white background */
+  .dark html,
+  .dark body {
+    background-color: white;
+    color: oklch(0.145 0 0);
   }
 }

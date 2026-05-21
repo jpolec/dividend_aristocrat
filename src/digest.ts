@@ -228,27 +228,58 @@ export function renderDigestHtml(picks: Pick[], lang: Lang, unsubscribeUrl: stri
 }
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const MAILTRAP_API_TOKEN = process.env.MAILTRAP_API_TOKEN;
+const MAILTRAP_INBOX_ID = process.env.MAILTRAP_INBOX_ID; // if set → use sandbox
 const FROM_ADDR = process.env.DIGEST_FROM ?? "Dividends <onboarding@resend.dev>";
 
-export async function sendEmail(to: string, subject: string, html: string, text: string) {
-  if (!RESEND_API_KEY) {
-    console.log(`\n────── EMAIL (no RESEND_API_KEY — logged only) ──────`);
-    console.log(`To: ${to}`);
-    console.log(`Subject: ${subject}`);
-    console.log(`Text preview:\n${text.slice(0, 600)}${text.length > 600 ? "…" : ""}`);
-    console.log(`──────────────────────────────────────────────────────\n`);
-    return { ok: true, logged: true };
-  }
-  const res = await fetch("https://api.resend.com/emails", {
+function parseFromAddr(s: string): { email: string; name?: string } {
+  const m = s.match(/^\s*(.*?)\s*<([^>]+)>\s*$/);
+  if (m) return { name: m[1] || undefined, email: m[2] };
+  return { email: s.trim() };
+}
+
+async function sendViaMailtrap(to: string, subject: string, html: string, text: string) {
+  const base = MAILTRAP_INBOX_ID
+    ? `https://sandbox.api.mailtrap.io/api/send/${MAILTRAP_INBOX_ID}`
+    : "https://send.api.mailtrap.io/api/send";
+  const from = parseFromAddr(FROM_ADDR);
+  const res = await fetch(base, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${RESEND_API_KEY}`,
+      Authorization: `Bearer ${MAILTRAP_API_TOKEN}`,
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({
+      from: { email: from.email, name: from.name ?? "Dividends" },
+      to: [{ email: to }],
+      subject,
+      html,
+      text,
+    }),
+  });
+  if (!res.ok) throw new Error(`Mailtrap ${res.status}: ${await res.text()}`);
+  return { ok: true, logged: false, via: MAILTRAP_INBOX_ID ? "mailtrap-sandbox" : "mailtrap" };
+}
+
+async function sendViaResend(to: string, subject: string, html: string, text: string) {
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({ from: FROM_ADDR, to, subject, html, text }),
   });
   if (!res.ok) throw new Error(`Resend ${res.status}: ${await res.text()}`);
-  return { ok: true, logged: false };
+  return { ok: true, logged: false, via: "resend" };
+}
+
+export async function sendEmail(to: string, subject: string, html: string, text: string) {
+  if (MAILTRAP_API_TOKEN) return sendViaMailtrap(to, subject, html, text);
+  if (RESEND_API_KEY) return sendViaResend(to, subject, html, text);
+  console.log(`\n────── EMAIL (no transport configured — logged only) ──────`);
+  console.log(`To: ${to}`);
+  console.log(`Subject: ${subject}`);
+  console.log(`Text preview:\n${text.slice(0, 600)}${text.length > 600 ? "…" : ""}`);
+  console.log(`────────────────────────────────────────────────────────────\n`);
+  return { ok: true, logged: true, via: "console" };
 }
 
 export async function runDigest(baseUrl: string, opts: { dryRun?: boolean; only?: string } = {}) {

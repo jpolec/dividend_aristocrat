@@ -243,13 +243,13 @@ export function DividendTable() {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-wrap items-end gap-3">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 w-full sm:w-56">
             <label className="text-xs text-muted-foreground">{t.search}</label>
             <Input
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder={t.searchPh}
-              className="w-56"
+              className="w-full"
             />
           </div>
           <div className="flex flex-col gap-1">
@@ -299,7 +299,7 @@ export function DividendTable() {
               className="w-24"
             />
           </div>
-          <label className="flex items-center gap-2 text-sm cursor-pointer select-none mb-[2px]">
+          <label className="flex w-full sm:w-auto items-center gap-2 text-sm cursor-pointer select-none mb-[2px]">
             <input
               type="checkbox"
               checked={includeFunds}
@@ -308,12 +308,14 @@ export function DividendTable() {
             />
             {t.showFunds}
           </label>
-          <Button onClick={loadBase} disabled={loading}>
-            {loading ? t.loading : t.refresh}
-          </Button>
-          <Button variant="outline" onClick={clearCache} disabled={loading}>
-            {t.clearCache}
-          </Button>
+          <div className="flex gap-2 w-full sm:w-auto">
+            <Button onClick={loadBase} disabled={loading} className="flex-1 sm:flex-none">
+              {loading ? t.loading : t.refresh}
+            </Button>
+            <Button variant="outline" onClick={clearCache} disabled={loading} className="flex-1 sm:flex-none">
+              {t.clearCache}
+            </Button>
+          </div>
         </div>
 
         {error && (

@@ -12,6 +12,8 @@ export type Testimonial = { quote: string; author: string; location: string };
 type Dict = {
   heroHeadline: string;
   heroSubheadline: string;
+  pricingLine: string;
+  pricingCta: string;
   testimonials: Testimonial[];
   title: string;
   subtitle: string;
@@ -69,6 +71,9 @@ const en: Dict = {
   heroHeadline: "Earn More Than Real Estate — With Less Capital and Less Risk",
   heroSubheadline:
     "Discover U.S. dividend stocks targeting 5–10% yearly income potential without buying property, dealing with tenants, or locking away millions in real estate.",
+  pricingLine:
+    "$5 / month — every week you receive the stocks worth entering, scored by 5-year payment consistency.",
+  pricingCta: "Start for $5/month",
   testimonials: [
     {
       quote:
@@ -149,6 +154,9 @@ const pl: Dict = {
   heroHeadline: "Zarabiaj więcej niż na nieruchomościach — przy mniejszym kapitale i niższym ryzyku",
   heroSubheadline:
     "Amerykańskie spółki dywidendowe z potencjałem 5–10% rocznie. Bez kupowania mieszkań, bez najemców, bez zamrażania milionów w betonie.",
+  pricingLine:
+    "19 PLN / miesiąc — co tydzień dostajesz spółki, w które warto wejść, oceniane po stabilności wypłat z 5 lat.",
+  pricingCta: "Zacznij za 19 PLN/mies.",
   testimonials: [
     {
       quote:
@@ -229,6 +237,9 @@ const ar: Dict = {
   heroHeadline: "اربح أكثر من العقارات — برأس مال أقل ومخاطر أقل",
   heroSubheadline:
     "اكتشف أسهم الشركات الأمريكية الموزعة لأرباح تستهدف عائدًا سنويًا من 5 إلى 10٪ دون شراء عقارات، أو التعامل مع المستأجرين، أو تجميد ملايين في العقارات.",
+  pricingLine:
+    "19 درهم إماراتي / 19 ريال سعودي / 19 ريال قطري شهريًا — كل أسبوع تتلقى الأسهم التي تستحق الاستثمار، مرتبة حسب استقرار التوزيعات على مدى 5 سنوات.",
+  pricingCta: "ابدأ بـ 19 درهمًا/شهر",
   testimonials: [
     {
       quote:

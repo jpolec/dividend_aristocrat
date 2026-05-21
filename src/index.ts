@@ -8,8 +8,12 @@ import {
   isValidEmail,
   normalizeLang,
   getJobLastRun,
+  markPaid,
+  markCanceledByCustomer,
+  markCanceledBySubscription,
 } from "./subscribers";
 import { runDigest, selectTopPicks, renderDigestHtml, shouldRunWeekly } from "./digest";
+import { createCheckoutSession, verifyStripeSignature, defaultCurrencyForLang, type Currency } from "./stripe";
 
 const QJ_BASE = "https://api.quantjourney.cloud";
 const QJ_TOKEN = process.env.QJ_TOKEN;
@@ -195,7 +199,7 @@ const server = serve({
       },
     },
 
-    // Subscription
+    // Subscription (free / unpaid)
     "/api/subscribe": {
       async POST(req) {
         try {
@@ -207,6 +211,80 @@ const server = serve({
           return Response.json({ ok: true });
         } catch (e) {
           return Response.json({ error: String(e) }, { status: 400 });
+        }
+      },
+    },
+
+    // Stripe Checkout — paid monthly subscription
+    "/api/checkout": {
+      async POST(req) {
+        try {
+          const { email, lang, currency } = (await req.json()) as {
+            email?: string;
+            lang?: string;
+            currency?: Currency;
+          };
+          if (!email || !isValidEmail(email)) {
+            return Response.json({ error: "invalid email" }, { status: 400 });
+          }
+          const lng = normalizeLang(lang);
+          const cur = currency ?? defaultCurrencyForLang(lng);
+          // Pre-register as pending; webhook will flip to active
+          subscribe(email, lng);
+          const { url } = await createCheckoutSession({ email, lang: lng, currency: cur, baseUrl: BASE_URL });
+          return Response.json({ url });
+        } catch (e) {
+          return Response.json({ error: String(e) }, { status: 500 });
+        }
+      },
+    },
+
+    // Stripe webhook — confirms payment, handles cancellations
+    "/api/stripe/webhook": {
+      async POST(req) {
+        const secret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
+        if (!secret) return new Response("webhook secret not configured", { status: 500 });
+        const rawBody = await req.text();
+        const sig = req.headers.get("stripe-signature");
+        const valid = await verifyStripeSignature(rawBody, sig, secret);
+        if (!valid) return new Response("invalid signature", { status: 400 });
+
+        const event = JSON.parse(rawBody) as {
+          type: string;
+          data: { object: Record<string, unknown> };
+        };
+
+        try {
+          if (event.type === "checkout.session.completed") {
+            const obj = event.data.object as {
+              customer: string;
+              subscription: string;
+              currency: string;
+              customer_details?: { email?: string };
+              metadata?: { email?: string };
+            };
+            const email = obj.metadata?.email ?? obj.customer_details?.email;
+            if (email) {
+              markPaid({
+                email,
+                customerId: obj.customer,
+                subscriptionId: obj.subscription,
+                currency: obj.currency,
+              });
+              console.log(`[stripe] paid: ${email} (${obj.currency})`);
+            }
+          } else if (event.type === "customer.subscription.deleted") {
+            const obj = event.data.object as { id: string; customer: string };
+            markCanceledBySubscription(obj.id);
+            console.log(`[stripe] canceled: subscription ${obj.id}`);
+          } else if (event.type === "customer.deleted") {
+            const obj = event.data.object as { id: string };
+            markCanceledByCustomer(obj.id);
+          }
+          return Response.json({ received: true });
+        } catch (e) {
+          console.error("[stripe] webhook error:", e);
+          return Response.json({ error: String(e) }, { status: 500 });
         }
       },
     },

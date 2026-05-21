@@ -26,18 +26,18 @@ export function App() {
 
   return (
     <LangCtx.Provider value={{ lang, setLang, t }}>
-      <div className="container mx-auto p-6 max-w-7xl">
-        <header className="mb-6 flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">{t.title}</h1>
-            <p className="text-sm text-muted-foreground">{t.subtitle}</p>
+      <div className="container mx-auto px-4 py-4 sm:px-6 sm:py-6 max-w-7xl">
+        <header className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+          <div className="min-w-0">
+            <h1 className="text-2xl sm:text-3xl font-bold truncate">{t.title}</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t.subtitle}</p>
           </div>
-          <div className="flex gap-1 rounded-md border bg-background p-1">
+          <div className="self-start flex gap-1 rounded-md border bg-background p-1">
             {LANGS.map(l => (
               <button
                 key={l.code}
                 onClick={() => setLang(l.code)}
-                className={`px-3 py-1 text-sm rounded ${
+                className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
                   lang === l.code ? "bg-primary text-primary-foreground" : "hover:bg-muted"
                 }`}
               >
@@ -47,11 +47,9 @@ export function App() {
           </div>
         </header>
 
-        <div className="grid gap-6">
+        <div className="grid gap-4 sm:gap-6">
           <Hero />
-          <div id="subscribe">
-            <SubscribeCard />
-          </div>
+          <SubscribeCard />
           <DividendTable />
         </div>
       </div>

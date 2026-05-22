@@ -51,14 +51,14 @@ export function CompoundChart() {
   const path = (pts: typeof dividend) => pts.map((p, i) => `${i === 0 ? "M" : "L"} ${xAt(i)} ${yAt(p.balance)}`).join(" ");
 
   return (
-    <section className="py-20 sm:py-24" style={{ background: "var(--aris-paper)" }}>
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-7">
+    <section className="py-14 sm:py-20 lg:py-24" style={{ background: "var(--aris-paper)" }}>
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-7">
         <div className="max-w-3xl mb-10">
           <div className="eyebrow">{t.chartCompareEyebrow}</div>
-          <h2 className="font-serif-display text-[30px] sm:text-[40px] lg:text-[46px] text-[var(--aris-ink)] my-4">
+          <h2 className="font-serif-display text-[24px] sm:text-[32px] md:text-[40px] lg:text-[46px] text-[var(--aris-ink)] my-4">
             {t.chartCompareTitle}
           </h2>
-          <p className="text-[17px] text-[var(--aris-muted)] leading-relaxed max-w-2xl">
+          <p className="text-[15px] sm:text-[17px] text-[var(--aris-muted)] leading-relaxed max-w-2xl">
             {t.chartCompareIntro}
           </p>
         </div>
@@ -68,7 +68,7 @@ export function CompoundChart() {
           style={{ background: "var(--aris-offwhite)", border: "1px solid var(--aris-line-dark)", boxShadow: "0 30px 70px -45px rgba(12,18,14,.3)" }}
         >
           {/* Controls */}
-          <div className="px-5 sm:px-7 py-5 border-b border-[var(--aris-line-dark)] bg-white">
+          <div className="px-4 sm:px-7 py-5 border-b border-[var(--aris-line-dark)] bg-white">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
               <Slider
                 label={`${t.chartMonthly} (${currency})`}
@@ -149,7 +149,7 @@ export function CompoundChart() {
           </div>
 
           {/* Chart */}
-          <div ref={ref} className={`aris-fade ${inView ? "in" : ""} px-5 sm:px-7 pt-4 pb-6`}>
+          <div ref={ref} className={`aris-fade ${inView ? "in" : ""} px-4 sm:px-7 pt-4 pb-6`}>
             <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto block">
               <defs>
                 <linearGradient id="aris-cmp-div" x1="0" y1="0" x2="0" y2="1">
@@ -209,7 +209,7 @@ export function CompoundChart() {
           </div>
 
           {/* Flexibility note */}
-          <div className="px-5 sm:px-7 pt-2 pb-6">
+          <div className="px-4 sm:px-7 pt-2 pb-6">
             <div
               className="rounded-md px-4 py-3 text-[13.5px] leading-relaxed text-[var(--aris-ink)]"
               style={{ borderInlineStart: "3px solid var(--aris-gold)", background: "var(--aris-paper-2)" }}
@@ -304,14 +304,14 @@ function StatBlock({
   const subColor = tone === "hero" ? "rgba(246,243,234,.6)" : "var(--aris-muted)";
 
   const sizeCls = emphasize
-    ? "text-[28px] sm:text-[36px] lg:text-[42px]"
+    ? "text-[22px] sm:text-[30px] md:text-[36px] lg:text-[42px]"
     : tone === "gold"
       ? "text-[22px] sm:text-[26px]"
       : "text-[20px] sm:text-[24px]";
 
   return (
     <div
-      className={`px-5 sm:px-7 ${emphasize ? "py-7 sm:py-9" : "py-5 sm:py-6"} flex flex-col justify-center`}
+      className={`px-4 sm:px-7 ${emphasize ? "py-7 sm:py-9" : "py-5 sm:py-6"} flex flex-col justify-center`}
       style={{ background: bg, borderTop: tone === "hero" ? "none" : border }}
     >
       <div className="font-mono-mark text-[10.5px] tracking-[0.15em] uppercase" style={{ color: labelColor }}>

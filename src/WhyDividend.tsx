@@ -16,14 +16,14 @@ const PILLAR_ICONS: React.ReactNode[] = [
 export function WhyDividend() {
   const { t } = useT();
   return (
-    <section id="why" className="py-20 sm:py-24 text-[var(--aris-paper)]" style={{ background: "var(--aris-green-950)" }}>
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-7">
+    <section id="why" className="py-14 sm:py-20 lg:py-24 text-[var(--aris-paper)]" style={{ background: "var(--aris-green-950)" }}>
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-7">
         <div className="max-w-3xl mb-12">
           <div className="eyebrow">Why Dividend Companies</div>
-          <h2 className="font-serif-display text-[30px] sm:text-[40px] lg:text-[46px] text-[var(--aris-paper)] my-4">
+          <h2 className="font-serif-display text-[24px] sm:text-[32px] md:text-[40px] lg:text-[46px] text-[var(--aris-paper)] my-4">
             {t.whyTitle}
           </h2>
-          <p className="text-[17px] text-[var(--aris-paper)]/60 leading-relaxed max-w-2xl">
+          <p className="text-[15px] sm:text-[17px] text-[var(--aris-paper)]/60 leading-relaxed max-w-2xl">
             {t.whyIntro}
           </p>
         </div>

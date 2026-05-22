@@ -5,11 +5,11 @@ export function FAQ() {
   const { t } = useT();
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section id="faq" className="py-20 sm:py-24" style={{ background: "var(--aris-paper-2)" }}>
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-7">
+    <section id="faq" className="py-14 sm:py-20 lg:py-24" style={{ background: "var(--aris-paper-2)" }}>
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-7">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <div className="eyebrow">Questions</div>
-          <h2 className="font-serif-display text-[30px] sm:text-[40px] lg:text-[46px] text-[var(--aris-ink)] my-4">
+          <h2 className="font-serif-display text-[24px] sm:text-[32px] md:text-[40px] lg:text-[46px] text-[var(--aris-ink)] my-4">
             {t.faqTitle}
           </h2>
         </div>
@@ -20,7 +20,7 @@ export function FAQ() {
               <div key={i} className="border-b border-[var(--aris-line-dark)]">
                 <button
                   onClick={() => setOpen(isOpen ? null : i)}
-                  className="w-full text-start font-serif-display text-[18px] sm:text-[20px] text-[var(--aris-ink)] py-6 flex items-center justify-between gap-5"
+                  className="w-full text-start font-serif-display text-[16px] sm:text-[20px] text-[var(--aris-ink)] py-5 sm:py-6 flex items-center justify-between gap-4 sm:gap-5"
                   aria-expanded={isOpen}
                 >
                   <span>{item.q}</span>

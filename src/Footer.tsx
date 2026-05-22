@@ -4,7 +4,7 @@ export function Footer() {
   const { t } = useT();
   return (
     <footer className="text-[var(--aris-paper)]/60 py-16 sm:py-20" style={{ background: "var(--aris-ink)" }}>
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-7">
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-7">
         <div className="grid gap-10 lg:grid-cols-[1.6fr_1fr_1fr_1fr] pb-12 border-b border-[var(--aris-paper)]/10">
           {/* Brand column */}
           <div>

@@ -107,14 +107,14 @@ export function SampleResearch() {
   }, []);
 
   return (
-    <section id="sample" className="py-20 sm:py-24" style={{ background: "var(--aris-paper)" }}>
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-7">
+    <section id="sample" className="py-14 sm:py-20 lg:py-24" style={{ background: "var(--aris-paper)" }}>
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-7">
         <div className="max-w-3xl mb-12">
           <div className="eyebrow">Inside The Research</div>
-          <h2 className="font-serif-display text-[30px] sm:text-[40px] lg:text-[46px] text-[var(--aris-ink)] my-4">
+          <h2 className="font-serif-display text-[24px] sm:text-[32px] md:text-[40px] lg:text-[46px] text-[var(--aris-ink)] my-4">
             {t.sampleResearchTitle}
           </h2>
-          <p className="text-[17px] text-[var(--aris-muted)] leading-relaxed max-w-2xl">
+          <p className="text-[15px] sm:text-[17px] text-[var(--aris-muted)] leading-relaxed max-w-2xl">
             {t.sampleResearchIntro}
           </p>
         </div>
@@ -126,9 +126,9 @@ export function SampleResearch() {
             boxShadow: "0 30px 70px -45px rgba(12,18,14,.4)",
           }}
         >
-          <div className="flex justify-between items-center px-6 sm:px-7 py-5 bg-[var(--aris-green-950)] text-[var(--aris-paper)] flex-wrap gap-3">
-            <div className="font-serif-display text-[20px]">Weekly Research — Income & Quality Screen</div>
-            <div className="font-mono-mark text-[11px] tracking-wider text-[var(--aris-gold)]">
+          <div className="flex justify-between items-center px-4 sm:px-7 py-4 sm:py-5 bg-[var(--aris-green-950)] text-[var(--aris-paper)] flex-wrap gap-2">
+            <div className="font-serif-display text-[16px] sm:text-[20px]">Weekly Research — Income & Quality Screen</div>
+            <div className="font-mono-mark text-[10px] sm:text-[11px] tracking-wider text-[var(--aris-gold)]">
               LIVE DATA · NOT ADVICE
             </div>
           </div>

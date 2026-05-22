@@ -13,14 +13,12 @@ export function Hero() {
           radial-gradient(90% 70% at 0% 100%, rgba(198,166,103,.08), transparent 50%),
           linear-gradient(160deg, var(--aris-green-950), var(--aris-green-900) 55%, var(--aris-charcoal))
         `,
-        paddingTop: "160px",
-        paddingBottom: "90px",
       }}
     >
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-7 grid lg:grid-cols-[1.05fr_.95fr] gap-12 lg:gap-16 items-center">
-        <div>
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-7 pt-24 sm:pt-32 lg:pt-40 pb-16 sm:pb-20 lg:pb-24 grid lg:grid-cols-[1.05fr_.95fr] gap-10 lg:gap-16 items-center">
+        <div className="min-w-0">
           <div className="eyebrow">Premium Income Research · GCC</div>
-          <h1 className="font-serif-display text-[40px] sm:text-[52px] lg:text-[64px] xl:text-[72px] text-[var(--aris-paper)] my-5">
+          <h1 className="font-serif-display text-[28px] sm:text-[40px] md:text-[52px] lg:text-[60px] xl:text-[72px] text-[var(--aris-paper)] my-4 sm:my-5">
             {t.heroHeadline.split(" — ")[0]}
             {t.heroHeadline.includes(" — ") && (
               <>
@@ -30,27 +28,27 @@ export function Hero() {
               </>
             )}
           </h1>
-          <p className="text-[17px] sm:text-[19px] text-[var(--aris-paper)]/70 leading-[1.55] max-w-xl">
+          <p className="text-[15px] sm:text-[18px] md:text-[19px] text-[var(--aris-paper)]/70 leading-[1.55] max-w-xl">
             {t.heroSubheadline}
           </p>
-          <div className="mt-9 flex flex-wrap gap-3.5">
+          <div className="mt-7 sm:mt-9 flex flex-col xs:flex-row flex-wrap gap-3 sm:gap-3.5">
             <a
               href="#sample"
-              className="inline-flex items-center gap-2 rounded-sm bg-[var(--aris-gold)] hover:bg-[var(--aris-gold-soft)] text-[var(--aris-green-950)] px-6 py-3.5 text-sm font-semibold transition hover:-translate-y-0.5 hover:shadow-[0_12px_30px_-10px_rgba(198,166,103,.5)]"
+              className="inline-flex items-center justify-center gap-2 rounded-sm bg-[var(--aris-gold)] hover:bg-[var(--aris-gold-soft)] text-[var(--aris-green-950)] px-5 sm:px-6 py-3 sm:py-3.5 text-[13px] sm:text-sm font-semibold transition hover:-translate-y-0.5 hover:shadow-[0_12px_30px_-10px_rgba(198,166,103,.5)]"
             >
               {t.heroCtaSecondary} →
             </a>
             <a
               href="#method"
-              className="inline-flex items-center gap-2 rounded-sm border border-[var(--aris-paper)]/30 hover:border-[var(--aris-gold)] hover:text-[var(--aris-gold)] text-[var(--aris-paper)] px-6 py-3.5 text-sm font-semibold transition"
+              className="inline-flex items-center justify-center gap-2 rounded-sm border border-[var(--aris-paper)]/30 hover:border-[var(--aris-gold)] hover:text-[var(--aris-gold)] text-[var(--aris-paper)] px-5 sm:px-6 py-3 sm:py-3.5 text-[13px] sm:text-sm font-semibold transition"
             >
               {t.pricingCta}
             </a>
           </div>
-          <div className="mt-10 flex flex-wrap gap-x-7 gap-y-2.5">
+          <div className="mt-8 sm:mt-10 flex flex-wrap gap-x-5 sm:gap-x-7 gap-y-2.5">
             {t.trustBar.map(item => (
-              <div key={item} className="flex items-center gap-2 text-[13px] text-[var(--aris-paper)]/60">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4 text-[var(--aris-gold)]">
+              <div key={item} className="flex items-center gap-2 text-[12px] sm:text-[13px] text-[var(--aris-paper)]/60">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4 text-[var(--aris-gold)] shrink-0">
                   <path d="M5 12l4 4L19 6" />
                 </svg>
                 <span>{item}</span>
@@ -62,22 +60,22 @@ export function Hero() {
         {/* Hero visual: animated dividend growth card */}
         <div
           ref={visual.ref}
-          className={`aris-fade aris-d2 ${visual.inView ? "in" : ""} rounded-lg p-6 sm:p-7 relative`}
+          className={`aris-fade aris-d2 ${visual.inView ? "in" : ""} rounded-lg p-4 sm:p-6 lg:p-7 relative min-w-0`}
           style={{
             background: "linear-gradient(165deg, rgba(15,40,29,.9), rgba(8,22,15,.7))",
             border: "1px solid var(--aris-line)",
             boxShadow: "0 40px 90px -40px rgba(0,0,0,.7)",
           }}
         >
-          <div className="flex items-start justify-between mb-2">
-            <div>
-              <div className="font-mono-mark text-[10px] tracking-[0.2em] uppercase text-[var(--aris-muted-light)]">
-                Illustrative dividend income · reinvested
+          <div className="flex items-start justify-between mb-2 gap-2">
+            <div className="min-w-0">
+              <div className="font-mono-mark text-[9px] sm:text-[10px] tracking-[0.2em] uppercase text-[var(--aris-muted-light)] truncate">
+                Illustrative dividend income
               </div>
-              <div className="font-serif-display text-[28px] text-[var(--aris-paper)] mt-1">Compounding</div>
+              <div className="font-serif-display text-[22px] sm:text-[28px] text-[var(--aris-paper)] mt-1">Compounding</div>
             </div>
-            <div className="font-mono-mark text-[11px] text-[var(--aris-emerald-bright)] bg-emerald-500/10 border border-emerald-500/25 px-2 py-1 rounded-sm">
-              Educational model
+            <div className="font-mono-mark text-[10px] sm:text-[11px] text-[var(--aris-emerald-bright)] bg-emerald-500/10 border border-emerald-500/25 px-2 py-1 rounded-sm shrink-0">
+              Educational
             </div>
           </div>
 
@@ -111,19 +109,19 @@ export function Hero() {
       </div>
 
       {/* Trust strip across full width */}
-      <div className="relative mt-12 border-t border-[var(--aris-line)] py-5">
-        <div className="mx-auto max-w-[1240px] px-5 sm:px-7 flex flex-wrap justify-center items-center gap-y-3 gap-x-10">
+      <div className="relative border-t border-[var(--aris-line)] py-5">
+        <div className="mx-auto max-w-[1240px] px-4 sm:px-7 flex flex-wrap justify-center items-center gap-y-2 gap-x-5 sm:gap-x-10">
           {t.trustStripPoints.map(p => (
-            <span key={p} className="flex items-center gap-2 text-[12.5px] text-[var(--aris-paper)]/62 font-medium">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3.5 w-3.5 text-[var(--aris-gold)]">
+            <span key={p} className="flex items-center gap-2 text-[11.5px] sm:text-[12.5px] text-[var(--aris-paper)]/62 font-medium">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3.5 w-3.5 text-[var(--aris-gold)] shrink-0">
                 <path d="M5 12l4 4L19 6" />
               </svg>
               {p}
             </span>
           ))}
         </div>
-        <div className="mt-3 text-center text-[12px] text-[var(--aris-paper)]/55">
-          🇸🇦 🇦🇪 🇶🇦 🇰🇼 🇧🇭 🇪🇬 &nbsp;{t.trustStripCountries}
+        <div className="mt-3 text-center text-[11px] sm:text-[12px] text-[var(--aris-paper)]/55 px-4">
+          🇸🇦 🇦🇪 🇶🇦 🇰🇼 🇧🇭 🇪🇬 &nbsp;<span className="break-words">{t.trustStripCountries}</span>
         </div>
       </div>
     </section>

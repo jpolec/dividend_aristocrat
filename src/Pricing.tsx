@@ -66,11 +66,11 @@ export function Pricing() {
   const price = PRICES[currency];
 
   return (
-    <section id="pricing" className="py-20 sm:py-24" style={{ background: "var(--aris-paper)" }}>
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-7">
+    <section id="pricing" className="py-14 sm:py-20 lg:py-24" style={{ background: "var(--aris-paper)" }}>
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-7">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <div className="eyebrow">{t.pricingEyebrow}</div>
-          <h2 className="font-serif-display text-[30px] sm:text-[40px] lg:text-[46px] text-[var(--aris-ink)] my-4">
+          <h2 className="font-serif-display text-[24px] sm:text-[32px] md:text-[40px] lg:text-[46px] text-[var(--aris-ink)] my-4">
             {t.pricingPageTitle}
           </h2>
           <p className="text-[16px] text-[var(--aris-muted)] mx-auto max-w-2xl">
@@ -123,13 +123,13 @@ export function Pricing() {
         <div className="grid gap-5 sm:grid-cols-2 max-w-3xl mx-auto items-stretch">
           {/* Monthly */}
           <div
-            className="rounded-xl p-8 flex flex-col transition-all hover:-translate-y-1 hover:shadow-[0_30px_70px_-40px_rgba(12,18,14,.3)]"
+            className="rounded-xl p-6 sm:p-8 flex flex-col transition-all hover:-translate-y-1 hover:shadow-[0_30px_70px_-40px_rgba(12,18,14,.3)]"
             style={{ background: "var(--aris-offwhite)", border: "1px solid var(--aris-line-dark)" }}
           >
             <div className="font-mono-mark text-[12px] tracking-[0.18em] uppercase text-[var(--aris-gold)]">
               {t.pricingMonthlyLabel}
             </div>
-            <div className="font-serif-display text-[46px] text-[var(--aris-ink)] mt-3 leading-none">
+            <div className="font-serif-display text-[36px] sm:text-[46px] text-[var(--aris-ink)] mt-3 leading-none">
               {price.monthly}
               <span className="text-[14px] text-[var(--aris-muted)] font-sans">{t.pricingPerMonth}</span>
             </div>
@@ -154,11 +154,10 @@ export function Pricing() {
 
           {/* Annual (featured) */}
           <div
-            className="relative rounded-xl p-8 flex flex-col transition-all hover:-translate-y-1"
+            className="relative rounded-xl p-6 sm:p-8 flex flex-col transition-all hover:-translate-y-1 sm:scale-[1.02]"
             style={{
               background: "var(--aris-green-950)",
               border: "1px solid var(--aris-gold)",
-              transform: "scale(1.02)",
               color: "var(--aris-paper)",
             }}
           >
@@ -171,7 +170,7 @@ export function Pricing() {
             <div className="font-mono-mark text-[12px] tracking-[0.18em] uppercase text-[var(--aris-gold-soft)]">
               {t.pricingAnnualLabel}
             </div>
-            <div className="font-serif-display text-[46px] text-[var(--aris-paper)] mt-3 leading-none">
+            <div className="font-serif-display text-[36px] sm:text-[46px] text-[var(--aris-paper)] mt-3 leading-none">
               {price.annual}
               <span className="text-[14px] text-[var(--aris-paper)]/60 font-sans">{t.pricingPerYear}</span>
             </div>

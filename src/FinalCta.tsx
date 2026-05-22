@@ -12,9 +12,9 @@ export function FinalCta() {
         `,
       }}
     >
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-7">
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-7">
         <div className="eyebrow">{t.finalEyebrow}</div>
-        <h2 className="font-serif-display text-[34px] sm:text-[46px] lg:text-[58px] text-[var(--aris-paper)] my-5">
+        <h2 className="font-serif-display text-[24px] sm:text-[34px] md:text-[46px] lg:text-[58px] text-[var(--aris-paper)] my-5">
           {t.finalTitle.split(" — ")[0]}
           {t.finalTitle.includes(" — ") && (
             <>

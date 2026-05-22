@@ -14,14 +14,14 @@ export function HowWeFilter() {
   const { t } = useT();
   const terminal = useInView<HTMLDivElement>();
   return (
-    <section id="method" className="py-20 sm:py-24" style={{ background: "var(--aris-paper-2)" }}>
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-7">
+    <section id="method" className="py-14 sm:py-20 lg:py-24" style={{ background: "var(--aris-paper-2)" }}>
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-7">
         <div className="max-w-3xl mb-12">
           <div className="eyebrow">{t.howWeFilterTitle === "How we filter" ? "Our Methodology" : "Methodology"}</div>
-          <h2 className="font-serif-display text-[30px] sm:text-[40px] lg:text-[46px] text-[var(--aris-ink)] my-4">
+          <h2 className="font-serif-display text-[24px] sm:text-[32px] md:text-[40px] lg:text-[46px] text-[var(--aris-ink)] my-4">
             {t.howWeFilterTitle}
           </h2>
-          <p className="text-[17px] text-[var(--aris-muted)] leading-relaxed max-w-2xl">
+          <p className="text-[15px] sm:text-[17px] text-[var(--aris-muted)] leading-relaxed max-w-2xl">
             {t.howWeFilterIntro}
           </p>
         </div>

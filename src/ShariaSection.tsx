@@ -3,11 +3,11 @@ import { useT } from "./i18n";
 export function ShariaSection() {
   const { t } = useT();
   return (
-    <section id="sharia" className="py-20 sm:py-24" style={{ background: "var(--aris-paper-2)" }}>
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-7 grid lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-16 items-center">
+    <section id="sharia" className="py-14 sm:py-20 lg:py-24" style={{ background: "var(--aris-paper-2)" }}>
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-7 grid lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-16 items-center">
         <div>
           <div className="eyebrow">Halal-Aware Filtering</div>
-          <h2 className="font-serif-display text-[28px] sm:text-[36px] lg:text-[42px] text-[var(--aris-ink)] my-4">
+          <h2 className="font-serif-display text-[22px] sm:text-[30px] md:text-[36px] lg:text-[42px] text-[var(--aris-ink)] my-4">
             {t.shariaTitle}
           </h2>
           <p className="text-[16px] text-[var(--aris-muted)] leading-relaxed">{t.shariaIntro}</p>

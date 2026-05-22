@@ -3,14 +3,14 @@ import { useT } from "./i18n";
 export function Problem() {
   const { t } = useT();
   return (
-    <section id="problem" className="py-20 sm:py-24" style={{ background: "var(--aris-paper)" }}>
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-7">
+    <section id="problem" className="py-14 sm:py-20 lg:py-24" style={{ background: "var(--aris-paper)" }}>
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-7">
         <div className="max-w-3xl mb-12">
           <div className="eyebrow">{t.problemEyebrow}</div>
-          <h2 className="font-serif-display text-[30px] sm:text-[40px] lg:text-[46px] text-[var(--aris-ink)] my-4">
+          <h2 className="font-serif-display text-[24px] sm:text-[32px] md:text-[40px] lg:text-[46px] text-[var(--aris-ink)] my-4">
             {t.problemTitle}
           </h2>
-          <p className="text-[17px] text-[var(--aris-muted)] leading-relaxed max-w-2xl">
+          <p className="text-[15px] sm:text-[17px] text-[var(--aris-muted)] leading-relaxed max-w-2xl">
             {t.problemIntro}
           </p>
         </div>
@@ -40,7 +40,7 @@ export function Problem() {
             <circle cx="24" cy="24" r="20" />
             <path d="M24 14v20M14 24h20" strokeLinecap="round" />
           </svg>
-          <p className="font-serif-display text-[18px] sm:text-[19px] text-[var(--aris-paper)]/88 leading-[1.4] flex-1 min-w-[280px]">
+          <p className="font-serif-display text-[16px] sm:text-[19px] text-[var(--aris-paper)]/88 leading-[1.4] flex-1 min-w-0">
             {t.problemBridge}
           </p>
         </div>

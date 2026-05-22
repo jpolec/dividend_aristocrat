@@ -29,18 +29,18 @@ export function Header() {
           : "border-b border-transparent py-4"
       }`}
     >
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-7 flex items-center justify-between gap-4">
-        <a href="#" className="flex items-center gap-2.5 text-[var(--aris-paper)]">
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-7 flex items-center justify-between gap-2 sm:gap-4">
+        <a href="#" className="flex items-center gap-2 sm:gap-2.5 text-[var(--aris-paper)] min-w-0">
           <svg className="h-7 w-7 shrink-0" viewBox="0 0 40 40" fill="none" aria-hidden="true">
             <path d="M20 3L34 11V29L20 37L6 29V11L20 3Z" stroke="#c6a667" strokeWidth="1.4" />
             <path d="M13 26V18L20 22L27 14V26" stroke="#c6a667" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
             <circle cx="27" cy="14" r="1.8" fill="#c6a667" />
           </svg>
-          <span className="leading-tight">
-            <span className="block font-serif-display text-[19px] text-[var(--aris-paper)]">
+          <span className="leading-tight hidden xs:inline sm:inline">
+            <span className="block font-serif-display text-[17px] sm:text-[19px] text-[var(--aris-paper)]">
               {t.brandName}
             </span>
-            <span className="block font-mono-mark text-[9px] tracking-[0.3em] uppercase text-[var(--aris-gold)] -mt-0.5">
+            <span className="hidden sm:block font-mono-mark text-[9px] tracking-[0.3em] uppercase text-[var(--aris-gold)] -mt-0.5">
               {t.brandSub}
             </span>
           </span>
@@ -58,14 +58,14 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {/* Flag-based language picker — always visible, prominent */}
-          <div className="flex items-center gap-1 rounded-full border border-[var(--aris-line)] bg-[var(--aris-green-900)]/60 backdrop-blur p-1">
+          <div className="flex items-center gap-0.5 sm:gap-1 rounded-full border border-[var(--aris-line)] bg-[var(--aris-green-900)]/60 backdrop-blur p-0.5 sm:p-1">
             {LANGS.map(l => (
               <button
                 key={l.code}
                 onClick={() => setLang(l.code as Lang)}
-                className={`flex items-center gap-1.5 rounded-full px-2.5 sm:px-3 py-1.5 text-xs sm:text-[13px] font-medium transition-colors ${
+                className={`flex items-center gap-1 sm:gap-1.5 rounded-full px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-[13px] font-medium transition-colors ${
                   lang === l.code
                     ? "bg-[var(--aris-gold)] text-[var(--aris-green-950)]"
                     : "text-[var(--aris-paper)]/85 hover:bg-[var(--aris-gold)]/10 hover:text-[var(--aris-gold)]"
@@ -73,8 +73,8 @@ export function Header() {
                 aria-label={l.label}
                 title={l.label}
               >
-                <span className="text-[15px] leading-none">{l.flag}</span>
-                <span className="font-mono-mark tracking-wider text-[11px] hidden xs:inline sm:inline">{l.short}</span>
+                <span className="text-[14px] sm:text-[15px] leading-none">{l.flag}</span>
+                <span className="font-mono-mark tracking-wider text-[11px] hidden md:inline">{l.short}</span>
               </button>
             ))}
           </div>

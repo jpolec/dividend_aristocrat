@@ -181,4 +181,13 @@ html[dir="rtl"] .eyebrow { letter-spacing: 0.04em; font-weight: 600; font-family
   section {
     overflow-x: clip;
   }
+  /* Prevent any media/embeds from exceeding viewport width */
+  img, svg, video, iframe, table, pre, code {
+    max-width: 100%;
+  }
+  /* Long unbroken words should wrap on narrow screens instead of overflowing */
+  h1, h2, h3, p, li, td, th {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
 }

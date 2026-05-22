@@ -42,11 +42,11 @@ function TestimonialCard({ tt }: { tt: Testimonial }) {
 export function Testimonials() {
   const { t } = useT();
   return (
-    <section className="py-20 sm:py-24 text-[var(--aris-paper)]" style={{ background: "var(--aris-charcoal)" }}>
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-7">
+    <section className="py-14 sm:py-20 lg:py-24 text-[var(--aris-paper)]" style={{ background: "var(--aris-charcoal)" }}>
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-7">
         <div className="max-w-3xl mb-12">
           <div className="eyebrow">From Our Members</div>
-          <h2 className="font-serif-display text-[30px] sm:text-[40px] lg:text-[46px] text-[var(--aris-paper)] my-4">
+          <h2 className="font-serif-display text-[24px] sm:text-[32px] md:text-[40px] lg:text-[46px] text-[var(--aris-paper)] my-4">
             {t.testimonialsTitle}
           </h2>
         </div>

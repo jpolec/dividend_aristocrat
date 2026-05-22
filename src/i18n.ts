@@ -190,9 +190,9 @@ type Dict = {
 };
 
 const en: Dict = {
-  heroHeadline: "Global Dividend Research for Gulf Investors",
+  heroHeadline: "Build a Second Income Stream — Alongside Your Property",
   heroSubheadline:
-    "Premium research on financially durable U.S. dividend companies with long histories of dividend growth — disciplined screening, global diversification, weekly updates.",
+    "Research on established U.S. dividend companies for Gulf investors. Lower starting capital than a real-estate deposit — with potential for higher recurring income than typical rental yields, and full liquidity.",
   pricingLine: "30-day money-back guarantee · Cancel anytime",
   pricingCta: "View This Week's Research",
   heroCtaSecondary: "See How We Screen Companies",
@@ -564,9 +564,9 @@ const en: Dict = {
 };
 
 const pl: Dict = {
-  heroHeadline: "Globalne badania dywidendowe dla inwestorów z Zatoki",
+  heroHeadline: "Drugi strumień dochodu — równolegle do nieruchomości",
   heroSubheadline:
-    "Premium research o finansowo solidnych amerykańskich spółkach dywidendowych z długą historią wzrostu wypłat — zdyscyplinowany screening, globalna dywersyfikacja, cotygodniowe aktualizacje.",
+    "Research o sprawdzonych amerykańskich spółkach dywidendowych dla inwestorów z Zatoki. Mniejszy kapitał startowy niż wkład własny do mieszkania — z potencjałem wyższego powtarzalnego dochodu niż typowy yield z najmu, i pełną płynnością.",
   pricingLine: "30-dniowa gwarancja zwrotu · Rezygnacja w każdej chwili",
   pricingCta: "Zobacz research z tego tygodnia",
   heroCtaSecondary: "Jak filtrujemy spółki",
@@ -938,9 +938,9 @@ const pl: Dict = {
 };
 
 const ar: Dict = {
-  heroHeadline: "أبحاث توزيعات أرباح عالمية لمستثمري الخليج",
+  heroHeadline: "ابنِ مصدر دخل ثانٍ — إلى جانب عقارك",
   heroSubheadline:
-    "أبحاث مميزة عن شركات أمريكية مالياً قوية وتاريخ طويل من نمو توزيعات الأرباح — فحص منضبط، تنويع عالمي، وتحديثات أسبوعية.",
+    "أبحاث عن شركات أمريكية راسخة موزّعة لأرباح، لمستثمري الخليج. رأس مال ابتدائي أقل من دفعة أولى للعقار — مع إمكانية دخل متكرر أعلى من عائد الإيجار النموذجي، وسيولة كاملة.",
   pricingLine: "ضمان استرداد المال خلال 30 يومًا · إلغاء في أي وقت",
   pricingCta: "شاهد أبحاث هذا الأسبوع",
   heroCtaSecondary: "كيف نفحص الشركات",

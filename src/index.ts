@@ -19,7 +19,7 @@ import {
   getPartnerByCode,
   getPartnerByEmail,
   listPartners,
-  signOnboarding,
+  signDocument,
   updatePartnerPaymentDetails,
   recordClick,
   recordAttribution,
@@ -331,11 +331,12 @@ const server = serve({
         const auth = requirePartner(req);
         if (auth instanceof Response) return auth;
         try {
-          const { signature, acceptNda, acceptAgreement } = (await req.json()) as { signature?: string; acceptNda?: boolean; acceptAgreement?: boolean };
-          if (!acceptNda || !acceptAgreement) return Response.json({ error: "must accept both NDA and Agreement" }, { status: 400 });
+          const { which, signature, accept } = (await req.json()) as { which?: string; signature?: string; accept?: boolean };
+          if (which !== "nda" && which !== "agreement") return Response.json({ error: "which must be 'nda' or 'agreement'" }, { status: 400 });
+          if (!accept) return Response.json({ error: "must accept the document" }, { status: 400 });
           if (!signature || signature.trim().length < 2) return Response.json({ error: "signature required" }, { status: 400 });
           const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? req.headers.get("x-real-ip") ?? "unknown";
-          signOnboarding({ email: auth.email, signature, ip });
+          signDocument({ email: auth.email, which, signature, ip });
           return Response.json({ ok: true });
         } catch (e) {
           return Response.json({ error: String(e) }, { status: 400 });

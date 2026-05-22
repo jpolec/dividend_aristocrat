@@ -12,8 +12,8 @@ db.exec(`
     social_handle TEXT,
     country TEXT,
     estimated_reach TEXT,
-    status TEXT NOT NULL DEFAULT 'pending', -- pending | active | suspended | rejected
-    commission_pct INTEGER NOT NULL DEFAULT 100, -- % of first payment
+    status TEXT NOT NULL DEFAULT 'pending',
+    commission_pct INTEGER NOT NULL DEFAULT 100,
     payment_method TEXT,
     payment_details TEXT,
     signed_nda_at INTEGER,
@@ -23,6 +23,19 @@ db.exec(`
     created_at INTEGER NOT NULL,
     approved_at INTEGER
   );
+`);
+
+// Additive migrations — separate signature + IP per document
+for (const stmt of [
+  "ALTER TABLE partners ADD COLUMN signed_nda_signature TEXT",
+  "ALTER TABLE partners ADD COLUMN signed_nda_ip TEXT",
+  "ALTER TABLE partners ADD COLUMN signed_agreement_signature TEXT",
+  "ALTER TABLE partners ADD COLUMN signed_agreement_ip TEXT",
+]) {
+  try { db.exec(stmt); } catch { /* column exists */ }
+}
+
+db.exec(`
 
   CREATE TABLE IF NOT EXISTS partner_clicks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -134,7 +147,12 @@ export type Partner = {
   payment_method: string | null;
   payment_details: string | null;
   signed_nda_at: number | null;
+  signed_nda_signature: string | null;
+  signed_nda_ip: string | null;
   signed_agreement_at: number | null;
+  signed_agreement_signature: string | null;
+  signed_agreement_ip: string | null;
+  // legacy (combined) — kept for backwards compat with older rows
   signed_ip: string | null;
   signed_signature: string | null;
   created_at: number;
@@ -180,15 +198,24 @@ export function listPartners(): Partner[] {
   return db.prepare<Partner, []>("SELECT * FROM partners ORDER BY created_at DESC").all();
 }
 
-export function signOnboarding(args: {
+export function signDocument(args: {
   email: string;
+  which: "nda" | "agreement";
   signature: string;
   ip: string;
 }) {
   const now = Date.now();
-  db.prepare(
-    "UPDATE partners SET signed_nda_at = ?, signed_agreement_at = ?, signed_ip = ?, signed_signature = ? WHERE email = ?",
-  ).run(now, now, args.ip, args.signature.trim(), args.email.toLowerCase().trim());
+  const sig = args.signature.trim();
+  const email = args.email.toLowerCase().trim();
+  if (args.which === "nda") {
+    db.prepare(
+      "UPDATE partners SET signed_nda_at = ?, signed_nda_signature = ?, signed_nda_ip = ? WHERE email = ?",
+    ).run(now, sig, args.ip, email);
+  } else {
+    db.prepare(
+      "UPDATE partners SET signed_agreement_at = ?, signed_agreement_signature = ?, signed_agreement_ip = ? WHERE email = ?",
+    ).run(now, sig, args.ip, email);
+  }
 }
 
 export function updatePartnerPaymentDetails(email: string, method: string, details: string) {

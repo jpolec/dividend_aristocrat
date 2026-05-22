@@ -34,7 +34,9 @@ type PartnerData = {
     status: string;
     commission_pct: number;
     signed_nda_at: number | null;
+    signed_nda_signature: string | null;
     signed_agreement_at: number | null;
+    signed_agreement_signature: string | null;
     payment_method: string | null;
     payment_details: string | null;
   };
@@ -450,12 +452,91 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function SignTab({ data, onSigned }: { data: PartnerData; onSigned: () => void }) {
-  const [acceptNda, setAcceptNda] = useState(false);
-  const [acceptAgreement, setAcceptAgreement] = useState(false);
+  const ndaSigned = !!data.partner.signed_nda_at;
+  const agreementSigned = !!data.partner.signed_agreement_at;
+  const bothSigned = ndaSigned && agreementSigned;
+
+  return (
+    <div className="space-y-5 max-w-3xl">
+      {/* Progress */}
+      <div className="rounded-md border border-[var(--aris-line-dark)] bg-[var(--aris-offwhite)] p-4 flex items-center gap-4">
+        <Step n={1} done={ndaSigned} label="NDA" />
+        <div className={`flex-1 h-px ${ndaSigned ? "bg-emerald-400" : "bg-[var(--aris-line-dark)]"}`} />
+        <Step n={2} done={agreementSigned} label="Agreement" />
+        <div className="ms-auto text-[13px] font-medium text-[var(--aris-muted)]">
+          {bothSigned ? "Complete ✓" : ndaSigned ? "1 of 2 done" : "0 of 2 done"}
+        </div>
+      </div>
+
+      <p className="text-[14px] text-[var(--aris-muted)]">
+        Each document must be signed separately. Type your full legal name as signature — by doing so you confirm legal acceptance. Your IP and timestamp are recorded as proof of signing.
+      </p>
+
+      <DocumentCard
+        which="nda"
+        title="Non-Disclosure Agreement (NDA)"
+        stepLabel="Step 1 of 2"
+        body={NDA_TEXT}
+        signedAt={data.partner.signed_nda_at}
+        signedBy={data.partner.signed_nda_signature}
+        onSigned={onSigned}
+      />
+
+      <DocumentCard
+        which="agreement"
+        title="Partner Agreement"
+        stepLabel="Step 2 of 2"
+        body={AGREEMENT_TEXT}
+        signedAt={data.partner.signed_agreement_at}
+        signedBy={data.partner.signed_agreement_signature}
+        onSigned={onSigned}
+        locked={!ndaSigned}
+        lockedMessage="Please sign the NDA first."
+      />
+    </div>
+  );
+}
+
+function Step({ n, done, label }: { n: number; done: boolean; label: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      <div
+        className={`flex items-center justify-center h-7 w-7 rounded-full text-[12px] font-semibold ${
+          done ? "bg-emerald-600 text-white" : "bg-stone-200 text-[var(--aris-muted)]"
+        }`}
+      >
+        {done ? "✓" : n}
+      </div>
+      <span className={`text-[13px] font-medium ${done ? "text-emerald-700" : "text-[var(--aris-ink)]"}`}>{label}</span>
+    </div>
+  );
+}
+
+function DocumentCard({
+  which,
+  title,
+  stepLabel,
+  body,
+  signedAt,
+  signedBy,
+  onSigned,
+  locked,
+  lockedMessage,
+}: {
+  which: "nda" | "agreement";
+  title: string;
+  stepLabel: string;
+  body: string;
+  signedAt: number | null;
+  signedBy: string | null;
+  onSigned: () => void;
+  locked?: boolean;
+  lockedMessage?: string;
+}) {
+  const [accept, setAccept] = useState(false);
   const [signature, setSignature] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const signed = !!data.partner.signed_nda_at && !!data.partner.signed_agreement_at;
 
   async function submit() {
     setError(null);
@@ -464,7 +545,7 @@ function SignTab({ data, onSigned }: { data: PartnerData; onSigned: () => void }
       const res = await fetch("/api/partners/sign", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ signature, acceptNda, acceptAgreement }),
+        body: JSON.stringify({ which, signature, accept }),
       });
       if (!res.ok) {
         const j = await res.json();
@@ -478,65 +559,78 @@ function SignTab({ data, onSigned }: { data: PartnerData; onSigned: () => void }
     }
   }
 
-  if (signed) {
+  // Already signed → show confirmation + collapsible view
+  if (signedAt) {
     return (
-      <div className="space-y-4">
-        <div className="rounded-md border border-emerald-300 bg-emerald-50 p-4 text-[14px] text-emerald-900">
-          ✓ NDA signed: {new Date(data.partner.signed_nda_at!).toLocaleString()}<br />
-          ✓ Agreement signed: {new Date(data.partner.signed_agreement_at!).toLocaleString()}
+      <div className="rounded-md border-2 border-emerald-200 bg-emerald-50/40 p-5">
+        <div className="flex items-baseline justify-between flex-wrap gap-2 mb-2">
+          <h3 className="font-serif-display text-[18px]">{title}</h3>
+          <span className="text-[12px] font-mono-mark text-emerald-700">{stepLabel}</span>
         </div>
-        <details className="rounded-md border border-[var(--aris-line-dark)] bg-[var(--aris-offwhite)] p-4">
-          <summary className="cursor-pointer font-semibold">View NDA</summary>
-          <p className="mt-3 text-[13px] text-[var(--aris-muted)] whitespace-pre-wrap leading-relaxed">{NDA_TEXT}</p>
-        </details>
-        <details className="rounded-md border border-[var(--aris-line-dark)] bg-[var(--aris-offwhite)] p-4">
-          <summary className="cursor-pointer font-semibold">View Partner Agreement</summary>
-          <p className="mt-3 text-[13px] text-[var(--aris-muted)] whitespace-pre-wrap leading-relaxed">{AGREEMENT_TEXT}</p>
+        <div className="text-[13px] text-emerald-900">
+          ✓ Signed by <strong>{signedBy ?? "—"}</strong> on {new Date(signedAt).toLocaleString()}
+        </div>
+        <details className="mt-3">
+          <summary className="cursor-pointer text-[13px] text-[var(--aris-muted)]">View document text</summary>
+          <p className="mt-3 text-[13px] text-[var(--aris-muted)] whitespace-pre-wrap leading-relaxed">{body}</p>
         </details>
       </div>
     );
   }
 
+  if (locked) {
+    return (
+      <div className="rounded-md border border-[var(--aris-line-dark)] bg-stone-50 p-5 opacity-60">
+        <div className="flex items-baseline justify-between flex-wrap gap-2">
+          <h3 className="font-serif-display text-[18px]">{title}</h3>
+          <span className="text-[12px] font-mono-mark text-[var(--aris-muted)]">{stepLabel}</span>
+        </div>
+        <p className="text-[13px] text-[var(--aris-muted)] mt-2">🔒 {lockedMessage}</p>
+      </div>
+    );
+  }
+
+  // Active signing card
   return (
-    <div className="space-y-5 max-w-3xl">
-      <p className="text-[14px] text-[var(--aris-muted)]">Please read both documents below carefully. By typing your full legal name as a signature, you confirm legal acceptance.</p>
-
-      <div className="rounded-md border border-[var(--aris-line-dark)] bg-[var(--aris-offwhite)] p-5">
-        <h3 className="font-serif-display text-[18px] mb-2">Non-Disclosure Agreement (NDA)</h3>
-        <p className="text-[13px] text-[var(--aris-muted)] whitespace-pre-wrap leading-relaxed">{NDA_TEXT}</p>
-        <label className="mt-4 flex items-start gap-2 cursor-pointer">
-          <input type="checkbox" checked={acceptNda} onChange={e => setAcceptNda(e.target.checked)} className="mt-1" />
-          <span className="text-[14px]">I have read and accept the NDA.</span>
-        </label>
+    <div className="rounded-md border-2 border-[var(--aris-gold)] bg-amber-50/20 p-5">
+      <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+        <h3 className="font-serif-display text-[18px]">{title}</h3>
+        <span className="text-[12px] font-mono-mark text-[var(--aris-gold)]">{stepLabel}</span>
+      </div>
+      <div className="rounded border border-[var(--aris-line-dark)] bg-white p-4 max-h-[300px] overflow-y-auto">
+        <p className="text-[13px] text-[var(--aris-ink)] whitespace-pre-wrap leading-relaxed">{body}</p>
       </div>
 
-      <div className="rounded-md border border-[var(--aris-line-dark)] bg-[var(--aris-offwhite)] p-5">
-        <h3 className="font-serif-display text-[18px] mb-2">Partner Agreement</h3>
-        <p className="text-[13px] text-[var(--aris-muted)] whitespace-pre-wrap leading-relaxed">{AGREEMENT_TEXT}</p>
-        <label className="mt-4 flex items-start gap-2 cursor-pointer">
-          <input type="checkbox" checked={acceptAgreement} onChange={e => setAcceptAgreement(e.target.checked)} className="mt-1" />
-          <span className="text-[14px]">I have read and accept the Partner Agreement.</span>
-        </label>
-      </div>
+      <label className="mt-4 flex items-start gap-2 cursor-pointer">
+        <input type="checkbox" checked={accept} onChange={e => setAccept(e.target.checked)} className="mt-1" />
+        <span className="text-[14px]">
+          I have read and accept the {which === "nda" ? "Non-Disclosure Agreement" : "Partner Agreement"}.
+        </span>
+      </label>
 
-      <div>
-        <div className="font-mono-mark text-[10.5px] tracking-wider uppercase text-[var(--aris-muted)] mb-1">Type your full legal name to sign</div>
+      <div className="mt-4">
+        <div className="font-mono-mark text-[10.5px] tracking-wider uppercase text-[var(--aris-muted)] mb-1">
+          Type your full legal name to sign this document
+        </div>
         <input
           value={signature}
           onChange={e => setSignature(e.target.value)}
           placeholder="John Doe"
-          className="w-full sm:w-96 h-11 rounded-sm border border-[var(--aris-line-dark)] bg-white px-4 text-[15px] font-serif-display"
+          className="w-full sm:w-96 h-11 rounded-sm border border-[var(--aris-line-dark)] bg-white px-4 text-[16px] font-serif-display italic"
         />
+        <div className="mt-1 text-[11px] text-[var(--aris-muted)]">
+          Your IP and timestamp will be recorded as legal proof of signing.
+        </div>
       </div>
 
-      {error && <div className="text-sm text-rose-700">{error}</div>}
+      {error && <div className="mt-3 text-sm text-rose-700">{error}</div>}
 
       <button
         onClick={submit}
-        disabled={busy || !acceptNda || !acceptAgreement || signature.trim().length < 2}
-        className="rounded-sm bg-[var(--aris-gold)] hover:bg-[var(--aris-gold-soft)] disabled:opacity-50 disabled:cursor-not-allowed text-[var(--aris-green-950)] px-6 py-3 text-sm font-semibold"
+        disabled={busy || !accept || signature.trim().length < 2}
+        className="mt-4 rounded-sm bg-[var(--aris-gold)] hover:bg-[var(--aris-gold-soft)] disabled:opacity-50 disabled:cursor-not-allowed text-[var(--aris-green-950)] px-6 py-3 text-sm font-semibold"
       >
-        {busy ? "Signing…" : "Sign and activate"}
+        {busy ? "Signing…" : `Sign ${which === "nda" ? "NDA" : "Partner Agreement"}`}
       </button>
     </div>
   );

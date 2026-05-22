@@ -1,161 +1,131 @@
 import { useT } from "./i18n";
+import { useInView } from "./useInView";
 
-// Premium institutional hero: split layout on desktop (text + abstract chart art)
 export function Hero() {
   const { t } = useT();
+  const visual = useInView<HTMLDivElement>();
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-stone-200 bg-gradient-to-br from-stone-50 via-white to-emerald-50/40 px-5 py-10 sm:px-8 sm:py-14 md:px-12 md:py-16">
-      <div className="pointer-events-none absolute -top-32 -end-32 h-80 w-80 rounded-full bg-amber-200/20 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-32 -start-32 h-80 w-80 rounded-full bg-emerald-700/10 blur-3xl" />
-
-      <div className="relative grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-        {/* Left: copy */}
-        <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-300/60 bg-amber-50 px-3 py-1 text-xs font-medium text-amber-800 tracking-wide">
-            <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-            GCC Investment Research
-          </div>
-
-          <h1 className="mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight text-emerald-950">
-            {t.heroHeadline}
+    <section
+      className="relative overflow-hidden text-[var(--aris-paper)]"
+      style={{
+        background: `
+          radial-gradient(120% 80% at 80% 0%, rgba(36,154,100,.13), transparent 55%),
+          radial-gradient(90% 70% at 0% 100%, rgba(198,166,103,.08), transparent 50%),
+          linear-gradient(160deg, var(--aris-green-950), var(--aris-green-900) 55%, var(--aris-charcoal))
+        `,
+        paddingTop: "160px",
+        paddingBottom: "90px",
+      }}
+    >
+      <div className="mx-auto max-w-[1240px] px-5 sm:px-7 grid lg:grid-cols-[1.05fr_.95fr] gap-12 lg:gap-16 items-center">
+        <div>
+          <div className="eyebrow">Premium Income Research · GCC</div>
+          <h1 className="font-serif-display text-[40px] sm:text-[52px] lg:text-[64px] xl:text-[72px] text-[var(--aris-paper)] my-5">
+            {t.heroHeadline.split(" — ")[0]}
+            {t.heroHeadline.includes(" — ") && (
+              <>
+                <span className="inline-block"> </span>
+                <em className="not-italic">— </em>
+                <em className="italic text-[var(--aris-gold-soft)]">{t.heroHeadline.split(" — ").slice(1).join(" — ")}</em>
+              </>
+            )}
           </h1>
-          <p className="mt-5 sm:mt-6 text-base sm:text-lg md:text-xl text-slate-600 leading-relaxed max-w-xl">
+          <p className="text-[17px] sm:text-[19px] text-[var(--aris-paper)]/70 leading-[1.55] max-w-xl">
             {t.heroSubheadline}
           </p>
-
-          <div className="mt-7 flex flex-wrap gap-3">
+          <div className="mt-9 flex flex-wrap gap-3.5">
             <a
-              href="#picks"
-              className="inline-flex items-center rounded-md bg-emerald-900 text-white px-5 py-3 text-sm font-semibold hover:bg-emerald-950 transition shadow-sm"
+              href="#sample"
+              className="inline-flex items-center gap-2 rounded-sm bg-[var(--aris-gold)] hover:bg-[var(--aris-gold-soft)] text-[var(--aris-green-950)] px-6 py-3.5 text-sm font-semibold transition hover:-translate-y-0.5 hover:shadow-[0_12px_30px_-10px_rgba(198,166,103,.5)]"
             >
-              {t.pricingCta} →
+              {t.heroCtaSecondary} →
             </a>
             <a
-              href="#methodology"
-              className="inline-flex items-center rounded-md border border-stone-300 bg-white px-5 py-3 text-sm font-medium text-slate-800 hover:border-amber-400 hover:bg-amber-50/50 transition"
+              href="#method"
+              className="inline-flex items-center gap-2 rounded-sm border border-[var(--aris-paper)]/30 hover:border-[var(--aris-gold)] hover:text-[var(--aris-gold)] text-[var(--aris-paper)] px-6 py-3.5 text-sm font-semibold transition"
             >
-              {t.heroCtaSecondary}
+              {t.pricingCta}
             </a>
           </div>
-
-          <p className="mt-4 text-xs text-slate-500">{t.pricingLine}</p>
-
-          {/* Trust bar (payment + commitment) */}
-          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-600">
+          <div className="mt-10 flex flex-wrap gap-x-7 gap-y-2.5">
             {t.trustBar.map(item => (
-              <span key={item} className="inline-flex items-center gap-1.5">
-                <span className="text-amber-600">✓</span>
-                {item}
-              </span>
+              <div key={item} className="flex items-center gap-2 text-[13px] text-[var(--aris-paper)]/60">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4 text-[var(--aris-gold)]">
+                  <path d="M5 12l4 4L19 6" />
+                </svg>
+                <span>{item}</span>
+              </div>
             ))}
           </div>
         </div>
 
-        {/* Right: chart art — abstract dividend growth visual */}
-        <div className="relative hidden lg:block">
-          <ChartArt />
+        {/* Hero visual: animated dividend growth card */}
+        <div
+          ref={visual.ref}
+          className={`aris-fade aris-d2 ${visual.inView ? "in" : ""} rounded-lg p-6 sm:p-7 relative`}
+          style={{
+            background: "linear-gradient(165deg, rgba(15,40,29,.9), rgba(8,22,15,.7))",
+            border: "1px solid var(--aris-line)",
+            boxShadow: "0 40px 90px -40px rgba(0,0,0,.7)",
+          }}
+        >
+          <div className="flex items-start justify-between mb-2">
+            <div>
+              <div className="font-mono-mark text-[10px] tracking-[0.2em] uppercase text-[var(--aris-muted-light)]">
+                Illustrative dividend income · reinvested
+              </div>
+              <div className="font-serif-display text-[28px] text-[var(--aris-paper)] mt-1">Compounding</div>
+            </div>
+            <div className="font-mono-mark text-[11px] text-[var(--aris-emerald-bright)] bg-emerald-500/10 border border-emerald-500/25 px-2 py-1 rounded-sm">
+              Educational model
+            </div>
+          </div>
+
+          <svg viewBox="0 0 480 220" className="w-full h-auto block mt-2">
+            <defs>
+              <linearGradient id="aris-goldgrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#c6a667" stopOpacity=".35" />
+                <stop offset="100%" stopColor="#c6a667" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <g stroke="rgba(255,255,255,.06)" strokeWidth="1">
+              <line x1="0" y1="50" x2="480" y2="50" />
+              <line x1="0" y1="100" x2="480" y2="100" />
+              <line x1="0" y1="150" x2="480" y2="150" />
+              <line x1="0" y1="200" x2="480" y2="200" />
+            </g>
+            <path className="aris-spark-area" d="M0,190 C60,185 90,170 140,150 C190,130 220,120 270,95 C320,70 350,55 400,38 C430,28 460,22 480,18 L480,210 L0,210 Z" />
+            <path className="aris-spark-line" d="M0,190 C60,185 90,170 140,150 C190,130 220,120 270,95 C320,70 350,55 400,38 C430,28 460,22 480,18" />
+            <circle className="aris-dot" cx="480" cy="18" r="4.5" fill="#c6a667" />
+            <circle className="aris-dot" cx="480" cy="18" r="9" fill="#c6a667" opacity=".2" />
+          </svg>
+
+          <div className="flex justify-between font-mono-mark text-[10px] text-[var(--aris-muted-light)] mt-2.5 tracking-wider">
+            <span>Y1</span><span>Y5</span><span>Y10</span><span>Y15</span><span>Y20</span>
+          </div>
+
+          <p className="text-[10.5px] text-[var(--aris-muted-light)] mt-4 italic leading-[1.4]">
+            Illustration of how reinvested dividends may compound over time. For educational purposes only. Not a forecast, projection, or guarantee of future results.
+          </p>
         </div>
       </div>
 
-      {/* Geographic trust strip */}
-      <div className="relative mt-10 border-t border-stone-200/80 pt-5">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-          {t.trustStripLabel}
+      {/* Trust strip across full width */}
+      <div className="relative mt-12 border-t border-[var(--aris-line)] py-5">
+        <div className="mx-auto max-w-[1240px] px-5 sm:px-7 flex flex-wrap justify-center items-center gap-y-3 gap-x-10">
+          {t.trustStripPoints.map(p => (
+            <span key={p} className="flex items-center gap-2 text-[12.5px] text-[var(--aris-paper)]/62 font-medium">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3.5 w-3.5 text-[var(--aris-gold)]">
+                <path d="M5 12l4 4L19 6" />
+              </svg>
+              {p}
+            </span>
+          ))}
         </div>
-        <div className="mt-1.5 text-sm sm:text-base font-medium text-slate-800">
+        <div className="mt-3 text-center text-[12px] text-[var(--aris-paper)]/55">
           🇸🇦 🇦🇪 🇶🇦 🇰🇼 🇧🇭 🇪🇬 &nbsp;{t.trustStripCountries}
         </div>
-        <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs text-slate-600">
-          {t.trustStripPoints.map(p => (
-            <li key={p} className="flex items-center gap-1.5">
-              <span className="text-emerald-700">●</span>
-              {p}
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
-  );
-}
-
-// Abstract dividend-growth chart art — pure SVG, no interactivity
-function ChartArt() {
-  // Hand-picked points to look like a smooth compounding curve
-  const W = 480;
-  const H = 360;
-  const points = [
-    [0, 320], [60, 305], [120, 285], [180, 255], [240, 218],
-    [300, 175], [360, 130], [420, 85], [480, 50],
-  ] as const;
-  const path = points.map(([x, y], i) => `${i === 0 ? "M" : "L"} ${x} ${y}`).join(" ");
-  const area = `${path} L ${W} ${H} L 0 ${H} Z`;
-
-  // Bars below (dividend payments visualization)
-  const bars = Array.from({ length: 20 }, (_, i) => {
-    const x = (i / 20) * W + 6;
-    const h = 8 + i * 1.5; // growing
-    return { x, h };
-  });
-
-  return (
-    <div className="relative aspect-[4/3] w-full rounded-2xl bg-white border border-stone-200 shadow-md p-4 sm:p-5 overflow-hidden">
-      {/* Card header */}
-      <div className="flex items-center justify-between text-xs">
-        <div>
-          <div className="font-semibold text-slate-700">Sample dividend growth</div>
-          <div className="text-slate-400">Illustrative · long horizon</div>
-        </div>
-        <div className="px-2 py-1 rounded bg-emerald-50 text-emerald-800 text-[11px] font-medium border border-emerald-200">
-          +CAGR
-        </div>
-      </div>
-
-      <svg viewBox={`0 0 ${W} ${H}`} className="mt-3 w-full h-auto block">
-        <defs>
-          <linearGradient id="heroFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#047857" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="#047857" stopOpacity="0.02" />
-          </linearGradient>
-        </defs>
-        {/* grid */}
-        {[0.25, 0.5, 0.75].map(f => (
-          <line key={f} x1="0" x2={W} y1={H * f} y2={H * f} stroke="#f1f5f9" strokeWidth="1" />
-        ))}
-        {/* bars */}
-        {bars.map((b, i) => (
-          <rect
-            key={i}
-            x={b.x}
-            y={H - 20 - b.h}
-            width="14"
-            height={b.h}
-            rx="1.5"
-            fill="#fbbf24"
-            opacity="0.55"
-          />
-        ))}
-        {/* area + line */}
-        <path d={area} fill="url(#heroFill)" />
-        <path d={path} fill="none" stroke="#047857" strokeWidth="2.5" />
-        {/* end dot */}
-        <circle cx={points[points.length - 1][0]} cy={points[points.length - 1][1]} r="5" fill="#047857" stroke="white" strokeWidth="2" />
-      </svg>
-
-      {/* Mini KPIs */}
-      <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-        <div className="rounded-md bg-stone-50 border border-stone-200 py-1.5">
-          <div className="text-[10px] text-slate-500">Avg yield</div>
-          <div className="text-sm font-semibold text-emerald-800 tabular-nums">3.4%</div>
-        </div>
-        <div className="rounded-md bg-stone-50 border border-stone-200 py-1.5">
-          <div className="text-[10px] text-slate-500">5Y growth</div>
-          <div className="text-sm font-semibold text-emerald-800 tabular-nums">+6.8%</div>
-        </div>
-        <div className="rounded-md bg-stone-50 border border-stone-200 py-1.5">
-          <div className="text-[10px] text-slate-500">Names</div>
-          <div className="text-sm font-semibold text-emerald-800 tabular-nums">~50</div>
-        </div>
-      </div>
-    </div>
   );
 }

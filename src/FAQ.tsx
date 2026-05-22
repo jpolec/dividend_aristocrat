@@ -5,33 +5,40 @@ export function FAQ() {
   const { t } = useT();
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section>
-      <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-5 text-emerald-950 tracking-tight">
-        {t.faqTitle}
-      </h3>
-      <div className="rounded-2xl border border-stone-200 bg-white divide-y divide-stone-200 shadow-sm">
-        {t.faq.map((item, i) => {
-          const isOpen = open === i;
-          return (
-            <div key={i}>
-              <button
-                onClick={() => setOpen(isOpen ? null : i)}
-                className="flex w-full items-center justify-between gap-3 px-4 sm:px-5 py-3.5 text-start hover:bg-slate-50 transition"
-                aria-expanded={isOpen}
-              >
-                <span className="font-medium text-slate-800 text-sm sm:text-base">{item.q}</span>
-                <span className="text-slate-400 text-lg shrink-0 select-none">
-                  {isOpen ? "−" : "+"}
-                </span>
-              </button>
-              {isOpen && (
-                <div className="px-4 sm:px-5 pb-4 text-sm text-slate-600 leading-relaxed">
-                  {item.a}
+    <section id="faq" className="py-20 sm:py-24" style={{ background: "var(--aris-paper-2)" }}>
+      <div className="mx-auto max-w-[1240px] px-5 sm:px-7">
+        <div className="max-w-3xl mx-auto text-center mb-12">
+          <div className="eyebrow">Questions</div>
+          <h2 className="font-serif-display text-[30px] sm:text-[40px] lg:text-[46px] text-[var(--aris-ink)] my-4">
+            {t.faqTitle}
+          </h2>
+        </div>
+        <div className="max-w-[820px] mx-auto">
+          {t.faq.map((item, i) => {
+            const isOpen = open === i;
+            return (
+              <div key={i} className="border-b border-[var(--aris-line-dark)]">
+                <button
+                  onClick={() => setOpen(isOpen ? null : i)}
+                  className="w-full text-start font-serif-display text-[18px] sm:text-[20px] text-[var(--aris-ink)] py-6 flex items-center justify-between gap-5"
+                  aria-expanded={isOpen}
+                >
+                  <span>{item.q}</span>
+                  <span
+                    className={`font-sans text-[24px] text-[var(--aris-gold)] shrink-0 transition-transform ${isOpen ? "rotate-45" : ""}`}
+                  >
+                    +
+                  </span>
+                </button>
+                <div className={`overflow-hidden transition-all ${isOpen ? "max-h-[400px]" : "max-h-0"}`}>
+                  <p className="pb-6 text-[15px] text-[var(--aris-muted)] leading-[1.65] max-w-[680px]">
+                    {item.a}
+                  </p>
                 </div>
-              )}
-            </div>
-          );
-        })}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

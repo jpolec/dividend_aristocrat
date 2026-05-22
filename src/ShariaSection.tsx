@@ -3,29 +3,59 @@ import { useT } from "./i18n";
 export function ShariaSection() {
   const { t } = useT();
   return (
-    <section>
-      <div className="rounded-2xl border border-emerald-900/20 bg-gradient-to-br from-emerald-950 via-emerald-900 to-emerald-950 text-emerald-50 px-6 py-7 sm:px-8 sm:py-9">
-        <div className="flex items-center gap-2 text-amber-300 text-[11px] uppercase tracking-[0.2em] font-semibold">
-          <span className="text-base">◈</span>
-          <span>Halal-aware</span>
+    <section id="sharia" className="py-20 sm:py-24" style={{ background: "var(--aris-paper-2)" }}>
+      <div className="mx-auto max-w-[1240px] px-5 sm:px-7 grid lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-16 items-center">
+        <div>
+          <div className="eyebrow">Halal-Aware Filtering</div>
+          <h2 className="font-serif-display text-[28px] sm:text-[36px] lg:text-[42px] text-[var(--aris-ink)] my-4">
+            {t.shariaTitle}
+          </h2>
+          <p className="text-[16px] text-[var(--aris-muted)] leading-relaxed">{t.shariaIntro}</p>
+
+          <div className="flex flex-wrap gap-3 mt-6">
+            {t.shariaBullets.map((b, i) => (
+              <span
+                key={i}
+                className="flex items-center gap-2.5 bg-[var(--aris-offwhite)] border border-[var(--aris-line-dark)] rounded-full px-4 py-2.5 text-[13.5px] font-medium text-[var(--aris-ink)]"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4 text-[var(--aris-emerald)] shrink-0">
+                  <path d="M5 12l4 4L19 6" />
+                </svg>
+                {b.split(":")[0]}
+              </span>
+            ))}
+          </div>
+
+          <div
+            className="mt-6 px-5 py-4 text-[13.5px] text-[var(--aris-muted)] rounded-r-md"
+            style={{ borderInlineStart: "3px solid var(--aris-gold)", background: "var(--aris-paper)" }}
+          >
+            {t.shariaDisclaimer}
+          </div>
         </div>
-        <h3 className="mt-3 text-xl sm:text-2xl font-bold tracking-tight">{t.shariaTitle}</h3>
-        <p className="mt-2 text-sm sm:text-base text-emerald-100/80 leading-relaxed max-w-3xl">
-          {t.shariaIntro}
-        </p>
 
-        <ul className="mt-5 grid gap-2 sm:gap-3 sm:grid-cols-2">
-          {t.shariaBullets.map((bullet, i) => (
-            <li key={i} className="flex items-start gap-2.5 text-sm leading-relaxed">
-              <span className="mt-1 text-amber-400 shrink-0">◆</span>
-              <span className="text-emerald-50/90">{bullet}</span>
-            </li>
-          ))}
-        </ul>
-
-        <p className="mt-5 text-xs text-emerald-200/70 italic leading-relaxed max-w-3xl border-t border-emerald-800/50 pt-4">
-          {t.shariaDisclaimer}
-        </p>
+        {/* Donut */}
+        <div className="flex justify-center">
+          <svg viewBox="0 0 280 280" className="w-full max-w-[300px]">
+            <circle cx="140" cy="140" r="120" fill="none" stroke="var(--aris-line-dark)" strokeWidth="1" />
+            <circle cx="140" cy="140" r="90" fill="none" stroke="var(--aris-line-dark)" strokeWidth="1" />
+            <circle
+              cx="140"
+              cy="140"
+              r="118"
+              fill="none"
+              stroke="var(--aris-emerald)"
+              strokeWidth="3"
+              strokeDasharray="520 740"
+              strokeLinecap="round"
+              transform="rotate(-90 140 140)"
+              opacity=".8"
+            />
+            <text x="140" y="128" textAnchor="middle" fontFamily="var(--font-serif)" fontSize="40" fill="var(--aris-ink)">~70%</text>
+            <text x="140" y="156" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="10" fill="var(--aris-muted)" letterSpacing="2">PASS SCREEN</text>
+            <text x="140" y="174" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="8.5" fill="var(--aris-muted)">ILLUSTRATIVE</text>
+          </svg>
+        </div>
       </div>
     </section>
   );

@@ -3,53 +3,65 @@ import { useT } from "./i18n";
 export function Comparison() {
   const { t } = useT();
   return (
-    <section>
-      <div className="mb-5">
-        <h3 className="text-xl sm:text-2xl font-bold text-emerald-950 tracking-tight">
-          {t.comparisonTitle}
-        </h3>
-        <p className="mt-2 text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
-          {t.comparisonIntro}
-        </p>
-      </div>
+    <section className="py-20 sm:py-24 text-[var(--aris-paper)]" style={{ background: "var(--aris-green-950)" }}>
+      <div className="mx-auto max-w-[1240px] px-5 sm:px-7">
+        <div className="max-w-3xl mx-auto text-center mb-12">
+          <div className="eyebrow">Complementary, Not Competing</div>
+          <h2 className="font-serif-display text-[30px] sm:text-[40px] lg:text-[46px] text-[var(--aris-paper)] my-4">
+            {t.comparisonTitle}
+          </h2>
+          <p className="text-[17px] text-[var(--aris-paper)]/60 mx-auto max-w-2xl leading-relaxed">
+            {t.comparisonIntro}
+          </p>
+        </div>
 
-      <div className="rounded-2xl border border-stone-200 overflow-hidden bg-white shadow-sm">
-        <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-stone-200">
-          <div className="bg-stone-50 px-5 py-3">
-            <div className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">
+        <div className="rounded-xl overflow-hidden border border-[var(--aris-line)] grid md:grid-cols-2">
+          {/* Left: real estate concentration */}
+          <div className="py-2">
+            <div className="px-7 py-6 font-serif-display text-[22px] text-[var(--aris-paper)]/70 border-b border-[var(--aris-line)]">
               {t.comparisonLeft}
             </div>
+            {t.comparisonRows.map((row, i) => (
+              <div
+                key={i}
+                className={`px-7 py-4 text-[14.5px] text-[var(--aris-paper)]/55 flex items-center gap-3 ${
+                  i < t.comparisonRows.length - 1 ? "border-b border-[rgba(198,166,103,.08)]" : ""
+                }`}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4 shrink-0 text-[var(--aris-muted-light)]">
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                  <line x1="6" y1="18" x2="18" y2="6" />
+                </svg>
+                <span>{row.left}</span>
+              </div>
+            ))}
           </div>
-          <div className="bg-emerald-950 px-5 py-3">
-            <div className="text-[11px] uppercase tracking-wider text-amber-300 font-semibold">
+
+          {/* Right: dividend diversification */}
+          <div className="py-2 md:border-s border-[var(--aris-line)]" style={{ background: "rgba(15,40,29,.4)" }}>
+            <div className="px-7 py-6 font-serif-display text-[22px] text-[var(--aris-gold-soft)] border-b border-[var(--aris-line)]">
               {t.comparisonRight}
             </div>
+            {t.comparisonRows.map((row, i) => (
+              <div
+                key={i}
+                className={`px-7 py-4 text-[14.5px] text-[var(--aris-paper)] flex items-center gap-3 ${
+                  i < t.comparisonRows.length - 1 ? "border-b border-[rgba(198,166,103,.08)]" : ""
+                }`}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4 shrink-0 text-[var(--aris-emerald-bright)]">
+                  <path d="M5 12l4 4L19 6" />
+                </svg>
+                <span>{row.right}</span>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="divide-y divide-stone-200">
-          {t.comparisonRows.map((row, i) => (
-            <div key={i} className="grid grid-cols-1 md:grid-cols-2 md:divide-x divide-stone-200">
-              <div className="px-5 py-4 bg-stone-50/40">
-                <div className="text-[10px] uppercase tracking-wider text-slate-400 mb-1 font-medium">
-                  {row.dimension}
-                </div>
-                <div className="text-sm text-slate-700">{row.left}</div>
-              </div>
-              <div className="px-5 py-4 bg-white">
-                <div className="text-[10px] uppercase tracking-wider text-emerald-700 mb-1 font-medium">
-                  {row.dimension}
-                </div>
-                <div className="text-sm font-medium text-emerald-900">{row.right}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <p className="text-center mt-8 text-[13px] text-[var(--aris-paper)]/50 italic max-w-2xl mx-auto leading-relaxed">
+          {t.comparisonNote}
+        </p>
       </div>
-
-      <p className="mt-3 text-xs text-slate-500 italic leading-relaxed max-w-3xl">
-        {t.comparisonNote}
-      </p>
     </section>
   );
 }

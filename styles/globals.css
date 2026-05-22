@@ -110,19 +110,68 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Premium editorial palette — deep emerald, muted gold, paper */
+:root {
+  --aris-green-950: #08160f;
+  --aris-green-900: #0b2018;
+  --aris-green-850: #0e2a1f;
+  --aris-green-800: #103327;
+  --aris-emerald: #1a6b48;
+  --aris-emerald-bright: #249a64;
+  --aris-gold: #c6a667;
+  --aris-gold-soft: #d8bf8e;
+  --aris-paper: #f6f3ea;
+  --aris-paper-2: #efe9da;
+  --aris-offwhite: #faf8f2;
+  --aris-charcoal: #161a18;
+  --aris-ink: #0c120e;
+  --aris-muted: #6f7a73;
+  --aris-muted-light: #9aa39c;
+  --aris-line: rgba(198, 166, 103, 0.22);
+  --aris-line-dark: rgba(12, 18, 14, 0.12);
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-sans: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --font-serif-ar: "Amiri", serif;
+  --font-sans-ar: "IBM Plex Sans Arabic", sans-serif;
+}
+
+html[dir="rtl"] body { font-family: var(--font-sans-ar); }
+html[dir="rtl"] .font-serif-display { font-family: var(--font-serif-ar) !important; font-weight: 700; }
+.font-serif-display { font-family: var(--font-serif); font-weight: 400; letter-spacing: -0.015em; line-height: 1.08; }
+.font-mono-mark { font-family: var(--font-mono); }
+html[dir="rtl"] .font-mono-mark { font-family: var(--font-sans-ar); }
+.eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--aris-gold); font-weight: 500; }
+html[dir="rtl"] .eyebrow { letter-spacing: 0.04em; font-weight: 600; font-family: var(--font-sans-ar); }
+
+/* Scroll-reveal fade animation */
+.aris-fade { opacity: 0; transform: translateY(26px); transition: opacity 1s cubic-bezier(.16,1,.3,1), transform 1s cubic-bezier(.16,1,.3,1); }
+.aris-fade.in { opacity: 1; transform: none; }
+.aris-d1 { transition-delay: .08s; } .aris-d2 { transition-delay: .16s; } .aris-d3 { transition-delay: .24s; } .aris-d4 { transition-delay: .32s; } .aris-d5 { transition-delay: .4s; }
+
+/* SVG line drawing animation (hero) */
+.aris-spark-line { fill: none; stroke: var(--aris-gold); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1400; stroke-dashoffset: 1400; }
+.aris-fade.in .aris-spark-line { animation: aris-draw 2.2s cubic-bezier(.16,1,.3,1) forwards; }
+@keyframes aris-draw { to { stroke-dashoffset: 0; } }
+.aris-spark-area { fill: url(#aris-goldgrad); opacity: 0; transition: opacity 1.4s ease .9s; }
+.aris-fade.in .aris-spark-area { opacity: 1; }
+.aris-dot { opacity: 0; transition: opacity .4s ease 2.1s; }
+.aris-fade.in .aris-dot { opacity: 1; }
+
+/* Terminal bar animation */
+.aris-bar-fill { height: 100%; background: linear-gradient(90deg, var(--aris-emerald), var(--aris-emerald-bright)); width: 0; border-radius: 3px; transition: width 1.4s cubic-bezier(.16,1,.3,1); }
+.aris-fade.in .aris-bar-fill { width: var(--w); }
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   html,
   body {
-    @apply bg-white text-foreground;
+    background: var(--aris-paper);
+    color: var(--aris-ink);
+    font-family: var(--font-sans);
     min-height: 100vh;
-  }
-  /* Stay white in dark mode too — the user explicitly wants a white background */
-  .dark html,
-  .dark body {
-    background-color: white;
-    color: oklch(0.145 0 0);
+    -webkit-font-smoothing: antialiased;
   }
 }

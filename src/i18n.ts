@@ -66,10 +66,50 @@ type Dict = {
   shariaIntro: string;
   shariaBullets: string[];
   shariaDisclaimer: string;
+  // header / nav
+  navTheCase: string;
+  navMethodology: string;
+  navSample: string;
+  navMembership: string;
+  navFaq: string;
+  navStartCta: string;
+  brandName: string;
+  brandSub: string;
+  // problem section
+  problemEyebrow: string;
+  problemTitle: string;
+  problemIntro: string;
+  problemCards: { title: string; desc: string }[];
+  problemBridge: string;
+  // pricing tiers
+  pricingEyebrow: string;
+  pricingPageTitle: string;
+  pricingPageIntro: string;
+  pricingMonthlyLabel: string;
+  pricingAnnualLabel: string;
+  pricingBestValueBadge: string;
+  pricingPerMonth: string;
+  pricingPerYear: string;
+  pricingStartMonthly: string;
+  pricingStartAnnual: string;
+  pricingMonthlyFeatures: string[];
+  pricingAnnualFeatures: string[];
+  pricingPaymentsNote: string;
+  // final CTA section
+  finalEyebrow: string;
+  finalTitle: string;
+  finalIntro: string;
   // footer
   footerDisclaimer: string;
   disclaimerWarningTitle: string;
   disclaimerParas: string[];
+  footerBrandTagline: string;
+  footerColPlatform: string;
+  footerColCompany: string;
+  footerColLegal: string;
+  footerLinks: { platform: string[]; company: string[]; legal: string[] };
+  footerCopyright: string;
+  footerLocale: string;
   title: string;
   subtitle: string;
   source: string;
@@ -340,6 +380,79 @@ const en: Dict = {
     "Investing in stocks carries substantial risk, including the risk of total loss of capital. Dividend payments are NOT guaranteed and may be reduced, suspended, or eliminated by issuers at any time without notice. Past dividend performance, stock prices, and yields are not indicative of future results. Currency, country, and tax risks may further affect your returns.",
     "You alone are responsible for your investment decisions. You should consult with a licensed financial advisor in your own jurisdiction before making any investment decision. Effective January 1, 2026, applicable regulations in certain jurisdictions further restrict the scope of permissible educational financial content. By using this platform you acknowledge that all material is general educational content only and you accept full responsibility for any action taken on its basis.",
   ],
+  navTheCase: "The Case",
+  navMethodology: "Methodology",
+  navSample: "Sample Research",
+  navMembership: "Membership",
+  navFaq: "FAQ",
+  navStartCta: "Start Membership",
+  brandName: "Aristocrat",
+  brandSub: "Dividend Research",
+  problemEyebrow: "The Concentration Question",
+  problemTitle: "Much of Gulf wealth sits in one place.",
+  problemIntro:
+    "Real estate has built generations of wealth across the region — and remains a cornerstone for many. Yet a portfolio anchored to a single asset, in a single market, carries trade-offs worth examining.",
+  problemCards: [
+    {
+      title: "High upfront capital",
+      desc: "A single property often requires capital that could otherwise fund a diversified position across many companies.",
+    },
+    {
+      title: "Illiquidity",
+      desc: "Selling property takes time and negotiation. Listed companies can typically be entered or exited far more readily.",
+    },
+    {
+      title: "Concentration risk",
+      desc: "One asset class, one geography, one currency. Diversification across regions and sectors can soften single-market exposure.",
+    },
+    {
+      title: "Operational burden",
+      desc: "Tenants, maintenance, and management demand attention. Owning shares in established companies carries no such overhead.",
+    },
+  ],
+  problemBridge:
+    "The question isn't property or equities. It's whether globally diversified, income-producing companies belong alongside what you already own — adding liquidity, currency exposure, and breadth.",
+  pricingEyebrow: "Membership",
+  pricingPageTitle: "One platform. Choose your rhythm.",
+  pricingPageIntro:
+    "Every plan includes full research access, weekly updates, the screening library, and Arabic support. Cancel anytime.",
+  pricingMonthlyLabel: "Monthly",
+  pricingAnnualLabel: "Annual",
+  pricingBestValueBadge: "Best Value · Save 16%",
+  pricingPerMonth: "/mo",
+  pricingPerYear: "/yr",
+  pricingStartMonthly: "Start Monthly",
+  pricingStartAnnual: "Start Annual",
+  pricingMonthlyFeatures: [
+    "Full research library access",
+    "Weekly research updates",
+    "Halal-aware screening views",
+    "Arabic & English support",
+  ],
+  pricingAnnualFeatures: [
+    "Everything in Monthly",
+    "Two months free vs monthly",
+    "Quarterly deep-dive reports",
+    "Priority research requests",
+  ],
+  pricingPaymentsNote:
+    "30-day money-back guarantee · Cancel anytime · Local-currency billing available.",
+  finalEyebrow: "Begin",
+  finalTitle: "Access institutional-style dividend intelligence.",
+  finalIntro:
+    "Start with sample research, explore the methodology, and decide for yourself. Backed by a 30-day money-back guarantee.",
+  footerBrandTagline:
+    "Premium, income-focused investment research for sophisticated investors across the GCC. Educational research and screening — not investment advice.",
+  footerColPlatform: "Platform",
+  footerColCompany: "Company",
+  footerColLegal: "Legal",
+  footerLinks: {
+    platform: ["Methodology", "Sample Research", "Halal-Aware Filtering", "Membership"],
+    company: ["About", "FAQ", "Contact", "Arabic Support"],
+    legal: ["Terms of Service", "Privacy Policy", "Risk Statement", "Refund Policy"],
+  },
+  footerCopyright: "© 2026 Aristocrat Dividend Research. All rights reserved.",
+  footerLocale: "Crafted for GCC investors · Available in العربية & English",
   title: "Dividend Companies",
   subtitle: "All actively traded dividend-paying companies. Source: api.quantjourney.cloud",
   source: "api.quantjourney.cloud",
@@ -608,6 +721,79 @@ const pl: Dict = {
     "Inwestowanie w akcje wiąże się ze znacznym ryzykiem, w tym ryzykiem całkowitej utraty kapitału. Wypłaty dywidend NIE są gwarantowane i mogą zostać obniżone, zawieszone lub zlikwidowane przez emitentów w dowolnym momencie, bez uprzedzenia. Historyczne stopy dywidend, ceny akcji i wyniki nie są gwarancją przyszłych. Ryzyko walutowe, krajowe i podatkowe może dodatkowo wpłynąć na zwroty.",
     "Decyzje inwestycyjne podejmujesz wyłącznie na własną odpowiedzialność. Przed jakąkolwiek decyzją inwestycyjną skonsultuj się z licencjonowanym doradcą inwestycyjnym w swojej jurysdykcji. Od 1 stycznia 2026 r. obowiązujące przepisy w niektórych jurysdykcjach dalej ograniczają zakres dozwolonych treści edukacyjno-finansowych. Korzystając z platformy potwierdzasz, że wszystkie materiały mają charakter wyłącznie ogólnoedukacyjny i przyjmujesz pełną odpowiedzialność za jakiekolwiek działania podjęte na ich podstawie.",
   ],
+  navTheCase: "Sprawa",
+  navMethodology: "Metodologia",
+  navSample: "Próbka",
+  navMembership: "Członkostwo",
+  navFaq: "FAQ",
+  navStartCta: "Zacznij członkostwo",
+  brandName: "Aristocrat",
+  brandSub: "Dividend Research",
+  problemEyebrow: "Pytanie o koncentrację",
+  problemTitle: "Spora część majątku w regionie Zatoki tkwi w jednym miejscu.",
+  problemIntro:
+    "Nieruchomości budowały pokoleniami majątek w regionie — i wciąż są fundamentem dla wielu. Jednak portfel zakotwiczony w jednym aktywie, na jednym rynku, niesie kompromisy warte rozważenia.",
+  problemCards: [
+    {
+      title: "Wysoki kapitał na start",
+      desc: "Jedna nieruchomość często wymaga kapitału, który mógłby sfinansować zdywersyfikowaną pozycję w wielu spółkach.",
+    },
+    {
+      title: "Brak płynności",
+      desc: "Sprzedaż nieruchomości zajmuje miesiące i wymaga negocjacji. Wejście i wyjście z akcji jest zwykle dużo łatwiejsze.",
+    },
+    {
+      title: "Ryzyko koncentracji",
+      desc: "Jedna klasa aktywów, jedna geografia, jedna waluta. Dywersyfikacja po regionach i sektorach łagodzi ekspozycję na pojedynczy rynek.",
+    },
+    {
+      title: "Obciążenie operacyjne",
+      desc: "Najemcy, remonty, zarządzanie — wymagają uwagi. Posiadanie akcji ustabilizowanych spółek takich kosztów nie generuje.",
+    },
+  ],
+  problemBridge:
+    "Pytanie nie brzmi: nieruchomości czy akcje. Brzmi: czy globalnie zdywersyfikowane spółki dochodowe pasują obok tego, co już masz — dokładając płynność, ekspozycję walutową i zasięg.",
+  pricingEyebrow: "Członkostwo",
+  pricingPageTitle: "Jedna platforma. Wybierz swój rytm.",
+  pricingPageIntro:
+    "Każdy plan zawiera pełen dostęp do researchu, cotygodniowe aktualizacje, bibliotekę screeningu i wsparcie po arabsku. Rezygnacja w każdej chwili.",
+  pricingMonthlyLabel: "Miesięcznie",
+  pricingAnnualLabel: "Rocznie",
+  pricingBestValueBadge: "Najlepsza wartość · Oszczędź 16%",
+  pricingPerMonth: "/mies.",
+  pricingPerYear: "/rok",
+  pricingStartMonthly: "Zacznij miesięcznie",
+  pricingStartAnnual: "Zacznij rocznie",
+  pricingMonthlyFeatures: [
+    "Pełny dostęp do biblioteki researchu",
+    "Cotygodniowe aktualizacje",
+    "Widoki halal-aware screening",
+    "Wsparcie po arabsku i angielsku",
+  ],
+  pricingAnnualFeatures: [
+    "Wszystko z planu miesięcznego",
+    "Dwa miesiące gratis względem miesięcznego",
+    "Kwartalne raporty deep-dive",
+    "Priorytet w zgłoszeniach do researchu",
+  ],
+  pricingPaymentsNote:
+    "30-dniowa gwarancja zwrotu · Rezygnacja w każdej chwili · Możliwa rozliczanie w walucie lokalnej.",
+  finalEyebrow: "Zaczynamy",
+  finalTitle: "Sięgnij po dywidendowy research w stylu instytucjonalnym.",
+  finalIntro:
+    "Zacznij od próbki, poznaj metodologię i zdecyduj samodzielnie. Wszystko z 30-dniową gwarancją zwrotu.",
+  footerBrandTagline:
+    "Premium research inwestycyjny skupiony na dochodzie, dla świadomych inwestorów z regionu GCC. Research i screening edukacyjny — nie porada inwestycyjna.",
+  footerColPlatform: "Platforma",
+  footerColCompany: "Spółka",
+  footerColLegal: "Aspekty prawne",
+  footerLinks: {
+    platform: ["Metodologia", "Próbka", "Halal-Aware Filtering", "Członkostwo"],
+    company: ["O nas", "FAQ", "Kontakt", "Wsparcie arabskie"],
+    legal: ["Regulamin", "Polityka prywatności", "Oświadczenie o ryzyku", "Polityka zwrotów"],
+  },
+  footerCopyright: "© 2026 Aristocrat Dividend Research. Wszelkie prawa zastrzeżone.",
+  footerLocale: "Stworzone dla inwestorów GCC · Dostępne w العربية i English",
   title: "Spółki dywidendowe",
   subtitle: "Aktywnie notowane spółki wypłacające dywidendę. Źródło: api.quantjourney.cloud",
   source: "api.quantjourney.cloud",
@@ -876,6 +1062,79 @@ const ar: Dict = {
     "الاستثمار في الأسهم ينطوي على مخاطر كبيرة، بما في ذلك خطر الخسارة الكاملة لرأس المال. توزيعات الأرباح غير مضمونة وقد يتم تخفيضها أو تعليقها أو إلغاؤها من قبل الجهات المصدرة في أي وقت دون إشعار. الأداء السابق وأسعار الأسهم والعوائد ليست مؤشرًا على النتائج المستقبلية. قد تؤثر مخاطر العملة والدولة والضرائب على عائداتك أيضًا.",
     "أنت وحدك مسؤول عن قراراتك الاستثمارية. يجب عليك استشارة مستشار مالي مرخص في منطقتك القضائية قبل اتخاذ أي قرار استثماري. اعتبارًا من 1 يناير 2026، تقيد اللوائح المعمول بها في بعض الولايات القضائية نطاق المحتوى التعليمي المالي المسموح به. باستخدامك لهذه المنصة، فإنك تقر بأن جميع المواد ذات طابع تعليمي عام فقط وتتحمل المسؤولية الكاملة عن أي إجراء تتخذه بناءً عليها.",
   ],
+  navTheCase: "الفكرة",
+  navMethodology: "المنهجية",
+  navSample: "نموذج الأبحاث",
+  navMembership: "العضوية",
+  navFaq: "الأسئلة",
+  navStartCta: "ابدأ العضوية",
+  brandName: "Aristocrat",
+  brandSub: "أبحاث توزيعات الأرباح",
+  problemEyebrow: "مسألة التركيز",
+  problemTitle: "جزء كبير من ثروات الخليج يتركّز في مكان واحد.",
+  problemIntro:
+    "بنى العقار أجيالاً من الثروة في المنطقة — ويبقى ركيزة للكثيرين. لكن محفظة مرتكزة على أصل واحد، في سوق واحد، تنطوي على مفاضلات تستحقّ التأمّل.",
+  problemCards: [
+    {
+      title: "رأس مال أوّلي مرتفع",
+      desc: "غالباً ما يتطلّب عقار واحد رأس مالٍ كان يمكن أن يموّل مراكز متنوّعة عبر شركات عديدة.",
+    },
+    {
+      title: "ضعف السيولة",
+      desc: "بيع العقار يستغرق وقتاً وتفاوضاً. أمّا الشركات المدرجة فيمكن عادةً الدخول إليها والخروج منها بسهولة أكبر.",
+    },
+    {
+      title: "مخاطر التركيز",
+      desc: "فئة أصول واحدة، جغرافيا واحدة، عملة واحدة. التنويع عبر المناطق والقطاعات قد يخفّف التعرّض لسوق واحد.",
+    },
+    {
+      title: "عبء التشغيل",
+      desc: "المستأجرون والصيانة والإدارة تتطلّب اهتماماً. أمّا امتلاك أسهم في شركات راسخة فلا يحمل هذا العبء.",
+    },
+  ],
+  problemBridge:
+    "السؤال ليس العقار أو الأسهم. بل هل تستحقّ الشركات العالمية المنوّعة المدرّة للدخل أن تكون إلى جانب ما تملكه — لتضيف سيولة وتنويعاً للعملة واتساعاً.",
+  pricingEyebrow: "العضوية",
+  pricingPageTitle: "منصة واحدة. اختر إيقاعك.",
+  pricingPageIntro:
+    "كلّ خطة تشمل وصولاً كاملاً للأبحاث، وتحديثات أسبوعية، ومكتبة الفحص، ودعماً بالعربية. ألغِ في أيّ وقت.",
+  pricingMonthlyLabel: "شهري",
+  pricingAnnualLabel: "سنوي",
+  pricingBestValueBadge: "الأفضل قيمةً · وفّر 16%",
+  pricingPerMonth: "/شهر",
+  pricingPerYear: "/سنة",
+  pricingStartMonthly: "ابدأ شهرياً",
+  pricingStartAnnual: "ابدأ سنوياً",
+  pricingMonthlyFeatures: [
+    "وصول كامل لمكتبة الأبحاث",
+    "تحديثات أسبوعية للأبحاث",
+    "عروض الفحص المراعي للضوابط",
+    "دعم بالعربية والإنجليزية",
+  ],
+  pricingAnnualFeatures: [
+    "كلّ ما في الخطة الشهرية",
+    "شهران مجاناً مقابل الشهري",
+    "تقارير معمّقة فصلية",
+    "أولوية في طلبات الأبحاث",
+  ],
+  pricingPaymentsNote:
+    "ضمان استرداد المال لمدة 30 يومًا · إلغاء في أي وقت · فوترة بالعملة المحلية متاحة.",
+  finalEyebrow: "ابدأ",
+  finalTitle: "احصل على ذكاء توزيعات الأرباح بأسلوب مؤسّسي.",
+  finalIntro:
+    "ابدأ بنموذج الأبحاث، استكشف المنهجية، وقرّر بنفسك. مدعوماً بضمان استرداد المال خلال 30 يومًا.",
+  footerBrandTagline:
+    "أبحاث استثمارية متميّزة ومُركّزة على الدخل لمستثمرين متمرّسين في دول الخليج. أبحاث وفحص تعليمي — وليست نصيحة استثمارية.",
+  footerColPlatform: "المنصة",
+  footerColCompany: "الشركة",
+  footerColLegal: "قانوني",
+  footerLinks: {
+    platform: ["المنهجية", "نموذج الأبحاث", "الفحص الشرعي", "العضوية"],
+    company: ["عن المنصة", "الأسئلة الشائعة", "تواصل معنا", "الدعم بالعربية"],
+    legal: ["شروط الخدمة", "سياسة الخصوصية", "بيان المخاطر", "سياسة الاسترداد"],
+  },
+  footerCopyright: "© 2026 Aristocrat Dividend Research. جميع الحقوق محفوظة.",
+  footerLocale: "صُمِّم لمستثمري الخليج · متوفّر بالعربية والإنجليزية",
   title: "شركات توزيع الأرباح",
   subtitle: "جميع الشركات النشطة التي توزع أرباحًا. المصدر: api.quantjourney.cloud",
   source: "api.quantjourney.cloud",

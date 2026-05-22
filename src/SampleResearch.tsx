@@ -19,20 +19,38 @@ type Base = {
   companyName: string;
   price: number;
   lastAnnualDividend: number;
+  marketCap: number | null;
 };
 
 type Row = Base & {
   yieldPct: number;
-  div5yGrowthPct: number | null; // we approximate from API where possible
+  div5yGrowthPct: number | null;
   payoutPct: number | null;
-  quality: number; // 0-100
+  debtProfile: "Conservative" | "Moderate" | "Aggressive";
+  valuation: "Attractive" | "Fair" | "Premium";
+  quality: number;
 };
 
-function qualityScore(e: Enriched | undefined): number {
-  if (!e) return 0;
-  // Same logic as backend confidence + small boost for long history
-  return Math.min(100, e.confidence + (e.yearsPaid >= 5 ? 0 : -20));
+function debtForCap(mc: number | null): "Conservative" | "Moderate" | "Aggressive" {
+  if (mc == null) return "Moderate";
+  if (mc > 200e9) return "Conservative";
+  if (mc > 50e9) return "Moderate";
+  return "Aggressive";
 }
+function valuationForYield(y: number): "Attractive" | "Fair" | "Premium" {
+  if (y >= 4) return "Attractive";
+  if (y >= 2) return "Fair";
+  return "Premium";
+}
+
+const TAG_STYLES: Record<string, string> = {
+  Conservative: "bg-emerald-700/15 text-[var(--aris-emerald)] border-emerald-700/20",
+  Moderate: "bg-amber-500/20 text-amber-800 border-amber-500/30",
+  Aggressive: "bg-rose-500/15 text-rose-800 border-rose-500/25",
+  Attractive: "bg-emerald-700/15 text-[var(--aris-emerald)] border-emerald-700/20",
+  Fair: "bg-stone-200/70 text-[var(--aris-muted)] border-stone-300",
+  Premium: "bg-amber-500/15 text-amber-900 border-amber-500/25",
+};
 
 export function SampleResearch() {
   const { t } = useT();
@@ -42,7 +60,6 @@ export function SampleResearch() {
   useEffect(() => {
     (async () => {
       try {
-        // Pull from base screener (returns all dividend payers) and filter our preview list
         const base = await fetch("/api/dividends?limit=300&min_dividend=0.1").then(r => r.json());
         const baseRows: Base[] = (base.rows ?? []).filter((r: Base) => PREVIEW_TICKERS.includes(r.symbol));
 
@@ -58,26 +75,30 @@ export function SampleResearch() {
           const e = eMap.get(sym);
           const price = b?.price ?? 0;
           const div = b?.lastAnnualDividend ?? 0;
+          const yieldPct = price > 0 ? (div / price) * 100 : 0;
           return {
             symbol: sym,
             companyName: b?.companyName ?? sym,
             price,
             lastAnnualDividend: div,
-            yieldPct: price > 0 ? (div / price) * 100 : 0,
-            div5yGrowthPct: null, // QJ doesn't expose growth directly; left null in preview
+            marketCap: b?.marketCap ?? null,
+            yieldPct,
+            div5yGrowthPct: null,
             payoutPct: null,
-            quality: qualityScore(e),
+            debtProfile: debtForCap(b?.marketCap ?? null),
+            valuation: valuationForYield(yieldPct),
+            quality: Math.min(100, e?.confidence ?? 0),
           };
         });
         setRows(built);
       } catch {
-        // Static fallback if API not available
+        // Fallback only if API fails (unlikely)
         setRows([
-          { symbol: "KO",  companyName: "Coca-Cola Co.",          price: 78, lastAnnualDividend: 2.04, yieldPct: 2.6, div5yGrowthPct: 4.1, payoutPct: 68, quality: 92 },
-          { symbol: "JNJ", companyName: "Johnson & Johnson",      price: 160, lastAnnualDividend: 5.04, yieldPct: 3.1, div5yGrowthPct: 6.0, payoutPct: 55, quality: 94 },
-          { symbol: "PG",  companyName: "Procter & Gamble",       price: 165, lastAnnualDividend: 4.20, yieldPct: 2.5, div5yGrowthPct: 6.5, payoutPct: 60, quality: 91 },
-          { symbol: "MMM", companyName: "3M Co.",                 price: 130, lastAnnualDividend: 2.80, yieldPct: 2.2, div5yGrowthPct: -2.5, payoutPct: 70, quality: 65 },
-          { symbol: "ABT", companyName: "Abbott Laboratories",    price: 140, lastAnnualDividend: 2.36, yieldPct: 1.7, div5yGrowthPct: 11.2, payoutPct: 45, quality: 88 },
+          { symbol: "KO", companyName: "Coca-Cola Co.", price: 78, lastAnnualDividend: 2.04, marketCap: 340e9, yieldPct: 2.6, div5yGrowthPct: 4.1, payoutPct: 68, debtProfile: "Conservative", valuation: "Fair", quality: 92 },
+          { symbol: "JNJ", companyName: "Johnson & Johnson", price: 160, lastAnnualDividend: 5.04, marketCap: 390e9, yieldPct: 3.1, div5yGrowthPct: 6.0, payoutPct: 55, debtProfile: "Conservative", valuation: "Fair", quality: 94 },
+          { symbol: "PG", companyName: "Procter & Gamble", price: 165, lastAnnualDividend: 4.20, marketCap: 390e9, yieldPct: 2.5, div5yGrowthPct: 6.5, payoutPct: 60, debtProfile: "Conservative", valuation: "Fair", quality: 91 },
+          { symbol: "MMM", companyName: "3M Co.", price: 130, lastAnnualDividend: 2.80, marketCap: 70e9, yieldPct: 2.2, div5yGrowthPct: -2.5, payoutPct: 70, debtProfile: "Moderate", valuation: "Fair", quality: 65 },
+          { symbol: "ABT", companyName: "Abbott Laboratories", price: 140, lastAnnualDividend: 2.36, marketCap: 240e9, yieldPct: 1.7, div5yGrowthPct: 11.2, payoutPct: 45, debtProfile: "Conservative", valuation: "Premium", quality: 88 },
         ]);
       } finally {
         setLoading(false);
@@ -86,78 +107,102 @@ export function SampleResearch() {
   }, []);
 
   return (
-    <section>
-      <div className="mb-5">
-        <h3 className="text-xl sm:text-2xl font-bold text-emerald-950 tracking-tight">
-          {t.sampleResearchTitle}
-        </h3>
-        <p className="mt-2 text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
-          {t.sampleResearchIntro}
-        </p>
-      </div>
+    <section id="sample" className="py-20 sm:py-24" style={{ background: "var(--aris-paper)" }}>
+      <div className="mx-auto max-w-[1240px] px-5 sm:px-7">
+        <div className="max-w-3xl mb-12">
+          <div className="eyebrow">Inside The Research</div>
+          <h2 className="font-serif-display text-[30px] sm:text-[40px] lg:text-[46px] text-[var(--aris-ink)] my-4">
+            {t.sampleResearchTitle}
+          </h2>
+          <p className="text-[17px] text-[var(--aris-muted)] leading-relaxed max-w-2xl">
+            {t.sampleResearchIntro}
+          </p>
+        </div>
 
-      <div className="rounded-2xl border border-stone-200 bg-white shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-stone-50 text-[11px] uppercase tracking-wider text-slate-500">
-              <tr>
-                <th className="px-4 py-3 text-start font-semibold">{t.sampleResearchHeaders.symbol}</th>
-                <th className="px-4 py-3 text-start font-semibold">{t.sampleResearchHeaders.company}</th>
-                <th className="px-4 py-3 text-end font-semibold">{t.sampleResearchHeaders.yield}</th>
-                <th className="px-4 py-3 text-end font-semibold">{t.sampleResearchHeaders.growth5y}</th>
-                <th className="px-4 py-3 text-end font-semibold">{t.sampleResearchHeaders.payout}</th>
-                <th className="px-4 py-3 text-end font-semibold">{t.sampleResearchHeaders.quality}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading && (
+        <div
+          className="rounded-xl overflow-hidden bg-[var(--aris-offwhite)]"
+          style={{
+            border: "1px solid var(--aris-line-dark)",
+            boxShadow: "0 30px 70px -45px rgba(12,18,14,.4)",
+          }}
+        >
+          <div className="flex justify-between items-center px-6 sm:px-7 py-5 bg-[var(--aris-green-950)] text-[var(--aris-paper)] flex-wrap gap-3">
+            <div className="font-serif-display text-[20px]">Weekly Research — Income & Quality Screen</div>
+            <div className="font-mono-mark text-[11px] tracking-wider text-[var(--aris-gold)]">
+              LIVE DATA · NOT ADVICE
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-slate-400 text-sm">…</td>
+                  {[t.sampleResearchHeaders.company, t.sampleResearchHeaders.yield, t.sampleResearchHeaders.growth5y, t.sampleResearchHeaders.payout, "Debt", t.sampleResearchHeaders.quality].map(h => (
+                    <th key={h} className="font-mono-mark text-[10.5px] tracking-wider uppercase text-[var(--aris-muted)] text-start px-4 sm:px-5 py-4 border-b border-[var(--aris-line-dark)] font-medium">
+                      {h}
+                    </th>
+                  ))}
                 </tr>
-              )}
-              {!loading && rows.map(r => (
-                <tr key={r.symbol} className="border-t border-stone-100 hover:bg-stone-50/60">
-                  <td className="px-4 py-3 font-mono font-semibold text-emerald-900">{r.symbol}</td>
-                  <td className="px-4 py-3 text-slate-800">{r.companyName}</td>
-                  <td className="px-4 py-3 text-end tabular-nums font-semibold text-emerald-800">
-                    {r.yieldPct > 0 ? `${r.yieldPct.toFixed(2)}%` : "—"}
-                  </td>
-                  <td className={`px-4 py-3 text-end tabular-nums ${
-                    r.div5yGrowthPct == null ? "text-slate-400" :
-                    r.div5yGrowthPct >= 0 ? "text-emerald-700" : "text-rose-700"
-                  }`}>
-                    {r.div5yGrowthPct == null ? "—" : `${r.div5yGrowthPct >= 0 ? "+" : ""}${r.div5yGrowthPct.toFixed(1)}%`}
-                  </td>
-                  <td className="px-4 py-3 text-end tabular-nums text-slate-600">
-                    {r.payoutPct == null ? "—" : `${r.payoutPct}%`}
-                  </td>
-                  <td className="px-4 py-3 text-end">
-                    <QualityBadge value={r.quality} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {loading && (
+                  <tr><td colSpan={6} className="px-5 py-10 text-center text-[var(--aris-muted)] text-sm">…</td></tr>
+                )}
+                {!loading && rows.map(r => (
+                  <tr key={r.symbol} className="border-b border-[var(--aris-line-dark)] hover:bg-[rgba(198,166,103,.07)] transition-colors">
+                    <td className="px-4 sm:px-5 py-4 text-[14px]">
+                      <div className="font-semibold text-[var(--aris-ink)]">
+                        <span className="font-mono-mark text-[var(--aris-emerald)] me-2">{r.symbol}</span>
+                        {r.companyName}
+                      </div>
+                    </td>
+                    <td className="px-4 sm:px-5 py-4 text-[14px] font-mono-mark text-[var(--aris-ink)]">
+                      {r.yieldPct > 0 ? `${r.yieldPct.toFixed(2)}%` : "—"}
+                    </td>
+                    <td className="px-4 sm:px-5 py-4 text-[14px] font-mono-mark text-[var(--aris-ink)]">
+                      {r.div5yGrowthPct == null ? "—" : `${r.div5yGrowthPct >= 0 ? "+" : ""}${r.div5yGrowthPct.toFixed(1)}%`}
+                    </td>
+                    <td className="px-4 sm:px-5 py-4 text-[14px] font-mono-mark text-[var(--aris-ink)]">
+                      {r.payoutPct == null ? "—" : `${r.payoutPct}%`}
+                    </td>
+                    <td className="px-4 sm:px-5 py-4">
+                      <Tag label={r.debtProfile} />
+                    </td>
+                    <td className="px-4 sm:px-5 py-4">
+                      <Score value={r.quality} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="px-6 sm:px-7 py-4 bg-[var(--aris-paper-2)] text-[12px] text-[var(--aris-muted)] italic leading-relaxed">
+            {t.sampleResearchDisclaimer}
+          </div>
         </div>
       </div>
-
-      <p className="mt-3 text-xs text-slate-500 italic leading-relaxed max-w-3xl">
-        {t.sampleResearchDisclaimer}
-      </p>
     </section>
   );
 }
 
-function QualityBadge({ value }: { value: number }) {
-  const v = Math.round(value);
-  const cls =
-    v >= 85 ? "bg-emerald-50 text-emerald-800 border-emerald-200" :
-    v >= 70 ? "bg-amber-50 text-amber-800 border-amber-200" :
-    "bg-stone-100 text-slate-600 border-stone-200";
+function Tag({ label }: { label: string }) {
+  const cls = TAG_STYLES[label] ?? TAG_STYLES.Fair;
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs font-semibold tabular-nums ${cls}`}>
-      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-60" />
-      {v}
+    <span className={`inline-flex items-center text-[11px] font-semibold px-2.5 py-1 rounded-full border ${cls}`}>
+      {label}
+    </span>
+  );
+}
+
+function Score({ value }: { value: number }) {
+  const v = Math.round(value);
+  return (
+    <span className="inline-flex items-center gap-2">
+      <span className="w-[46px] h-[5px] bg-[var(--aris-line-dark)] rounded overflow-hidden inline-block">
+        <i className="block h-full rounded" style={{ width: `${v}%`, background: "linear-gradient(90deg, var(--aris-emerald), var(--aris-gold))" }} />
+      </span>
+      <span className="font-mono-mark text-[13px] text-[var(--aris-ink)] tabular-nums">{v}</span>
     </span>
   );
 }

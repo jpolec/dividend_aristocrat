@@ -4,6 +4,7 @@ const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY ?? "";
 const STRIPE_API = "https://api.stripe.com/v1";
 
 export type Currency = "usd" | "pln" | "aed" | "sar" | "qar";
+export type Tier = "monthly" | "annual";
 
 // Map language → default currency. User can override in UI.
 export function defaultCurrencyForLang(lang: Lang): Currency {
@@ -12,10 +13,13 @@ export function defaultCurrencyForLang(lang: Lang): Currency {
   return "usd";
 }
 
-// Price IDs come from Stripe Dashboard, set per currency
-function priceIdFor(currency: Currency): string | null {
-  const key = `STRIPE_PRICE_${currency.toUpperCase()}`;
-  return process.env[key] ?? null;
+// Price IDs come from Stripe Dashboard, set per (tier, currency)
+// e.g. STRIPE_PRICE_MONTHLY_USD or STRIPE_PRICE_ANNUAL_AED
+function priceIdFor(currency: Currency, tier: Tier = "monthly"): string | null {
+  const key = `STRIPE_PRICE_${tier.toUpperCase()}_${currency.toUpperCase()}`;
+  // Backwards-compatible fallback to the older monthly-only env var name
+  const fallback = tier === "monthly" ? `STRIPE_PRICE_${currency.toUpperCase()}` : null;
+  return process.env[key] ?? (fallback ? process.env[fallback] ?? null : null);
 }
 
 function form(params: Record<string, string | number | undefined>) {
@@ -43,11 +47,13 @@ export async function createCheckoutSession(args: {
   email: string;
   lang: Lang;
   currency: Currency;
+  tier?: Tier;
   baseUrl: string;
 }): Promise<{ url: string; sessionId: string }> {
   if (!STRIPE_SECRET) throw new Error("STRIPE_SECRET_KEY not configured");
-  const priceId = priceIdFor(args.currency);
-  if (!priceId) throw new Error(`No price ID configured for ${args.currency} (set STRIPE_PRICE_${args.currency.toUpperCase()})`);
+  const tier: Tier = args.tier ?? "monthly";
+  const priceId = priceIdFor(args.currency, tier);
+  if (!priceId) throw new Error(`No price ID configured for ${tier}/${args.currency} (set STRIPE_PRICE_${tier.toUpperCase()}_${args.currency.toUpperCase()})`);
 
   const body = form({
     mode: "subscription",

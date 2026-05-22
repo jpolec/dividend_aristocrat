@@ -8,44 +8,29 @@ const COUNTRY_FLAG: Record<string, string> = {
   EG: "🇪🇬",
 };
 
-const AVATAR_PALETTE: { bg: string; ring: string }[] = [
-  { bg: "bg-emerald-100 text-emerald-800", ring: "ring-emerald-200" },
-  { bg: "bg-amber-100 text-amber-800", ring: "ring-amber-200" },
-  { bg: "bg-yellow-100 text-yellow-800", ring: "ring-yellow-200" },
-  { bg: "bg-orange-100 text-orange-800", ring: "ring-orange-200" },
-  { bg: "bg-teal-100 text-teal-800", ring: "ring-teal-200" },
-];
-
-function Avatar({ author, idx }: { author: string; idx: number }) {
-  const initials = author
-    .split(/\s+/)
-    .map(w => w[0]?.toUpperCase())
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("");
-  const palette = AVATAR_PALETTE[idx % AVATAR_PALETTE.length];
+function TestimonialCard({ tt }: { tt: Testimonial }) {
+  const initial = tt.author.charAt(0).toUpperCase();
   return (
-    <div
-      className={`flex items-center justify-center h-10 w-10 rounded-full font-semibold text-sm shrink-0 ${palette.bg} ring-2 ${palette.ring}`}
+    <figure
+      className="rounded-lg p-7 transition-transform hover:-translate-y-1"
+      style={{
+        background: "rgba(15,40,29,.32)",
+        border: "1px solid var(--aris-line)",
+      }}
     >
-      {initials}
-    </div>
-  );
-}
-
-function TestimonialCard({ tt, idx }: { tt: Testimonial; idx: number }) {
-  return (
-    <figure className="rounded-xl border border-stone-200 bg-white px-5 py-5 shadow-sm hover:border-amber-300 transition">
-      <blockquote className="text-sm leading-relaxed text-slate-700 italic">
-        <span className="text-amber-600 me-1 text-lg leading-none not-italic">&ldquo;</span>
-        {tt.quote}
-        <span className="text-amber-600 ms-1 text-lg leading-none not-italic">&rdquo;</span>
+      <blockquote className="font-serif-display text-[18px] sm:text-[19px] leading-[1.45] text-[var(--aris-paper)] mb-5">
+        &ldquo;{tt.quote}&rdquo;
       </blockquote>
-      <figcaption className="mt-3 flex items-center gap-3">
-        <Avatar author={tt.author} idx={idx} />
-        <div className="text-xs">
-          <div className="font-medium text-slate-800">{tt.author}</div>
-          <div className="text-slate-500">
+      <figcaption className="flex items-center gap-3">
+        <div
+          className="h-10 w-10 rounded-full flex items-center justify-center font-serif-display text-[16px] text-[var(--aris-green-950)] shrink-0"
+          style={{ background: "linear-gradient(135deg, var(--aris-emerald), var(--aris-gold))" }}
+        >
+          {initial}
+        </div>
+        <div className="text-[13px]">
+          <div className="font-semibold text-[var(--aris-paper)]">{tt.author}</div>
+          <div className="text-[var(--aris-muted-light)] text-[12px]">
             {tt.location} {COUNTRY_FLAG[tt.country] ?? ""}
           </div>
         </div>
@@ -57,14 +42,22 @@ function TestimonialCard({ tt, idx }: { tt: Testimonial; idx: number }) {
 export function Testimonials() {
   const { t } = useT();
   return (
-    <section>
-      <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-5 text-emerald-950 tracking-tight">
-        {t.testimonialsTitle}
-      </h3>
-      <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {t.testimonials.map((tt, i) => (
-          <TestimonialCard key={i} tt={tt} idx={i} />
-        ))}
+    <section className="py-20 sm:py-24 text-[var(--aris-paper)]" style={{ background: "var(--aris-charcoal)" }}>
+      <div className="mx-auto max-w-[1240px] px-5 sm:px-7">
+        <div className="max-w-3xl mb-12">
+          <div className="eyebrow">From Our Members</div>
+          <h2 className="font-serif-display text-[30px] sm:text-[40px] lg:text-[46px] text-[var(--aris-paper)] my-4">
+            {t.testimonialsTitle}
+          </h2>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {t.testimonials.slice(0, 3).map((tt, i) => (
+            <TestimonialCard key={i} tt={tt} />
+          ))}
+        </div>
+        <p className="text-center mt-8 text-[12px] text-[var(--aris-paper)]/40 italic">
+          Member experiences reflect individual views on our research service and are not statements about investment performance or results.
+        </p>
       </div>
     </section>
   );

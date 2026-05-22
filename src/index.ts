@@ -215,14 +215,15 @@ const server = serve({
       },
     },
 
-    // Stripe Checkout — paid monthly subscription
+    // Stripe Checkout — paid subscription (monthly or annual)
     "/api/checkout": {
       async POST(req) {
         try {
-          const { email, lang, currency } = (await req.json()) as {
+          const { email, lang, currency, tier } = (await req.json()) as {
             email?: string;
             lang?: string;
             currency?: Currency;
+            tier?: "monthly" | "annual";
           };
           if (!email || !isValidEmail(email)) {
             return Response.json({ error: "invalid email" }, { status: 400 });
@@ -231,7 +232,7 @@ const server = serve({
           const cur = currency ?? defaultCurrencyForLang(lng);
           // Pre-register as pending; webhook will flip to active
           subscribe(email, lng);
-          const { url } = await createCheckoutSession({ email, lang: lng, currency: cur, baseUrl: BASE_URL });
+          const { url } = await createCheckoutSession({ email, lang: lng, currency: cur, tier, baseUrl: BASE_URL });
           return Response.json({ url });
         } catch (e) {
           return Response.json({ error: String(e) }, { status: 500 });

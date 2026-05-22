@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
-import { DividendTable } from "./DividendTable";
-import { SubscribeCard } from "./SubscribeCard";
+import { Header } from "./Header";
 import { Hero } from "./Hero";
-import { Testimonials } from "./Testimonials";
-import { CompoundChart } from "./CompoundChart";
-import { HowItWorks } from "./HowItWorks";
+import { DividendTable } from "./DividendTable";
+import { Problem } from "./Problem";
 import { WhyDividend } from "./WhyDividend";
 import { HowWeFilter } from "./HowWeFilter";
 import { SampleResearch } from "./SampleResearch";
-import { Comparison } from "./Comparison";
 import { ShariaSection } from "./ShariaSection";
+import { Comparison } from "./Comparison";
+import { Testimonials } from "./Testimonials";
+import { Pricing } from "./Pricing";
 import { FAQ } from "./FAQ";
+import { FinalCta } from "./FinalCta";
 import { Footer } from "./Footer";
 import { Admin } from "./Admin";
-import { DICTS, LangCtx, LANGS, dirOf, type Lang } from "./i18n";
+import { DICTS, LangCtx, dirOf, type Lang } from "./i18n";
 import "./index.css";
 
 export function App() {
@@ -33,46 +34,35 @@ export function App() {
   if (typeof window !== "undefined" && window.location.pathname.startsWith("/admin")) {
     return <Admin />;
   }
+  if (typeof window !== "undefined" && window.location.pathname.startsWith("/research")) {
+    return (
+      <LangCtx.Provider value={{ lang, setLang, t }}>
+        <Header />
+        <main className="pt-24 pb-16 px-4 sm:px-6 max-w-7xl mx-auto">
+          <DividendTable />
+        </main>
+        <Footer />
+      </LangCtx.Provider>
+    );
+  }
 
   return (
     <LangCtx.Provider value={{ lang, setLang, t }}>
-      <div className="container mx-auto px-4 py-4 sm:px-6 sm:py-6 max-w-7xl">
-        <div className="mb-4 sm:mb-6 flex justify-end">
-          <div className="flex gap-1 rounded-md border border-amber-200 bg-white p-1">
-            {LANGS.map(l => (
-              <button
-                key={l.code}
-                onClick={() => setLang(l.code)}
-                className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded transition ${
-                  lang === l.code ? "bg-emerald-700 text-white" : "text-slate-700 hover:bg-amber-50"
-                }`}
-                aria-label={l.label}
-              >
-                <span className="sm:hidden">{l.short}</span>
-                <span className="hidden sm:inline">{l.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid gap-8 sm:gap-12">
-          <Hero />
-          <WhyDividend />
-          <HowWeFilter />
-          <CompoundChart />
-          <SampleResearch />
-          <Comparison />
-          <ShariaSection />
-          <Testimonials />
-          <HowItWorks />
-          <SubscribeCard />
-          <div id="picks">
-            <DividendTable />
-          </div>
-          <FAQ />
-          <Footer />
-        </div>
-      </div>
+      <Header />
+      <main>
+        <Hero />
+        <Problem />
+        <WhyDividend />
+        <HowWeFilter />
+        <SampleResearch />
+        <ShariaSection />
+        <Comparison />
+        <Testimonials />
+        <Pricing />
+        <FAQ />
+        <FinalCta />
+      </main>
+      <Footer />
     </LangCtx.Provider>
   );
 }

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useT } from "./i18n";
 
-// Final high-yield mix in user-specified order
-const PREVIEW_TICKERS = ["AGNC", "ARCC", "MPLX", "ORC", "ET"];
+// Final high-yield mix — every name has yield >= 8.5%
+const PREVIEW_TICKERS = ["AGNC", "ARCC", "TU", "ORC", "STLA"];
 
 type TickerProfile = {
   name: string;
@@ -29,18 +29,18 @@ const TICKER_PROFILES: Record<string, TickerProfile> = {
   },
   ARCC: {
     name: "Ares Capital Corp.",
-    sector: "BDC · Lending",
+    sector: "BDC · Direct lending",
     illustrativePrice: 18.74, illustrativeDiv: 1.92,
     div5yGrowthPct: 4.8, payoutPct: 95, debtProfile: "Moderate",
     quality: 65,
-    halalAware: false, excludeReason: "lending / interest income",
+    halalAware: true,
   },
-  MPLX: {
-    name: "MPLX LP",
-    sector: "Pipelines · Midstream",
-    illustrativePrice: 55.62, illustrativeDiv: 4.31,
-    div5yGrowthPct: 5.2, payoutPct: 78, debtProfile: "Moderate",
-    quality: 78,
+  TU: {
+    name: "TELUS Corporation",
+    sector: "Telecom · Canada",
+    illustrativePrice: 18.30, illustrativeDiv: 1.79,
+    div5yGrowthPct: 7.3, payoutPct: 95, debtProfile: "Moderate",
+    quality: 70,
     halalAware: true,
   },
   ORC: {
@@ -51,12 +51,12 @@ const TICKER_PROFILES: Record<string, TickerProfile> = {
     quality: 20,
     halalAware: false, excludeReason: "mortgage-rate / interest income",
   },
-  ET: {
-    name: "Energy Transfer LP",
-    sector: "Pipelines · Midstream",
-    illustrativePrice: 20.01, illustrativeDiv: 1.33,
-    div5yGrowthPct: 3.1, payoutPct: 82, debtProfile: "Moderate",
-    quality: 68,
+  STLA: {
+    name: "Stellantis N.V.",
+    sector: "Automotive",
+    illustrativePrice: 14.84, illustrativeDiv: 1.51,
+    div5yGrowthPct: 12.5, payoutPct: 50, debtProfile: "Conservative",
+    quality: 72,
     halalAware: true,
   },
 };
@@ -250,9 +250,14 @@ export function SampleResearch() {
           </div>
 
           <div className="px-4 sm:px-7 py-4 bg-[var(--aris-paper-2)] text-[12px] text-[var(--aris-muted)] italic leading-relaxed">
-            <p className="not-italic font-medium text-[var(--aris-ink)] mb-1">
+            <p className="not-italic font-medium text-[var(--aris-ink)] mb-2">
               <span className="text-[var(--aris-emerald)] me-1">◈ PASS</span> = passes halal-aware filter &nbsp;·&nbsp;
               <span className="text-[var(--aris-muted)] me-1">⊘ EXCLUDED</span> = shown for market context, outside the halal-aware screen
+            </p>
+            <p className="not-italic text-[var(--aris-muted)] mb-2">
+              <span className="font-mono-mark text-[10.5px] tracking-wider uppercase text-[var(--aris-gold)] me-1">Frequency</span>
+              All companies in this preview distribute dividends on a <strong className="text-[var(--aris-ink)]">quarterly schedule</strong> (typically 4 payments per year).
+              Full research issues include the exact ex-dividend, record and payment dates per name.
             </p>
             {t.sampleResearchDisclaimer}
           </div>

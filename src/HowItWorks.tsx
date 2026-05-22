@@ -6,7 +6,7 @@ export function HowItWorks() {
   const { t } = useT();
   return (
     <section>
-      <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-slate-800">
+      <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-5 text-emerald-950 tracking-tight">
         {t.howTitle}
       </h3>
       <div className="grid gap-3 sm:gap-4 sm:grid-cols-3">

@@ -6,10 +6,10 @@ export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
   return (
     <section>
-      <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-slate-800">
+      <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-5 text-emerald-950 tracking-tight">
         {t.faqTitle}
       </h3>
-      <div className="rounded-xl border bg-white divide-y divide-slate-200 shadow-sm">
+      <div className="rounded-2xl border border-stone-200 bg-white divide-y divide-stone-200 shadow-sm">
         {t.faq.map((item, i) => {
           const isOpen = open === i;
           return (

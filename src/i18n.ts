@@ -38,6 +38,34 @@ type Dict = {
   // faq
   faqTitle: string;
   faq: { q: string; a: string }[];
+  // trust bar (below hero CTAs)
+  trustBar: string[];
+  // why dividend companies
+  whyTitle: string;
+  whyIntro: string;
+  whyCards: { title: string; desc: string }[];
+  // how we filter
+  howWeFilterTitle: string;
+  howWeFilterIntro: string;
+  howWeFilterMetrics: { label: string; desc: string }[];
+  howWeFilterStat: string;
+  // sample research
+  sampleResearchTitle: string;
+  sampleResearchIntro: string;
+  sampleResearchHeaders: { symbol: string; company: string; yield: string; growth5y: string; payout: string; quality: string };
+  sampleResearchDisclaimer: string;
+  // comparison
+  comparisonTitle: string;
+  comparisonIntro: string;
+  comparisonLeft: string;
+  comparisonRight: string;
+  comparisonRows: { dimension: string; left: string; right: string }[];
+  comparisonNote: string;
+  // sharia
+  shariaTitle: string;
+  shariaIntro: string;
+  shariaBullets: string[];
+  shariaDisclaimer: string;
   // footer
   footerDisclaimer: string;
   disclaimerWarningTitle: string;
@@ -95,54 +123,138 @@ type Dict = {
 };
 
 const en: Dict = {
-  heroHeadline: "Potentially Higher Income Than Real Estate — Starting With Much Less Money",
+  heroHeadline: "Global Dividend Research for Gulf Investors",
   heroSubheadline:
-    "We scan the U.S. market for dividend companies that may deliver strong recurring income — without the costs, complexity and illiquidity of property investing.",
-  pricingLine:
-    "Start free for 30 days, then $5 / month. Cancel anytime.",
-  pricingCta: "Start Free for 30 Days",
-  heroCtaSecondary: "See This Week's Dividend Picks",
+    "Premium research on financially durable U.S. dividend companies with long histories of dividend growth — disciplined screening, global diversification, weekly updates.",
+  pricingLine: "30-day money-back guarantee · Cancel anytime",
+  pricingCta: "View This Week's Research",
+  heroCtaSecondary: "See How We Screen Companies",
   trustStripLabel: "Used by investors across",
-  trustStripCountries: "Saudi Arabia • UAE • Qatar • Kuwait • Egypt",
+  trustStripCountries: "Saudi Arabia • UAE • Qatar • Kuwait • Bahrain • Egypt",
   trustStripPoints: [
-    "Weekly screened dividend opportunities",
-    "Simple insights",
-    "No trading complexity",
+    "Disciplined institutional methodology",
+    "Halal-aware filtering",
+    "Multi-currency pricing (SAR, AED, QAR, KWD, USD)",
     "Cancel anytime",
   ],
+  trustBar: [
+    "30-day money-back guarantee",
+    "Cancel anytime",
+    "Apple Pay & Mada",
+    "Arabic & English support",
+  ],
+  whyTitle: "Why dividend companies",
+  whyIntro:
+    "Financially durable businesses with multi-decade track records of paying — and growing — dividends. The research focus is on companies built for the long term.",
+  whyCards: [
+    {
+      title: "Dividend history",
+      desc: "Companies with 10+, 25+ and 50+ years of consecutive dividend payments. A long history is a signal of disciplined capital allocation.",
+    },
+    {
+      title: "Free cash flow",
+      desc: "We look for businesses that fund their dividends from cash flow — not from balance-sheet engineering or debt.",
+    },
+    {
+      title: "Payout discipline",
+      desc: "Sustainable payout ratios with room to grow. Excessive payout ratios are a yellow flag, not a signal of strength.",
+    },
+    {
+      title: "Balance sheet strength",
+      desc: "Conservative leverage, interest coverage, and credit quality. Strong balance sheets weather downturns without cutting dividends.",
+    },
+    {
+      title: "Global diversification",
+      desc: "Exposure to U.S. multinationals with revenue across continents. A second source of income alongside local real estate exposure.",
+    },
+  ],
+  howWeFilterTitle: "How we filter",
+  howWeFilterIntro:
+    "From the universe of publicly traded U.S. dividend payers, our methodology narrows down to a tight shortlist using objective criteria.",
+  howWeFilterMetrics: [
+    { label: "Dividend history", desc: "Minimum 10 consecutive years of payments; preference for 25+ years (Dividend Aristocrats)." },
+    { label: "Payout ratio", desc: "Sustainable level relative to earnings and free cash flow." },
+    { label: "Free cash flow coverage", desc: "Dividends comfortably covered by operating cash flow after capex." },
+    { label: "Leverage", desc: "Net debt / EBITDA reviewed against sector norms. High leverage is excluded." },
+    { label: "Earnings consistency", desc: "Earnings stability across cycles, not just peak years." },
+    { label: "Valuation discipline", desc: "Multiples assessed against historical and peer ranges — no premium-priced names." },
+    { label: "Sector diversification", desc: "Concentration limits across sectors to keep the watchlist diversified." },
+    { label: "Halal-aware exclusions", desc: "Sector-level exclusions for alcohol, gambling, conventional banking and tobacco." },
+  ],
+  howWeFilterStat:
+    "From ~3,000 dividend-paying companies in the U.S. market, the methodology typically narrows to ~40–80 names per quarter.",
+  sampleResearchTitle: "Sample research preview",
+  sampleResearchIntro:
+    "An indicative view of what the weekly research looks like. Live values are fetched against our screening criteria.",
+  sampleResearchHeaders: {
+    symbol: "Symbol",
+    company: "Company",
+    yield: "Yield",
+    growth5y: "5Y div. growth",
+    payout: "Payout",
+    quality: "Quality",
+  },
+  sampleResearchDisclaimer:
+    "Examples shown to illustrate the methodology. Not buy or sell recommendations. Past performance is not indicative of future results.",
+  comparisonTitle: "Real estate concentration vs global dividend diversification",
+  comparisonIntro:
+    "Property remains a meaningful asset class for many GCC investors. Global dividend companies offer complementary exposure — they do not replace property.",
+  comparisonLeft: "Property concentration",
+  comparisonRight: "Global dividend diversification",
+  comparisonRows: [
+    { dimension: "Starting capital", left: "Often AED 500K – 2M+", right: "Possible to begin with much less" },
+    { dimension: "Liquidity", left: "Months to exit a single asset", right: "Generally settled within days" },
+    { dimension: "Geographic exposure", left: "Concentrated in one market", right: "Multinational, multi-region" },
+    { dimension: "Currency", left: "Local currency", right: "Primarily USD-denominated" },
+    { dimension: "Operational load", left: "Maintenance, tenants, fees", right: "Passive holding of shares" },
+    { dimension: "Concentration risk", left: "Single asset, single market", right: "Diversified across companies and sectors" },
+  ],
+  comparisonNote:
+    "This is illustrative. Both asset classes have distinct risks, costs and benefits. Diversification across both may be more durable than concentration in either.",
+  shariaTitle: "Halal-aware screening",
+  shariaIntro:
+    "The research methodology applies sector-level exclusions designed to respect Islamic finance principles. We do NOT claim formal Sharia certification.",
+  shariaBullets: [
+    "Sector exclusions: alcohol, tobacco, gambling, adult entertainment, weapons, conventional banking.",
+    "Leverage screening: companies with excessive interest-bearing debt are excluded.",
+    "Income-purity awareness: businesses with material non-permissible revenue lines are flagged.",
+    "Periodic review: screens are re-applied each quarter as company structures evolve.",
+  ],
+  shariaDisclaimer:
+    "Halal-aware screening is a research input. It is NOT a substitute for guidance from a qualified Sharia scholar. Final compliance assessment remains your responsibility.",
   testimonialsTitle: "What investors say",
   testimonials: [
     {
       quote:
-        "I was comparing apartment investments in Dubai, but the entry cost was too high. This gave me a much simpler way to start building dollar income from U.S. companies.",
+        "The research quality feels far more disciplined than typical retail newsletters. Useful for a professional reader.",
       author: "Ahmed K.",
       location: "Dubai",
       country: "AE",
     },
     {
       quote:
-        "I like that the ideas are simple and income-focused. I don't have time to analyze hundreds of stocks every week.",
+        "Helpful framework for understanding dividend-focused global diversification — without the noise of trading content.",
       author: "Faisal A.",
       location: "Riyadh",
       country: "SA",
     },
     {
       quote:
-        "Within two months I built my first dividend portfolio with less money than a property down payment.",
+        "I wanted exposure outside local property markets without speculative trading. This service is positioned exactly for that.",
       author: "Omar H.",
       location: "Doha",
       country: "QA",
     },
     {
       quote:
-        "I used to keep most of my savings in cash. Now I receive weekly dividend opportunities and slowly build recurring income.",
+        "Quiet, well-structured research. The halal-aware screening saves a step I would otherwise have to do myself.",
       author: "Khalid M.",
       location: "Kuwait City",
       country: "KW",
     },
     {
       quote:
-        "The weekly emails are short, practical and easy to understand even if you are not a professional investor.",
+        "Reads like a professional research desk note rather than marketing. That alone earns time and attention.",
       author: "Youssef R.",
       location: "Cairo",
       country: "EG",
@@ -180,23 +292,43 @@ const en: Dict = {
   faq: [
     {
       q: "Is this financial advice?",
-      a: "No. The platform provides educational research and dividend stock ideas for informational purposes only.",
+      a: "No. The platform is a research and screening tool. It publishes educational and informational content only. Nothing here constitutes personalized investment advice. Please consult a licensed advisor in your jurisdiction before making investment decisions.",
+    },
+    {
+      q: "Are dividends guaranteed?",
+      a: "No. Dividend payments are decisions by the issuing company's board and can be reduced or suspended at any time. The research focuses on companies with disciplined histories of payment — but no future dividend is guaranteed.",
     },
     {
       q: "How much money do I need to start?",
-      a: "Many investors begin with far less capital than required for a real estate investment.",
+      a: "There is no minimum on our side — the brokerage you use determines minimums. Many investors begin with materially less capital than a real estate investment would require.",
     },
     {
-      q: "Are these U.S. stocks?",
-      a: "Yes. The platform focuses primarily on dividend-paying U.S. companies.",
+      q: "What markets do you cover?",
+      a: "Primarily U.S.-listed dividend-paying companies. Selective coverage of multinationals with broad geographic revenue exposure.",
     },
     {
-      q: "How often do I receive updates?",
-      a: "New dividend opportunities are sent weekly by email.",
+      q: "Why dividend companies?",
+      a: "Dividend-paying companies tend to be more mature, with disciplined capital allocation and lower volatility than the broader equity market. The research focus is on durable income generation over the long term.",
     },
     {
-      q: "Can beginners use this?",
-      a: "Yes. The service is designed to be simple and easy to follow.",
+      q: "Why not only real estate?",
+      a: "Real estate remains a meaningful asset class. The research is positioned as complementary diversification — global, liquid, and USD-denominated exposure alongside local property.",
+    },
+    {
+      q: "What is halal-aware screening?",
+      a: "Sector-level exclusions designed to respect Islamic finance principles (no alcohol, gambling, tobacco, conventional banking, etc.). This is a research input — not a substitute for guidance from a qualified Sharia scholar.",
+    },
+    {
+      q: "How often are updates published?",
+      a: "Weekly. Each issue includes the latest screening output, methodology notes and a small number of name-level analyses.",
+    },
+    {
+      q: "Can I cancel anytime?",
+      a: "Yes. Cancel anytime from your account. A 30-day money-back guarantee applies to your first payment.",
+    },
+    {
+      q: "Is this suitable for beginners?",
+      a: "The platform is positioned for sophisticated investors and professionals. The content is accessible but assumes basic familiarity with equity investing.",
     },
   ],
   footerDisclaimer:
@@ -259,54 +391,138 @@ const en: Dict = {
 };
 
 const pl: Dict = {
-  heroHeadline:
-    "Potencjalnie wyższy dochód niż z nieruchomości — przy znacznie mniejszym kapitale",
+  heroHeadline: "Globalne badania dywidendowe dla inwestorów z Zatoki",
   heroSubheadline:
-    "Skanujemy amerykański rynek pod kątem spółek dywidendowych, które mogą dawać stabilny, powtarzalny dochód — bez kosztów, formalności i niskiej płynności inwestycji w nieruchomości.",
-  pricingLine: "Pierwsze 30 dni za darmo, potem 19 PLN / mies. Rezygnacja w każdej chwili.",
-  pricingCta: "Zacznij za darmo (30 dni)",
-  heroCtaSecondary: "Zobacz typy z tego tygodnia",
-  trustStripLabel: "Używają inwestorzy z",
-  trustStripCountries: "Arabia Saudyjska • ZEA • Katar • Kuwejt • Egipt",
+    "Premium research o finansowo solidnych amerykańskich spółkach dywidendowych z długą historią wzrostu wypłat — zdyscyplinowany screening, globalna dywersyfikacja, cotygodniowe aktualizacje.",
+  pricingLine: "30-dniowa gwarancja zwrotu · Rezygnacja w każdej chwili",
+  pricingCta: "Zobacz research z tego tygodnia",
+  heroCtaSecondary: "Jak filtrujemy spółki",
+  trustStripLabel: "Korzystają inwestorzy z",
+  trustStripCountries: "Arabia Saudyjska • ZEA • Katar • Kuwejt • Bahrajn • Egipt",
   trustStripPoints: [
-    "Cotygodniowe okazje dywidendowe",
-    "Proste, czytelne analizy",
-    "Bez complications i tradingu",
-    "Rezygnujesz kiedy chcesz",
+    "Zdyscyplinowana metodologia instytucjonalna",
+    "Halal-aware screening",
+    "Lokalne waluty (SAR, AED, QAR, KWD, USD)",
+    "Rezygnacja w każdej chwili",
   ],
+  trustBar: [
+    "30-dniowa gwarancja zwrotu",
+    "Rezygnacja w każdej chwili",
+    "Apple Pay i Mada",
+    "Wsparcie po arabsku i angielsku",
+  ],
+  whyTitle: "Dlaczego spółki dywidendowe",
+  whyIntro:
+    "Finansowo solidne biznesy z wieloletnią historią wypłat — i wzrostu — dywidend. Research koncentruje się na spółkach budowanych na długi termin.",
+  whyCards: [
+    {
+      title: "Historia dywidend",
+      desc: "Spółki z 10+, 25+ i 50+ latami nieprzerwanych wypłat. Długa historia to sygnał zdyscyplinowanej alokacji kapitału.",
+    },
+    {
+      title: "Wolne przepływy gotówkowe",
+      desc: "Szukamy biznesów, które finansują dywidendy z gotówki — nie z inżynierii bilansowej ani długu.",
+    },
+    {
+      title: "Dyscyplina wypłat",
+      desc: "Zrównoważone wskaźniki payout z miejscem na wzrost. Wysoki payout to żółta lampka, nie sygnał siły.",
+    },
+    {
+      title: "Siła bilansu",
+      desc: "Konserwatywne zadłużenie, pokrycie odsetek, jakość kredytowa. Silne bilanse przechodzą przez bessy bez cięcia dywidend.",
+    },
+    {
+      title: "Globalna dywersyfikacja",
+      desc: "Ekspozycja na amerykańskie korporacje z przychodami z różnych kontynentów. Drugie źródło dochodu obok lokalnych nieruchomości.",
+    },
+  ],
+  howWeFilterTitle: "Jak filtrujemy",
+  howWeFilterIntro:
+    "Ze zbioru notowanych w USA spółek wypłacających dywidendy metodologia zawęża listę do wąskiej shortlisty według obiektywnych kryteriów.",
+  howWeFilterMetrics: [
+    { label: "Historia dywidend", desc: "Minimum 10 kolejnych lat wypłat; preferencja 25+ lat (Dividend Aristocrats)." },
+    { label: "Payout ratio", desc: "Zrównoważony poziom względem zysku i wolnych przepływów." },
+    { label: "Pokrycie z FCF", desc: "Dywidendy komfortowo pokryte z przepływów operacyjnych po capeksie." },
+    { label: "Zadłużenie", desc: "Net debt / EBITDA oceniane względem norm sektora. Wysoka dźwignia wyłączana." },
+    { label: "Stabilność zysków", desc: "Stabilność zysków przez cykl, nie tylko w szczycie." },
+    { label: "Dyscyplina wyceny", desc: "Mnożniki oceniane względem historii i sektora — bez nadmiernie wycenionych nazw." },
+    { label: "Dywersyfikacja sektorowa", desc: "Limity koncentracji sektorowej, by lista pozostała zdywersyfikowana." },
+    { label: "Halal-aware exclusions", desc: "Sektorowe wyłączenia: alkohol, hazard, bankowość konwencjonalna, tytoń." },
+  ],
+  howWeFilterStat:
+    "Z ~3 000 spółek dywidendowych w USA metodologia zawęża zwykle do ~40–80 nazwisk kwartalnie.",
+  sampleResearchTitle: "Próbka researchu",
+  sampleResearchIntro:
+    "Poglądowy widok cotygodniowego researchu. Bieżące wartości pobierane są względem kryteriów screeningu.",
+  sampleResearchHeaders: {
+    symbol: "Symbol",
+    company: "Spółka",
+    yield: "Yield",
+    growth5y: "Wzrost div. 5Y",
+    payout: "Payout",
+    quality: "Jakość",
+  },
+  sampleResearchDisclaimer:
+    "Przykłady pokazane dla ilustracji metodologii. Nie są rekomendacją kupna ani sprzedaży. Wyniki historyczne nie gwarantują przyszłych.",
+  comparisonTitle: "Koncentracja w nieruchomościach a globalna dywersyfikacja dywidendowa",
+  comparisonIntro:
+    "Nieruchomości pozostają sensowną klasą aktywów dla wielu inwestorów z Zatoki. Globalne spółki dywidendowe oferują uzupełniającą ekspozycję — nie zastępują nieruchomości.",
+  comparisonLeft: "Koncentracja w nieruchomościach",
+  comparisonRight: "Globalna dywersyfikacja dywidendowa",
+  comparisonRows: [
+    { dimension: "Kapitał początkowy", left: "Często 500 tys. – 2 mln+ AED", right: "Można zacząć od znacznie mniej" },
+    { dimension: "Płynność", left: "Miesiące na wyjście z jednego aktywa", right: "Zwykle rozliczenie w dniach" },
+    { dimension: "Ekspozycja geograficzna", left: "Skoncentrowana na jednym rynku", right: "Wielonarodowa, wieloregionalna" },
+    { dimension: "Waluta", left: "Lokalna", right: "Głównie USD" },
+    { dimension: "Obciążenie operacyjne", left: "Utrzymanie, najemcy, opłaty", right: "Pasywne trzymanie akcji" },
+    { dimension: "Ryzyko koncentracji", left: "Jedno aktywo, jeden rynek", right: "Zdywersyfikowane po spółkach i sektorach" },
+  ],
+  comparisonNote:
+    "To ilustracja. Obie klasy aktywów mają odrębne ryzyka, koszty i korzyści. Dywersyfikacja między nimi może być trwalsza niż koncentracja w jednej.",
+  shariaTitle: "Halal-aware screening",
+  shariaIntro:
+    "Metodologia stosuje wyłączenia sektorowe respektujące zasady finansów islamskich. NIE ogłaszamy formalnej certyfikacji Sharia.",
+  shariaBullets: [
+    "Wyłączenia sektorowe: alkohol, tytoń, hazard, treści dla dorosłych, broń, konwencjonalna bankowość.",
+    "Screening zadłużenia: spółki z nadmiernym oprocentowanym długiem są wyłączane.",
+    "Czystość przychodów: biznesy z istotnymi pozaszariackimi liniami przychodów są oznaczane.",
+    "Cykliczny przegląd: screeny stosowane co kwartał wraz ze zmianami struktur spółek.",
+  ],
+  shariaDisclaimer:
+    "Halal-aware screening to dane wejściowe do researchu. NIE zastępuje opinii wykwalifikowanego uczonego Sharia. Końcowa ocena zgodności pozostaje Twoją odpowiedzialnością.",
   testimonialsTitle: "Co mówią inwestorzy",
   testimonials: [
     {
       quote:
-        "Porównywałem zakup mieszkania w Dubaju, ale wejście było zbyt drogie. To dało mi prostszy sposób, by zacząć budować dochód w dolarach z amerykańskich spółek.",
+        "Jakość researchu jest znacznie bardziej zdyscyplinowana niż typowe newslettery detaliczne. Wartościowa lektura dla profesjonalisty.",
       author: "Ahmed K.",
       location: "Dubaj",
       country: "AE",
     },
     {
       quote:
-        "Lubię to, że pomysły są proste i skupione na dochodzie. Nie mam czasu analizować setek spółek co tydzień.",
+        "Pomocne ramy do zrozumienia dywidendowej dywersyfikacji globalnej — bez szumu treści tradingowych.",
       author: "Faisal A.",
       location: "Rijad",
       country: "SA",
     },
     {
       quote:
-        "W ciągu dwóch miesięcy zbudowałem pierwszy portfel dywidendowy za mniej pieniędzy niż wkład własny do mieszkania.",
+        "Chciałem ekspozycji poza lokalnym rynkiem nieruchomości bez spekulacyjnego tradingu. Ta usługa jest dokładnie pod to.",
       author: "Omar H.",
       location: "Doha",
       country: "QA",
     },
     {
       quote:
-        "Trzymałem oszczędności w gotówce. Teraz co tydzień dostaję okazje dywidendowe i powoli buduję powtarzalny dochód.",
+        "Cichy, dobrze ustrukturyzowany research. Halal-aware screening oszczędza krok, który musiałbym zrobić sam.",
       author: "Khalid M.",
       location: "Kuwejt",
       country: "KW",
     },
     {
       quote:
-        "Maile są krótkie, praktyczne i zrozumiałe nawet jeśli nie jesteś zawodowym inwestorem.",
+        "Czyta się jak notatkę z profesjonalnego desku researchowego, nie jak marketing. To samo w sobie zasługuje na uwagę.",
       author: "Youssef R.",
       location: "Kair",
       country: "EG",
@@ -344,23 +560,43 @@ const pl: Dict = {
   faq: [
     {
       q: "Czy to porada inwestycyjna?",
-      a: "Nie. Platforma dostarcza materiały edukacyjne i pomysły dywidendowe wyłącznie w celach informacyjnych.",
+      a: "Nie. Platforma jest narzędziem researchu i screeningu. Publikuje treści edukacyjne i informacyjne. Żadna treść nie stanowi spersonalizowanej porady inwestycyjnej. Skonsultuj się z licencjonowanym doradcą w swojej jurysdykcji przed decyzjami inwestycyjnymi.",
+    },
+    {
+      q: "Czy dywidendy są gwarantowane?",
+      a: "Nie. Wypłaty dywidend to decyzja zarządu emitenta i mogą zostać obniżone lub zawieszone w dowolnym momencie. Research skupia się na spółkach o zdyscyplinowanej historii wypłat — ale żadna przyszła dywidenda nie jest gwarantowana.",
     },
     {
       q: "Ile pieniędzy potrzebuję na start?",
-      a: "Wielu inwestorów zaczyna ze znacznie mniejszym kapitałem niż wymagałby zakup mieszkania.",
+      a: "Po naszej stronie nie ma minimum — minima narzuca broker, z którego korzystasz. Wielu inwestorów zaczyna z istotnie mniejszym kapitałem niż wymagała by inwestycja w nieruchomość.",
     },
     {
-      q: "Czy to spółki amerykańskie?",
-      a: "Tak. Platforma skupia się głównie na amerykańskich spółkach wypłacających dywidendy.",
+      q: "Jakie rynki obejmujecie?",
+      a: "Głównie spółki dywidendowe notowane w USA. Selektywne pokrycie międzynarodowych korporacji z szerokim geograficznym profilem przychodów.",
     },
     {
-      q: "Jak często dostaję aktualizacje?",
-      a: "Nowe okazje dywidendowe wysyłamy raz w tygodniu mailem.",
+      q: "Dlaczego spółki dywidendowe?",
+      a: "Spółki wypłacające dywidendy są zwykle bardziej dojrzałe, ze zdyscyplinowaną alokacją kapitału i niższą zmiennością niż szeroki rynek. Research koncentruje się na trwałej generacji dochodu w długim terminie.",
     },
     {
-      q: "Czy poradzą sobie początkujący?",
-      a: "Tak. Serwis jest świadomie prosty i łatwy do śledzenia.",
+      q: "Dlaczego nie tylko nieruchomości?",
+      a: "Nieruchomości pozostają sensowną klasą aktywów. Research pozycjonujemy jako uzupełniającą dywersyfikację — globalną, płynną i denominowaną w USD obok lokalnych nieruchomości.",
+    },
+    {
+      q: "Czym jest halal-aware screening?",
+      a: "Wyłączenia sektorowe respektujące zasady finansów islamskich (bez alkoholu, hazardu, tytoniu, konwencjonalnej bankowości itd.). To dane wejściowe do researchu — nie zastępują opinii wykwalifikowanego uczonego Sharia.",
+    },
+    {
+      q: "Jak często są publikowane aktualizacje?",
+      a: "Co tydzień. Każdy numer zawiera najnowszy wynik screeningu, notatki metodologiczne i kilka analiz na poziomie nazw.",
+    },
+    {
+      q: "Czy mogę zrezygnować w każdej chwili?",
+      a: "Tak. Rezygnacja z poziomu konta. Pierwsza płatność objęta 30-dniową gwarancją zwrotu.",
+    },
+    {
+      q: "Czy to jest dla początkujących?",
+      a: "Platforma jest pozycjonowana dla świadomych inwestorów i profesjonalistów. Treść jest dostępna, ale zakłada podstawową znajomość inwestowania w akcje.",
     },
   ],
   footerDisclaimer:
@@ -423,53 +659,138 @@ const pl: Dict = {
 };
 
 const ar: Dict = {
-  heroHeadline: "دخل محتمل أعلى من العقارات — برأس مال أقل بكثير",
+  heroHeadline: "أبحاث توزيعات أرباح عالمية لمستثمري الخليج",
   heroSubheadline:
-    "نفحص السوق الأمريكي بحثًا عن شركات توزع أرباحًا قد توفّر دخلًا متكررًا قويًا، بدون تكاليف العقارات وتعقيداتها ونقص سيولتها.",
-  pricingLine: "ابدأ مجانًا لمدة 30 يومًا، ثم 19 درهمًا شهريًا. إلغاء في أي وقت.",
-  pricingCta: "ابدأ مجانًا لمدة 30 يومًا",
-  heroCtaSecondary: "شاهد اختيارات هذا الأسبوع",
+    "أبحاث مميزة عن شركات أمريكية مالياً قوية وتاريخ طويل من نمو توزيعات الأرباح — فحص منضبط، تنويع عالمي، وتحديثات أسبوعية.",
+  pricingLine: "ضمان استرداد المال خلال 30 يومًا · إلغاء في أي وقت",
+  pricingCta: "شاهد أبحاث هذا الأسبوع",
+  heroCtaSecondary: "كيف نفحص الشركات",
   trustStripLabel: "يستخدمها مستثمرون من",
-  trustStripCountries: "السعودية • الإمارات • قطر • الكويت • مصر",
+  trustStripCountries: "السعودية • الإمارات • قطر • الكويت • البحرين • مصر",
   trustStripPoints: [
-    "فرص توزيعات أرباح أسبوعية مفلترة",
-    "رؤى بسيطة وواضحة",
-    "بدون تعقيدات التداول",
+    "منهجية مؤسسية منضبطة",
+    "فحص متوافق مع الحلال",
+    "تسعير بعملات متعددة (SAR, AED, QAR, KWD, USD)",
     "إلغاء في أي وقت",
   ],
+  trustBar: [
+    "ضمان استرداد المال خلال 30 يومًا",
+    "إلغاء في أي وقت",
+    "Apple Pay وMada",
+    "دعم بالعربية والإنجليزية",
+  ],
+  whyTitle: "لماذا شركات توزيعات الأرباح",
+  whyIntro:
+    "شركات مالياً متينة بسجل عقود من دفع — وزيادة — توزيعات الأرباح. يتركز البحث على الشركات المبنية للمدى الطويل.",
+  whyCards: [
+    {
+      title: "تاريخ توزيعات الأرباح",
+      desc: "شركات بسجل 10+، 25+، و50+ سنة من توزيعات متتالية. التاريخ الطويل مؤشر على تخصيص رأس المال المنضبط.",
+    },
+    {
+      title: "التدفق النقدي الحر",
+      desc: "نبحث عن أعمال تموّل توزيعاتها من التدفق النقدي — لا من هندسة الميزانية أو الديون.",
+    },
+    {
+      title: "انضباط نسبة التوزيع",
+      desc: "نسب توزيع مستدامة مع مجال للنمو. النسب المرتفعة جدًا علامة تحذير لا قوة.",
+    },
+    {
+      title: "قوة الميزانية العمومية",
+      desc: "ديون محافظة، تغطية فوائد، جودة ائتمانية. الميزانيات القوية تتحمل الانكماشات دون قطع توزيعات الأرباح.",
+    },
+    {
+      title: "تنويع عالمي",
+      desc: "تعرّض لشركات أمريكية متعددة الجنسيات بإيرادات عبر القارات. مصدر دخل ثانٍ إلى جانب التعرض العقاري المحلي.",
+    },
+  ],
+  howWeFilterTitle: "كيف نفحص",
+  howWeFilterIntro:
+    "من بين كل الشركات الأمريكية الموزعة لأرباح، تضيق المنهجية القائمة إلى قائمة قصيرة وفق معايير موضوعية.",
+  howWeFilterMetrics: [
+    { label: "تاريخ التوزيعات", desc: "10 سنوات متتالية على الأقل؛ تفضيل 25+ سنة (Dividend Aristocrats)." },
+    { label: "نسبة التوزيع", desc: "مستوى مستدام نسبة إلى الأرباح والتدفق النقدي الحر." },
+    { label: "تغطية FCF", desc: "توزيعات مغطاة بشكل مريح من التدفق التشغيلي بعد المصاريف الرأسمالية." },
+    { label: "الرافعة المالية", desc: "صافي الدين / EBITDA يُقيَّم مقابل معايير القطاع. الرافعة العالية مستبعدة." },
+    { label: "ثبات الأرباح", desc: "ثبات الأرباح عبر الدورات، لا فقط في سنوات الذروة." },
+    { label: "انضباط التقييم", desc: "تقييم المضاعفات مقابل النطاقات التاريخية ونظرائها — لا أسماء بأسعار مبالغ فيها." },
+    { label: "تنويع القطاعات", desc: "حدود تركيز عبر القطاعات للحفاظ على تنوع قائمة المراقبة." },
+    { label: "استبعادات متوافقة مع الحلال", desc: "استبعادات قطاعية للكحول والقمار والبنوك التقليدية والتبغ." },
+  ],
+  howWeFilterStat:
+    "من ~3,000 شركة موزعة لأرباح في السوق الأمريكي، تضيق المنهجية عادةً إلى ~40–80 اسمًا كل ربع سنة.",
+  sampleResearchTitle: "معاينة الأبحاث",
+  sampleResearchIntro:
+    "عرض توضيحي لكيفية ظهور الأبحاث الأسبوعية. تُحدَّث القيم الحية مقابل معايير الفحص.",
+  sampleResearchHeaders: {
+    symbol: "الرمز",
+    company: "الشركة",
+    yield: "العائد",
+    growth5y: "نمو التوزيعات 5 سنوات",
+    payout: "نسبة التوزيع",
+    quality: "الجودة",
+  },
+  sampleResearchDisclaimer:
+    "أمثلة لتوضيح المنهجية. ليست توصيات شراء أو بيع. الأداء السابق لا يدل على النتائج المستقبلية.",
+  comparisonTitle: "تركّز عقاري مقابل تنويع توزيعات أرباح عالمي",
+  comparisonIntro:
+    "تبقى العقارات فئة أصول مهمة لكثير من مستثمري الخليج. تُقدّم شركات توزيعات الأرباح العالمية تعرّضًا مكمّلًا — لا بديلًا.",
+  comparisonLeft: "تركّز عقاري",
+  comparisonRight: "تنويع توزيعات أرباح عالمي",
+  comparisonRows: [
+    { dimension: "رأس المال الابتدائي", left: "غالبًا 500 ألف – 2 مليون+ درهم", right: "يمكن البدء بمبلغ أقل بكثير" },
+    { dimension: "السيولة", left: "أشهر للخروج من أصل واحد", right: "تسوية عادةً خلال أيام" },
+    { dimension: "التعرّض الجغرافي", left: "تركيز في سوق واحد", right: "متعدد الجنسيات، متعدد المناطق" },
+    { dimension: "العملة", left: "العملة المحلية", right: "بالدولار أساسًا" },
+    { dimension: "العبء التشغيلي", left: "صيانة، مستأجرون، رسوم", right: "احتفاظ سلبي بالأسهم" },
+    { dimension: "مخاطر التركيز", left: "أصل واحد، سوق واحد", right: "متنوع عبر شركات وقطاعات" },
+  ],
+  comparisonNote:
+    "هذا للتوضيح. لكلتا فئتي الأصول مخاطرها وتكاليفها وفوائدها. التنويع بينهما قد يكون أكثر متانة من التركز في واحدة.",
+  shariaTitle: "فحص متوافق مع الحلال",
+  shariaIntro:
+    "تطبّق منهجية البحث استبعادات قطاعية مصممة لاحترام مبادئ التمويل الإسلامي. لا نزعم شهادة شرعية رسمية.",
+  shariaBullets: [
+    "استبعادات قطاعية: الكحول، التبغ، القمار، ترفيه البالغين، الأسلحة، البنوك التقليدية.",
+    "فحص الرافعة: تُستبعد الشركات ذات الديون المتراكمة المفرطة.",
+    "نقاء الإيرادات: تُعلَّم الأعمال ذات خطوط إيرادات غير مسموح بها.",
+    "مراجعة دورية: تُعاد تطبيق الفحوصات كل ربع سنة مع تطور هياكل الشركات.",
+  ],
+  shariaDisclaimer:
+    "الفحص المتوافق مع الحلال مُدخل بحثي. ليس بديلًا عن إرشاد عالم شرعي مؤهل. التقييم النهائي للامتثال يقع على عاتقك.",
   testimonialsTitle: "ماذا يقول المستثمرون",
   testimonials: [
     {
       quote:
-        "كنت أقارن الاستثمار في شقق دبي، لكن تكلفة الدخول كانت مرتفعة جدًا. هذا أعطاني طريقة أبسط بكثير لبناء دخل دولاري من شركات أمريكية.",
+        "جودة الأبحاث أكثر انضباطًا بكثير من النشرات الإخبارية للأفراد. مفيدة لقارئ محترف.",
       author: "أحمد ك.",
       location: "دبي",
       country: "AE",
     },
     {
       quote:
-        "يعجبني أن الأفكار بسيطة وتركّز على الدخل. ليس لدي وقت لتحليل مئات الأسهم كل أسبوع.",
+        "إطار مفيد لفهم التنويع العالمي القائم على توزيعات الأرباح — دون ضجيج محتوى التداول.",
       author: "فيصل ع.",
       location: "الرياض",
       country: "SA",
     },
     {
       quote:
-        "خلال شهرين بنيت أول محفظة توزيعات أرباح بمبلغ أقل من دفعة عقار أولى.",
+        "أردت تعرّضًا خارج أسواق العقارات المحلية دون تداول مضارب. هذه الخدمة موضوعة بالضبط لهذا الغرض.",
       author: "عمر ح.",
       location: "الدوحة",
       country: "QA",
     },
     {
       quote:
-        "كنت أحتفظ بمعظم مدخراتي نقدًا. الآن أتلقى فرصًا توزيعات أرباح أسبوعيًا وأبني دخلًا متكررًا تدريجيًا.",
+        "أبحاث هادئة ومنظمة جيدًا. الفحص المتوافق مع الحلال يوفر خطوة كنت سأقوم بها بنفسي.",
       author: "خالد م.",
       location: "مدينة الكويت",
       country: "KW",
     },
     {
       quote:
-        "الرسائل الأسبوعية قصيرة وعملية وسهلة الفهم حتى لو لم تكن مستثمرًا محترفًا.",
+        "يُقرأ كملاحظة من مكتب أبحاث محترف، لا كتسويق. هذا وحده يستحق الوقت والاهتمام.",
       author: "يوسف ر.",
       location: "القاهرة",
       country: "EG",
@@ -506,24 +827,44 @@ const ar: Dict = {
   faqTitle: "أسئلة المستثمرين",
   faq: [
     {
-      q: "هل هذه استشارة مالية؟",
-      a: "لا. توفر المنصة أبحاثًا تعليمية وأفكار أسهم توزيعات أرباح لأغراض إعلامية فقط.",
+      q: "هل هذه استشارة استثمارية؟",
+      a: "لا. المنصة أداة أبحاث وفحص. تنشر محتوى تعليمي وإعلامي فقط. لا شيء هنا يُشكّل استشارة استثمارية شخصية. يُرجى استشارة مستشار مرخص في منطقتك قبل اتخاذ قرارات استثمارية.",
+    },
+    {
+      q: "هل توزيعات الأرباح مضمونة؟",
+      a: "لا. توزيعات الأرباح قرارات مجلس إدارة الشركة المُصدِرة ويمكن تخفيضها أو تعليقها في أي وقت. تركز الأبحاث على شركات ذات سجل منضبط — لكن لا يوجد ضمان لأي توزيع مستقبلي.",
     },
     {
       q: "كم من المال أحتاج للبدء؟",
-      a: "يبدأ كثير من المستثمرين برأس مال أقل بكثير من المطلوب للاستثمار العقاري.",
+      a: "لا حد أدنى من جانبنا — يحدد الوسيط الذي تستخدمه الحد الأدنى. يبدأ كثير من المستثمرين برأس مال أقل بكثير مما يتطلبه الاستثمار العقاري.",
     },
     {
-      q: "هل هذه أسهم أمريكية؟",
-      a: "نعم. تركّز المنصة بشكل رئيسي على الشركات الأمريكية الموزعة للأرباح.",
+      q: "ما الأسواق التي تغطونها؟",
+      a: "بشكل أساسي الشركات الأمريكية الموزعة لأرباح. تغطية انتقائية للشركات متعددة الجنسيات ذات الإيرادات الواسعة جغرافيًا.",
     },
     {
-      q: "ما تكرار التحديثات؟",
-      a: "ترسل فرص توزيعات الأرباح الجديدة أسبوعيًا عبر البريد الإلكتروني.",
+      q: "لماذا شركات توزيعات الأرباح؟",
+      a: "تميل شركات توزيعات الأرباح إلى أن تكون أكثر نضجًا، بتخصيص رأس مال منضبط وتقلب أقل من السوق الواسع. التركيز البحثي على توليد دخل دائم طويل الأجل.",
     },
     {
-      q: "هل يمكن للمبتدئين استخدامها؟",
-      a: "نعم. الخدمة مصممة لتكون بسيطة وسهلة المتابعة.",
+      q: "لماذا لا العقارات فقط؟",
+      a: "تبقى العقارات فئة أصول مهمة. الأبحاث موضوعة كتنويع مكمّل — تعرّض عالمي وسائل ومُسعَّر بالدولار إلى جانب العقارات المحلية.",
+    },
+    {
+      q: "ما الفحص المتوافق مع الحلال؟",
+      a: "استبعادات قطاعية مصممة لاحترام مبادئ التمويل الإسلامي (لا كحول، قمار، تبغ، بنوك تقليدية، إلخ). هذا مُدخل بحثي — لا يُعد بديلًا عن إرشاد عالم شرعي مؤهل.",
+    },
+    {
+      q: "ما تكرار نشر التحديثات؟",
+      a: "أسبوعيًا. يتضمن كل عدد أحدث مخرجات الفحص وملاحظات منهجية وعددًا قليلًا من التحليلات على مستوى الأسماء.",
+    },
+    {
+      q: "هل يمكنني الإلغاء في أي وقت؟",
+      a: "نعم. الإلغاء من الحساب في أي وقت. ضمان استرداد المال لمدة 30 يومًا يطبق على أول دفعة لك.",
+    },
+    {
+      q: "هل هذه مناسبة للمبتدئين؟",
+      a: "المنصة موجهة للمستثمرين المتمرسين والمحترفين. المحتوى متاح لكن يفترض إلمامًا أساسيًا بالاستثمار في الأسهم.",
     },
   ],
   footerDisclaimer:

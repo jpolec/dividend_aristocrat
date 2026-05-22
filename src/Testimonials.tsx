@@ -35,11 +35,11 @@ function Avatar({ author, idx }: { author: string; idx: number }) {
 
 function TestimonialCard({ tt, idx }: { tt: Testimonial; idx: number }) {
   return (
-    <figure className="rounded-xl border border-amber-100 bg-white px-4 sm:px-5 py-4 shadow-sm">
-      <blockquote className="text-sm md:text-base leading-relaxed text-slate-800">
-        <span className="text-amber-600 me-1 text-lg leading-none">&ldquo;</span>
+    <figure className="rounded-xl border border-stone-200 bg-white px-5 py-5 shadow-sm hover:border-amber-300 transition">
+      <blockquote className="text-sm leading-relaxed text-slate-700 italic">
+        <span className="text-amber-600 me-1 text-lg leading-none not-italic">&ldquo;</span>
         {tt.quote}
-        <span className="text-amber-600 ms-1 text-lg leading-none">&rdquo;</span>
+        <span className="text-amber-600 ms-1 text-lg leading-none not-italic">&rdquo;</span>
       </blockquote>
       <figcaption className="mt-3 flex items-center gap-3">
         <Avatar author={tt.author} idx={idx} />
@@ -58,7 +58,7 @@ export function Testimonials() {
   const { t } = useT();
   return (
     <section>
-      <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-slate-800">
+      <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-5 text-emerald-950 tracking-tight">
         {t.testimonialsTitle}
       </h3>
       <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">

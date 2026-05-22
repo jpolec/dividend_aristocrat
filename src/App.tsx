@@ -5,6 +5,11 @@ import { Hero } from "./Hero";
 import { Testimonials } from "./Testimonials";
 import { CompoundChart } from "./CompoundChart";
 import { HowItWorks } from "./HowItWorks";
+import { WhyDividend } from "./WhyDividend";
+import { HowWeFilter } from "./HowWeFilter";
+import { SampleResearch } from "./SampleResearch";
+import { Comparison } from "./Comparison";
+import { ShariaSection } from "./ShariaSection";
 import { FAQ } from "./FAQ";
 import { Footer } from "./Footer";
 import { Admin } from "./Admin";
@@ -50,9 +55,14 @@ export function App() {
           </div>
         </div>
 
-        <div className="grid gap-6 sm:gap-8">
+        <div className="grid gap-8 sm:gap-12">
           <Hero />
+          <WhyDividend />
+          <HowWeFilter />
           <CompoundChart />
+          <SampleResearch />
+          <Comparison />
+          <ShariaSection />
           <Testimonials />
           <HowItWorks />
           <SubscribeCard />

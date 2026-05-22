@@ -12,8 +12,30 @@ import {
   markCanceledByCustomer,
   markCanceledBySubscription,
 } from "./subscribers";
-import { runDigest, selectTopPicks, renderDigestHtml, shouldRunWeekly } from "./digest";
+import { runDigest, selectTopPicks, renderDigestHtml, shouldRunWeekly, sendEmail } from "./digest";
 import { createCheckoutSession, verifyStripeSignature, defaultCurrencyForLang, type Currency } from "./stripe";
+import {
+  applyAsPartner,
+  getPartnerByCode,
+  getPartnerByEmail,
+  listPartners,
+  signOnboarding,
+  updatePartnerPaymentDetails,
+  recordClick,
+  recordAttribution,
+  createPendingCommission,
+  confirmCommission,
+  reverseCommission,
+  autoConfirmPending,
+  partnerStats,
+  requestPayout,
+  listPayouts,
+  markPayoutPaid,
+  signMagicToken,
+  verifyMagicToken,
+  signSessionCookie,
+  verifySessionCookie,
+} from "./partners";
 
 const QJ_BASE = "https://api.quantjourney.cloud";
 const QJ_TOKEN = process.env.QJ_TOKEN;
@@ -156,6 +178,24 @@ async function fetchEnriched(req: Request) {
   return Response.json({ enriched: out });
 }
 
+// ─── Partner helpers ────────────────────────────────────────────────────────
+const PARTNER_SESSION_COOKIE = "aristo_partner";
+const REFERRAL_COOKIE = "aristo_ref";
+
+function parseCookie(req: Request, name: string): string | null {
+  const cookie = req.headers.get("cookie") ?? "";
+  const match = cookie.split(/;\s*/).find(c => c.startsWith(`${name}=`));
+  return match ? decodeURIComponent(match.slice(name.length + 1)) : null;
+}
+
+function requirePartner(req: Request): { email: string } | Response {
+  const cookie = parseCookie(req, PARTNER_SESSION_COOKIE);
+  if (!cookie) return Response.json({ error: "unauthenticated" }, { status: 401 });
+  const email = verifySessionCookie(cookie);
+  if (!email) return Response.json({ error: "invalid session" }, { status: 401 });
+  return { email };
+}
+
 function requireAdmin(req: Request): Response | null {
   if (!ADMIN_TOKEN) return null; // no auth configured -> open
   const got = new URL(req.url).searchParams.get("token") ?? req.headers.get("x-admin-token");
@@ -191,6 +231,183 @@ const server = serve({
       },
     },
 
+    // ─── Partner program ────────────────────────────────────────────────
+    "/r/:code": req => {
+      const code = (new URL(req.url).pathname.split("/").pop() ?? "").toUpperCase();
+      const partner = getPartnerByCode(code);
+      if (!partner || partner.status !== "active") {
+        return Response.redirect(BASE_URL + "/", 302);
+      }
+      recordClick(code, req.headers.get("user-agent"), req.headers.get("referer"));
+      const maxAge = 90 * 24 * 60 * 60;
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: "/",
+          "Set-Cookie": `${REFERRAL_COOKIE}=${encodeURIComponent(code)}; Path=/; Max-Age=${maxAge}; SameSite=Lax`,
+        },
+      });
+    },
+
+    "/api/partners/apply": {
+      async POST(req) {
+        try {
+          const body = (await req.json()) as { email?: string; name?: string; social_handle?: string; country?: string; estimated_reach?: string };
+          if (!body.email || !body.name) return Response.json({ error: "email + name required" }, { status: 400 });
+          const partner = applyAsPartner({
+            email: body.email,
+            name: body.name,
+            social_handle: body.social_handle,
+            country: body.country,
+            estimated_reach: body.estimated_reach,
+          });
+          // Send magic link to login
+          const token = signMagicToken(partner.email);
+          const loginUrl = `${BASE_URL}/partner/verify?token=${token}`;
+          await sendEmail(
+            partner.email,
+            `Welcome to Aristocrat Partner Program — your code is ${partner.code}`,
+            `<p>Hi ${partner.name},</p><p>Welcome to the Aristocrat Partner Program. Your unique partner code is <strong>${partner.code}</strong>.</p><p>Click the link below to access your dashboard and sign your partner agreement:</p><p><a href="${loginUrl}">${loginUrl}</a></p><p>The link is valid for 24 hours.</p>`,
+            `Welcome to Aristocrat Partner Program. Your code: ${partner.code}. Login link (valid 24h): ${loginUrl}`,
+          );
+          return Response.json({ ok: true, code: partner.code, message: "Check your email for a login link" });
+        } catch (e) {
+          return Response.json({ error: String(e) }, { status: 400 });
+        }
+      },
+    },
+
+    "/api/partners/login": {
+      async POST(req) {
+        try {
+          const { email } = (await req.json()) as { email?: string };
+          if (!email || !isValidEmail(email)) return Response.json({ error: "invalid email" }, { status: 400 });
+          const partner = getPartnerByEmail(email);
+          if (!partner) return Response.json({ error: "not registered" }, { status: 404 });
+          const token = signMagicToken(partner.email);
+          const loginUrl = `${BASE_URL}/partner/verify?token=${token}`;
+          await sendEmail(
+            partner.email,
+            `Aristocrat — your login link`,
+            `<p>Click the link to access your partner dashboard:</p><p><a href="${loginUrl}">${loginUrl}</a></p><p>Valid for 24 hours.</p>`,
+            `Login link (valid 24h): ${loginUrl}`,
+          );
+          return Response.json({ ok: true, message: "Login link sent to your email" });
+        } catch (e) {
+          return Response.json({ error: String(e) }, { status: 400 });
+        }
+      },
+    },
+
+    "/api/partners/verify": req => {
+      const token = new URL(req.url).searchParams.get("token") ?? "";
+      const email = verifyMagicToken(token);
+      if (!email) return Response.json({ error: "invalid or expired token" }, { status: 400 });
+      const partner = getPartnerByEmail(email);
+      if (!partner) return Response.json({ error: "not registered" }, { status: 404 });
+      const session = signSessionCookie(email);
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: "/partner/dashboard",
+          "Set-Cookie": `${PARTNER_SESSION_COOKIE}=${session}; Path=/; HttpOnly; Max-Age=${30 * 24 * 60 * 60}; SameSite=Lax`,
+        },
+      });
+    },
+
+    "/api/partners/me": req => {
+      const auth = requirePartner(req);
+      if (auth instanceof Response) return auth;
+      const partner = getPartnerByEmail(auth.email);
+      if (!partner) return Response.json({ error: "not found" }, { status: 404 });
+      autoConfirmPending(); // refresh confirmed status
+      const stats = partnerStats(partner.code);
+      const payouts = listPayouts(partner.code);
+      return Response.json({ partner, stats, payouts });
+    },
+
+    "/api/partners/sign": {
+      async POST(req) {
+        const auth = requirePartner(req);
+        if (auth instanceof Response) return auth;
+        try {
+          const { signature, acceptNda, acceptAgreement } = (await req.json()) as { signature?: string; acceptNda?: boolean; acceptAgreement?: boolean };
+          if (!acceptNda || !acceptAgreement) return Response.json({ error: "must accept both NDA and Agreement" }, { status: 400 });
+          if (!signature || signature.trim().length < 2) return Response.json({ error: "signature required" }, { status: 400 });
+          const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? req.headers.get("x-real-ip") ?? "unknown";
+          signOnboarding({ email: auth.email, signature, ip });
+          return Response.json({ ok: true });
+        } catch (e) {
+          return Response.json({ error: String(e) }, { status: 400 });
+        }
+      },
+    },
+
+    "/api/partners/payment-details": {
+      async POST(req) {
+        const auth = requirePartner(req);
+        if (auth instanceof Response) return auth;
+        const { method, details } = (await req.json()) as { method?: string; details?: string };
+        if (!method || !details) return Response.json({ error: "method + details required" }, { status: 400 });
+        updatePartnerPaymentDetails(auth.email, method, details);
+        return Response.json({ ok: true });
+      },
+    },
+
+    "/api/partners/payout": {
+      async POST(req) {
+        const auth = requirePartner(req);
+        if (auth instanceof Response) return auth;
+        try {
+          const { amount, currency, method, methodDetails } = (await req.json()) as { amount?: number; currency?: string; method?: string; methodDetails?: string };
+          if (!amount || amount <= 0 || !currency || !method || !methodDetails) {
+            return Response.json({ error: "amount, currency, method, methodDetails required" }, { status: 400 });
+          }
+          const partner = getPartnerByEmail(auth.email)!;
+          const payoutId = requestPayout({
+            code: partner.code,
+            amountCents: Math.round(amount * 100),
+            currency,
+            method,
+            methodDetails,
+          });
+          return Response.json({ ok: true, payoutId });
+        } catch (e) {
+          return Response.json({ error: String(e) }, { status: 400 });
+        }
+      },
+    },
+
+    "/api/partners/logout": {
+      POST() {
+        return new Response(null, {
+          status: 200,
+          headers: { "Set-Cookie": `${PARTNER_SESSION_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax` },
+        });
+      },
+    },
+
+    // Admin: partner management
+    "/api/admin/partners": req => {
+      const auth = requireAdmin(req);
+      if (auth) return auth;
+      autoConfirmPending();
+      const partners = listPartners();
+      const payouts = listPayouts();
+      return Response.json({ partners, payouts });
+    },
+
+    "/api/admin/partners/payout/mark-paid": {
+      async POST(req) {
+        const auth = requireAdmin(req);
+        if (auth) return auth;
+        const { payoutId, reference } = (await req.json()) as { payoutId?: number; reference?: string };
+        if (!payoutId || !reference) return Response.json({ error: "payoutId + reference required" }, { status: 400 });
+        markPayoutPaid(payoutId, reference);
+        return Response.json({ ok: true });
+      },
+    },
+
     "/api/cache/stats": () => Response.json(cacheStats()),
     "/api/cache/clear": {
       async POST() {
@@ -219,20 +436,29 @@ const server = serve({
     "/api/checkout": {
       async POST(req) {
         try {
-          const { email, lang, currency, tier } = (await req.json()) as {
+          const { email, lang, currency, tier, referralCode } = (await req.json()) as {
             email?: string;
             lang?: string;
             currency?: Currency;
             tier?: "monthly" | "annual";
+            referralCode?: string;
           };
           if (!email || !isValidEmail(email)) {
             return Response.json({ error: "invalid email" }, { status: 400 });
           }
           const lng = normalizeLang(lang);
           const cur = currency ?? defaultCurrencyForLang(lng);
+          // Validate referral code if provided
+          let validRef: string | null = null;
+          if (referralCode) {
+            const p = getPartnerByCode(referralCode.toUpperCase());
+            if (p && p.status === "active") validRef = p.code;
+          }
           // Pre-register as pending; webhook will flip to active
           subscribe(email, lng);
-          const { url } = await createCheckoutSession({ email, lang: lng, currency: cur, tier, baseUrl: BASE_URL });
+          const { url } = await createCheckoutSession({
+            email, lang: lng, currency: cur, tier, referralCode: validRef, baseUrl: BASE_URL,
+          });
           return Response.json({ url });
         } catch (e) {
           return Response.json({ error: String(e) }, { status: 500 });
@@ -261,8 +487,11 @@ const server = serve({
               customer: string;
               subscription: string;
               currency: string;
+              amount_total?: number;
+              payment_intent?: string;
+              client_reference_id?: string;
               customer_details?: { email?: string };
-              metadata?: { email?: string };
+              metadata?: { email?: string; referral_code?: string };
             };
             const email = obj.metadata?.email ?? obj.customer_details?.email;
             if (email) {
@@ -273,7 +502,35 @@ const server = serve({
                 currency: obj.currency,
               });
               console.log(`[stripe] paid: ${email} (${obj.currency})`);
+
+              // Partner attribution + commission
+              const refCode = obj.metadata?.referral_code || obj.client_reference_id;
+              if (refCode) {
+                const partner = getPartnerByCode(refCode.toUpperCase());
+                if (partner && partner.status === "active") {
+                  recordAttribution({
+                    code: partner.code,
+                    customerEmail: email,
+                    stripeCustomerId: obj.customer,
+                    stripeSubscriptionId: obj.subscription,
+                  });
+                  if (obj.amount_total != null) {
+                    const commissionCents = Math.round((obj.amount_total * partner.commission_pct) / 100);
+                    createPendingCommission({
+                      code: partner.code,
+                      customerEmail: email,
+                      amountCents: commissionCents,
+                      currency: obj.currency,
+                      stripePaymentIntentId: obj.payment_intent,
+                    });
+                    console.log(`[partner] ${partner.code} → commission ${commissionCents/100} ${obj.currency} pending`);
+                  }
+                }
+              }
             }
+          } else if (event.type === "charge.refunded") {
+            const obj = event.data.object as { payment_intent: string };
+            if (obj.payment_intent) reverseCommission(obj.payment_intent);
           } else if (event.type === "customer.subscription.deleted") {
             const obj = event.data.object as { id: string; customer: string };
             markCanceledBySubscription(obj.id);

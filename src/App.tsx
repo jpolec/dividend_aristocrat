@@ -15,6 +15,7 @@ import { FAQ } from "./FAQ";
 import { FinalCta } from "./FinalCta";
 import { Footer } from "./Footer";
 import { Admin } from "./Admin";
+import { PartnerApp } from "./PartnerApp";
 import { DICTS, LangCtx, dirOf, type Lang } from "./i18n";
 import "./index.css";
 
@@ -34,6 +35,9 @@ export function App() {
 
   if (typeof window !== "undefined" && window.location.pathname.startsWith("/admin")) {
     return <Admin />;
+  }
+  if (typeof window !== "undefined" && window.location.pathname.startsWith("/partner")) {
+    return <PartnerApp />;
   }
   if (typeof window !== "undefined" && window.location.pathname.startsWith("/research")) {
     return (

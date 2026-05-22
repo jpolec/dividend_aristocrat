@@ -48,6 +48,7 @@ export async function createCheckoutSession(args: {
   lang: Lang;
   currency: Currency;
   tier?: Tier;
+  referralCode?: string | null;
   baseUrl: string;
 }): Promise<{ url: string; sessionId: string }> {
   if (!STRIPE_SECRET) throw new Error("STRIPE_SECRET_KEY not configured");
@@ -64,8 +65,11 @@ export async function createCheckoutSession(args: {
     cancel_url: `${args.baseUrl}/?paid=canceled`,
     "metadata[email]": args.email,
     "metadata[lang]": args.lang,
+    "metadata[referral_code]": args.referralCode ?? "",
     "subscription_data[metadata][email]": args.email,
     "subscription_data[metadata][lang]": args.lang,
+    "subscription_data[metadata][referral_code]": args.referralCode ?? "",
+    client_reference_id: args.referralCode ?? "",
     allow_promotion_codes: "true",
   });
 

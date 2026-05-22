@@ -48,11 +48,15 @@ export function Pricing() {
       return;
     }
     setBusyTier(tier);
+    const referralCode = document.cookie
+      .split(/;\s*/)
+      .find(c => c.startsWith("aristo_ref="))
+      ?.split("=")[1];
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, lang, currency, tier }),
+        body: JSON.stringify({ email, lang, currency, tier, referralCode }),
       });
       const j = await res.json();
       if (!res.ok || !j.url) throw new Error(j?.error ?? `HTTP ${res.status}`);

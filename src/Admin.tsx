@@ -10,6 +10,9 @@ type Sub = {
   last_sent_at: number | null;
 };
 type Resp = { count: number; last_run_at: number | null; subscribers: Sub[] };
+type Partner = { code: string; email: string; name: string; status: string; commission_pct: number; signed_agreement_at: number | null; created_at: number; payment_method: string | null; payment_details: string | null };
+type Payout = { id: number; code: string; amount_cents: number; currency: string; method: string; method_details: string; status: string; requested_at: number; paid_at: number | null; paid_reference: string | null };
+type PartnersResp = { partners: Partner[]; payouts: Payout[] };
 
 const fmtDate = (ms: number | null) =>
   ms == null ? "—" : new Date(ms).toLocaleString();
@@ -17,6 +20,8 @@ const fmtDate = (ms: number | null) =>
 export function Admin() {
   const [token, setToken] = useState<string>(() => sessionStorage.getItem("admin_token") ?? "");
   const [data, setData] = useState<Resp | null>(null);
+  const [partnersData, setPartnersData] = useState<PartnersResp | null>(null);
+  const [tab, setTab] = useState<"subscribers" | "partners">("subscribers");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -27,13 +32,31 @@ export function Admin() {
   async function load() {
     setError(null);
     try {
-      const res = await fetch(withToken("/api/admin/subscribers"));
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const j = (await res.json()) as Resp;
+      const [subRes, partRes] = await Promise.all([
+        fetch(withToken("/api/admin/subscribers")),
+        fetch(withToken("/api/admin/partners")),
+      ]);
+      if (!subRes.ok) throw new Error(`HTTP ${subRes.status}`);
+      const j = (await subRes.json()) as Resp;
       setData(j);
+      if (partRes.ok) {
+        const p = (await partRes.json()) as PartnersResp;
+        setPartnersData(p);
+      }
     } catch (e) {
       setError(String(e));
     }
+  }
+
+  async function markPayoutPaid(payoutId: number) {
+    const reference = prompt("Payment reference (bank ref / Wise ID / etc.)?");
+    if (!reference) return;
+    await fetch(withToken("/api/admin/partners/payout/mark-paid"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ payoutId, reference }),
+    });
+    await load();
   }
 
   useEffect(() => {
@@ -112,6 +135,19 @@ export function Admin() {
 
       {data && (
         <>
+          <div className="flex gap-1 border-b mb-4">
+            <button onClick={() => setTab("subscribers")} className={`px-4 py-2 text-sm font-medium border-b-2 ${tab === "subscribers" ? "border-primary" : "border-transparent text-muted-foreground"}`}>
+              Subscribers ({data.count})
+            </button>
+            <button onClick={() => setTab("partners")} className={`px-4 py-2 text-sm font-medium border-b-2 ${tab === "partners" ? "border-primary" : "border-transparent text-muted-foreground"}`}>
+              Partners ({partnersData?.partners.length ?? 0})
+            </button>
+          </div>
+
+          {tab === "partners" && partnersData && (
+            <PartnersAdminPanel data={partnersData} onMarkPaid={markPayoutPaid} />
+          )}
+          {tab === "subscribers" && (
           <Card className="mb-6">
             <CardHeader>
               <CardTitle>Subscribers ({data.count})</CardTitle>
@@ -164,8 +200,92 @@ export function Admin() {
               </div>
             </CardContent>
           </Card>
+          )}
         </>
       )}
+    </div>
+  );
+}
+
+function PartnersAdminPanel({ data, onMarkPaid }: { data: PartnersResp; onMarkPaid: (id: number) => void }) {
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Partners ({data.partners.length})</CardTitle>
+          <CardDescription>All registered partners and their signing status.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto rounded-md border">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50 text-xs uppercase">
+                <tr>
+                  <th className="px-3 py-2 text-start font-medium">Code</th>
+                  <th className="px-3 py-2 text-start font-medium">Name</th>
+                  <th className="px-3 py-2 text-start font-medium">Email</th>
+                  <th className="px-3 py-2 text-start font-medium">Status</th>
+                  <th className="px-3 py-2 text-start font-medium">Signed</th>
+                  <th className="px-3 py-2 text-start font-medium">Joined</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.partners.length === 0 && <tr><td colSpan={6} className="px-3 py-6 text-center text-muted-foreground">No partners yet</td></tr>}
+                {data.partners.map(p => (
+                  <tr key={p.code} className="border-t">
+                    <td className="px-3 py-2 font-mono font-semibold">{p.code}</td>
+                    <td className="px-3 py-2">{p.name}</td>
+                    <td className="px-3 py-2 font-mono text-xs">{p.email}</td>
+                    <td className="px-3 py-2"><span className={`text-xs font-semibold ${p.status === "active" ? "text-emerald-700" : "text-amber-700"}`}>{p.status}</span></td>
+                    <td className="px-3 py-2 text-xs">{p.signed_agreement_at ? "✓" : "—"}</td>
+                    <td className="px-3 py-2 text-xs">{new Date(p.created_at).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Payouts ({data.payouts.length})</CardTitle>
+          <CardDescription>Click "Mark paid" after transferring funds — releases the commissions from confirmed to paid.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto rounded-md border">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50 text-xs uppercase">
+                <tr>
+                  <th className="px-3 py-2 text-start font-medium">Partner</th>
+                  <th className="px-3 py-2 text-start font-medium">Amount</th>
+                  <th className="px-3 py-2 text-start font-medium">Method</th>
+                  <th className="px-3 py-2 text-start font-medium">Details</th>
+                  <th className="px-3 py-2 text-start font-medium">Status</th>
+                  <th className="px-3 py-2 text-start font-medium">Requested</th>
+                  <th className="px-3 py-2 text-start font-medium">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.payouts.length === 0 && <tr><td colSpan={7} className="px-3 py-6 text-center text-muted-foreground">No payout requests</td></tr>}
+                {data.payouts.map(p => (
+                  <tr key={p.id} className="border-t">
+                    <td className="px-3 py-2 font-mono">{p.code}</td>
+                    <td className="px-3 py-2 tabular-nums font-semibold">{(p.amount_cents / 100).toFixed(2)} {p.currency.toUpperCase()}</td>
+                    <td className="px-3 py-2">{p.method}</td>
+                    <td className="px-3 py-2 text-xs max-w-xs truncate" title={p.method_details}>{p.method_details}</td>
+                    <td className="px-3 py-2"><span className={`text-xs font-semibold ${p.status === "paid" ? "text-emerald-700" : "text-amber-700"}`}>{p.status}</span></td>
+                    <td className="px-3 py-2 text-xs">{new Date(p.requested_at).toLocaleDateString()}</td>
+                    <td className="px-3 py-2">
+                      {p.status === "requested" && <Button size="sm" onClick={() => onMarkPaid(p.id)}>Mark paid</Button>}
+                      {p.paid_reference && <span className="text-xs text-muted-foreground">{p.paid_reference}</span>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -1,7 +1,26 @@
 import { useEffect, useState } from "react";
 import { useT } from "./i18n";
 
-const PREVIEW_TICKERS = ["KO", "JNJ", "PG", "MMM", "ABT"];
+// High-yield mix: pipeline MLPs (8%) + a BDC + an mREIT (9-13%)
+const PREVIEW_TICKERS = ["MPLX", "WES", "ET", "ARCC", "AGNC"];
+
+type TickerProfile = {
+  name: string;
+  sector: string;
+  div5yGrowthPct: number;
+  payoutPct: number;
+  debtProfile: "Conservative" | "Moderate" | "Aggressive";
+  halalAware: boolean;
+  excludeReason?: string; // shown when halalAware === false
+};
+
+const TICKER_PROFILES: Record<string, TickerProfile> = {
+  MPLX: { name: "MPLX LP", sector: "Pipelines · Midstream", div5yGrowthPct: 5.2, payoutPct: 78, debtProfile: "Moderate", halalAware: true },
+  WES: { name: "Western Midstream Partners", sector: "Pipelines · Midstream", div5yGrowthPct: 7.8, payoutPct: 75, debtProfile: "Moderate", halalAware: true },
+  ET: { name: "Energy Transfer LP", sector: "Pipelines · Midstream", div5yGrowthPct: 3.1, payoutPct: 82, debtProfile: "Moderate", halalAware: true },
+  ARCC: { name: "Ares Capital", sector: "BDC · Lending", div5yGrowthPct: 4.8, payoutPct: 95, debtProfile: "Moderate", halalAware: false, excludeReason: "lending / interest income" },
+  AGNC: { name: "AGNC Investment", sector: "mREIT · Mortgage", div5yGrowthPct: -8.4, payoutPct: 145, debtProfile: "Aggressive", halalAware: false, excludeReason: "mortgage-rate exposure" },
+};
 
 type Enriched = {
   symbol: string;
@@ -24,24 +43,13 @@ type Base = {
 
 type Row = Base & {
   yieldPct: number;
-  div5yGrowthPct: number | null;
-  payoutPct: number | null;
+  div5yGrowthPct: number;
+  payoutPct: number;
   debtProfile: "Conservative" | "Moderate" | "Aggressive";
-  valuation: "Attractive" | "Fair" | "Premium";
   quality: number;
+  halalAware: boolean;
+  excludeReason?: string;
 };
-
-function debtForCap(mc: number | null): "Conservative" | "Moderate" | "Aggressive" {
-  if (mc == null) return "Moderate";
-  if (mc > 200e9) return "Conservative";
-  if (mc > 50e9) return "Moderate";
-  return "Aggressive";
-}
-function valuationForYield(y: number): "Attractive" | "Fair" | "Premium" {
-  if (y >= 4) return "Attractive";
-  if (y >= 2) return "Fair";
-  return "Premium";
-}
 
 const TAG_STYLES: Record<string, string> = {
   Conservative: "bg-emerald-700/15 text-[var(--aris-emerald)] border-emerald-700/20",
@@ -73,32 +81,34 @@ export function SampleResearch() {
         const built: Row[] = PREVIEW_TICKERS.map(sym => {
           const b = baseRows.find(r => r.symbol === sym);
           const e = eMap.get(sym);
+          const profile = TICKER_PROFILES[sym]!;
           const price = b?.price ?? 0;
           const div = b?.lastAnnualDividend ?? 0;
           const yieldPct = price > 0 ? (div / price) * 100 : 0;
           return {
             symbol: sym,
-            companyName: b?.companyName ?? sym,
+            companyName: b?.companyName ?? profile.name,
             price,
             lastAnnualDividend: div,
             marketCap: b?.marketCap ?? null,
             yieldPct,
-            div5yGrowthPct: null,
-            payoutPct: null,
-            debtProfile: debtForCap(b?.marketCap ?? null),
-            valuation: valuationForYield(yieldPct),
+            div5yGrowthPct: profile.div5yGrowthPct,
+            payoutPct: profile.payoutPct,
+            debtProfile: profile.debtProfile,
             quality: Math.min(100, e?.confidence ?? 0),
+            halalAware: profile.halalAware,
+            excludeReason: profile.excludeReason,
           };
         });
         setRows(built);
       } catch {
-        // Fallback only if API fails (unlikely)
+        // Static fallback (used only if API down) — illustrative yields
         setRows([
-          { symbol: "KO", companyName: "Coca-Cola Co.", price: 78, lastAnnualDividend: 2.04, marketCap: 340e9, yieldPct: 2.6, div5yGrowthPct: 4.1, payoutPct: 68, debtProfile: "Conservative", valuation: "Fair", quality: 92 },
-          { symbol: "JNJ", companyName: "Johnson & Johnson", price: 160, lastAnnualDividend: 5.04, marketCap: 390e9, yieldPct: 3.1, div5yGrowthPct: 6.0, payoutPct: 55, debtProfile: "Conservative", valuation: "Fair", quality: 94 },
-          { symbol: "PG", companyName: "Procter & Gamble", price: 165, lastAnnualDividend: 4.20, marketCap: 390e9, yieldPct: 2.5, div5yGrowthPct: 6.5, payoutPct: 60, debtProfile: "Conservative", valuation: "Fair", quality: 91 },
-          { symbol: "MMM", companyName: "3M Co.", price: 130, lastAnnualDividend: 2.80, marketCap: 70e9, yieldPct: 2.2, div5yGrowthPct: -2.5, payoutPct: 70, debtProfile: "Moderate", valuation: "Fair", quality: 65 },
-          { symbol: "ABT", companyName: "Abbott Laboratories", price: 140, lastAnnualDividend: 2.36, marketCap: 240e9, yieldPct: 1.7, div5yGrowthPct: 11.2, payoutPct: 45, debtProfile: "Conservative", valuation: "Premium", quality: 88 },
+          { symbol: "MPLX", companyName: "MPLX LP", price: 48, lastAnnualDividend: 4.10, marketCap: 49e9, yieldPct: 8.5, div5yGrowthPct: 5.2, payoutPct: 78, debtProfile: "Moderate", quality: 78, halalAware: true },
+          { symbol: "WES",  companyName: "Western Midstream Partners", price: 39, lastAnnualDividend: 3.20, marketCap: 14e9, yieldPct: 8.2, div5yGrowthPct: 7.8, payoutPct: 75, debtProfile: "Moderate", quality: 75, halalAware: true },
+          { symbol: "ET",   companyName: "Energy Transfer LP", price: 16, lastAnnualDividend: 1.27, marketCap: 55e9, yieldPct: 7.8, div5yGrowthPct: 3.1, payoutPct: 82, debtProfile: "Moderate", quality: 68, halalAware: true },
+          { symbol: "ARCC", companyName: "Ares Capital", price: 21, lastAnnualDividend: 1.92, marketCap: 13e9, yieldPct: 9.5, div5yGrowthPct: 4.8, payoutPct: 95, debtProfile: "Moderate", quality: 65, halalAware: false, excludeReason: "lending / interest income" },
+          { symbol: "AGNC", companyName: "AGNC Investment", price: 10, lastAnnualDividend: 1.44, marketCap: 6e9, yieldPct: 13.5, div5yGrowthPct: -8.4, payoutPct: 145, debtProfile: "Aggressive", quality: 35, halalAware: false, excludeReason: "mortgage-rate exposure" },
         ]);
       } finally {
         setLoading(false);
@@ -137,7 +147,7 @@ export function SampleResearch() {
             <table className="w-full border-collapse">
               <thead>
                 <tr>
-                  {[t.sampleResearchHeaders.company, t.sampleResearchHeaders.yield, t.sampleResearchHeaders.growth5y, t.sampleResearchHeaders.payout, "Debt", t.sampleResearchHeaders.quality].map(h => (
+                  {[t.sampleResearchHeaders.company, t.sampleResearchHeaders.yield, t.sampleResearchHeaders.growth5y, t.sampleResearchHeaders.payout, "Debt", "Halal-aware", t.sampleResearchHeaders.quality].map(h => (
                     <th key={h} className="font-mono-mark text-[10.5px] tracking-wider uppercase text-[var(--aris-muted)] text-start px-4 sm:px-5 py-4 border-b border-[var(--aris-line-dark)] font-medium">
                       {h}
                     </th>
@@ -146,27 +156,48 @@ export function SampleResearch() {
               </thead>
               <tbody>
                 {loading && (
-                  <tr><td colSpan={6} className="px-5 py-10 text-center text-[var(--aris-muted)] text-sm">…</td></tr>
+                  <tr><td colSpan={7} className="px-5 py-10 text-center text-[var(--aris-muted)] text-sm">…</td></tr>
                 )}
                 {!loading && rows.map(r => (
-                  <tr key={r.symbol} className="border-b border-[var(--aris-line-dark)] hover:bg-[rgba(198,166,103,.07)] transition-colors">
+                  <tr
+                    key={r.symbol}
+                    className={`border-b border-[var(--aris-line-dark)] transition-colors ${
+                      r.halalAware ? "hover:bg-[rgba(198,166,103,.07)]" : "bg-[rgba(12,18,14,.025)] hover:bg-[rgba(12,18,14,.05)]"
+                    }`}
+                  >
                     <td className="px-4 sm:px-5 py-4 text-[14px]">
-                      <div className="font-semibold text-[var(--aris-ink)]">
-                        <span className="font-mono-mark text-[var(--aris-emerald)] me-2">{r.symbol}</span>
-                        {r.companyName}
+                      <div className="font-semibold text-[var(--aris-ink)] flex items-center gap-2">
+                        <span className="font-mono-mark text-[var(--aris-emerald)]">{r.symbol}</span>
+                        <span className={r.halalAware ? "" : "text-[var(--aris-muted)]"}>{r.companyName}</span>
                       </div>
                     </td>
-                    <td className="px-4 sm:px-5 py-4 text-[14px] font-mono-mark text-[var(--aris-ink)]">
+                    <td className="px-4 sm:px-5 py-4 text-[14px] font-mono-mark font-semibold" style={{ color: r.yieldPct >= 9 ? "#9c7c3a" : "var(--aris-ink)" }}>
                       {r.yieldPct > 0 ? `${r.yieldPct.toFixed(2)}%` : "—"}
                     </td>
-                    <td className="px-4 sm:px-5 py-4 text-[14px] font-mono-mark text-[var(--aris-ink)]">
-                      {r.div5yGrowthPct == null ? "—" : `${r.div5yGrowthPct >= 0 ? "+" : ""}${r.div5yGrowthPct.toFixed(1)}%`}
+                    <td className={`px-4 sm:px-5 py-4 text-[14px] font-mono-mark ${r.div5yGrowthPct < 0 ? "text-rose-700" : "text-[var(--aris-ink)]"}`}>
+                      {`${r.div5yGrowthPct >= 0 ? "+" : ""}${r.div5yGrowthPct.toFixed(1)}%`}
                     </td>
-                    <td className="px-4 sm:px-5 py-4 text-[14px] font-mono-mark text-[var(--aris-ink)]">
-                      {r.payoutPct == null ? "—" : `${r.payoutPct}%`}
+                    <td className={`px-4 sm:px-5 py-4 text-[14px] font-mono-mark ${r.payoutPct > 100 ? "text-rose-700" : "text-[var(--aris-ink)]"}`}>
+                      {`${r.payoutPct}%`}
                     </td>
                     <td className="px-4 sm:px-5 py-4">
                       <Tag label={r.debtProfile} />
+                    </td>
+                    <td className="px-4 sm:px-5 py-4">
+                      {r.halalAware ? (
+                        <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[var(--aris-emerald)]">
+                          <span className="text-[14px] leading-none">◈</span>
+                          PASS
+                        </span>
+                      ) : (
+                        <span
+                          className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[var(--aris-muted)]"
+                          title={r.excludeReason}
+                        >
+                          <span className="text-[14px] leading-none">⊘</span>
+                          EXCLUDED
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 sm:px-5 py-4">
                       <Score value={r.quality} />
@@ -177,7 +208,11 @@ export function SampleResearch() {
             </table>
           </div>
 
-          <div className="px-6 sm:px-7 py-4 bg-[var(--aris-paper-2)] text-[12px] text-[var(--aris-muted)] italic leading-relaxed">
+          <div className="px-4 sm:px-7 py-4 bg-[var(--aris-paper-2)] text-[12px] text-[var(--aris-muted)] italic leading-relaxed">
+            <p className="not-italic font-medium text-[var(--aris-ink)] mb-1">
+              <span className="text-[var(--aris-emerald)] me-1">◈ PASS</span> = passes halal-aware filter &nbsp;·&nbsp;
+              <span className="text-[var(--aris-muted)] me-1">⊘ EXCLUDED</span> = shown for market context, outside the halal-aware screen
+            </p>
             {t.sampleResearchDisclaimer}
           </div>
         </div>

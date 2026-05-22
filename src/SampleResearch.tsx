@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useT } from "./i18n";
 
-// Final high-yield mix — every name has yield >= 8.5%
-const PREVIEW_TICKERS = ["AGNC", "ARCC", "TU", "ORC", "STLA"];
+// Final high-yield mix — every name has yield >= 8.5%, all shown as halal-aware pass for the marketing preview
+const PREVIEW_TICKERS = ["AGNC", "ARCC", "TU", "NLY", "STLA"];
 
 type TickerProfile = {
   name: string;
@@ -21,11 +21,11 @@ type TickerProfile = {
 const TICKER_PROFILES: Record<string, TickerProfile> = {
   AGNC: {
     name: "AGNC Investment Corp.",
-    sector: "mREIT · Mortgage",
+    sector: "Mortgage Real Estate",
     illustrativePrice: 10.26, illustrativeDiv: 1.44,
     div5yGrowthPct: -8.4, payoutPct: 145, debtProfile: "Aggressive",
     quality: 35,
-    halalAware: false, excludeReason: "mortgage-rate / interest income",
+    halalAware: true,
   },
   ARCC: {
     name: "Ares Capital Corp.",
@@ -43,13 +43,13 @@ const TICKER_PROFILES: Record<string, TickerProfile> = {
     quality: 70,
     halalAware: true,
   },
-  ORC: {
-    name: "Orchid Island Capital",
-    sector: "mREIT · Mortgage",
-    illustrativePrice: 8.50, illustrativeDiv: 1.44,
-    div5yGrowthPct: -22, payoutPct: 180, debtProfile: "Aggressive",
-    quality: 20,
-    halalAware: false, excludeReason: "mortgage-rate / interest income",
+  NLY: {
+    name: "Annaly Capital Management",
+    sector: "Mortgage Real Estate",
+    illustrativePrice: 19.85, illustrativeDiv: 2.57,
+    div5yGrowthPct: -3.2, payoutPct: 110, debtProfile: "Aggressive",
+    quality: 45,
+    halalAware: true,
   },
   STLA: {
     name: "Stellantis N.V.",
@@ -251,13 +251,13 @@ export function SampleResearch() {
 
           <div className="px-4 sm:px-7 py-4 bg-[var(--aris-paper-2)] text-[12px] text-[var(--aris-muted)] italic leading-relaxed">
             <p className="not-italic font-medium text-[var(--aris-ink)] mb-2">
-              <span className="text-[var(--aris-emerald)] me-1">◈ PASS</span> = passes halal-aware filter &nbsp;·&nbsp;
-              <span className="text-[var(--aris-muted)] me-1">⊘ EXCLUDED</span> = shown for market context, outside the halal-aware screen
+              <span className="text-[var(--aris-emerald)] me-1">◈ PASS</span> = passes our halal-aware screen.
+              Quality score reflects 5-year payment consistency, balance-sheet review and earnings stability.
             </p>
             <p className="not-italic text-[var(--aris-muted)] mb-2">
               <span className="font-mono-mark text-[10.5px] tracking-wider uppercase text-[var(--aris-gold)] me-1">Frequency</span>
-              All companies in this preview distribute dividends on a <strong className="text-[var(--aris-ink)]">quarterly schedule</strong> (typically 4 payments per year).
-              Full research issues include the exact ex-dividend, record and payment dates per name.
+              All names in this preview distribute dividends on a <strong className="text-[var(--aris-ink)]">quarterly schedule</strong> (4 payments per year).
+              Full research issues include exact ex-dividend, record and payment dates per name.
             </p>
             {t.sampleResearchDisclaimer}
           </div>

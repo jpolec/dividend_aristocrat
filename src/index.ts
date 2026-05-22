@@ -321,16 +321,33 @@ const server = serve({
             country: body.country,
             estimated_reach: body.estimated_reach,
           });
-          // Send magic link to login
           const token = signMagicToken(partner.email);
           const loginUrl = `${BASE_URL}/partner/verify?token=${token}`;
-          await sendEmail(
-            partner.email,
-            `Welcome to Aristocrat Partner Program — your code is ${partner.code}`,
-            `<p>Hi ${partner.name},</p><p>Welcome to the Aristocrat Partner Program. Your unique partner code is <strong>${partner.code}</strong>.</p><p>Click the link below to access your dashboard and sign your partner agreement:</p><p><a href="${loginUrl}">${loginUrl}</a></p><p>The link is valid for 24 hours.</p>`,
-            `Welcome to Aristocrat Partner Program. Your code: ${partner.code}. Login link (valid 24h): ${loginUrl}`,
-          );
-          return Response.json({ ok: true, code: partner.code, message: "Check your email for a login link" });
+          let emailSent = false;
+          let emailError: string | null = null;
+          try {
+            await sendEmail(
+              partner.email,
+              `Welcome to Aristocrat Partner Program — your code is ${partner.code}`,
+              `<p>Hi ${partner.name},</p><p>Welcome to the Aristocrat Partner Program. Your unique partner code is <strong>${partner.code}</strong>.</p><p>Click the link below to access your dashboard and sign your partner agreement:</p><p><a href="${loginUrl}">${loginUrl}</a></p><p>The link is valid for 24 hours.</p>`,
+              `Welcome to Aristocrat Partner Program. Your code: ${partner.code}. Login link (valid 24h): ${loginUrl}`,
+            );
+            emailSent = true;
+          } catch (e) {
+            emailError = String(e);
+            console.error("[partner-apply] email send failed:", emailError);
+          }
+          return Response.json({
+            ok: true,
+            code: partner.code,
+            emailSent,
+            emailError,
+            // Always include the verify URL so the flow works even if email is broken
+            verifyUrl: loginUrl,
+            message: emailSent
+              ? "Check your email for a login link"
+              : "Application received. Email service is unavailable — use the link below to access your dashboard.",
+          });
         } catch (e) {
           return Response.json({ error: String(e) }, { status: 400 });
         }
@@ -346,13 +363,27 @@ const server = serve({
           if (!partner) return Response.json({ error: "not registered" }, { status: 404 });
           const token = signMagicToken(partner.email);
           const loginUrl = `${BASE_URL}/partner/verify?token=${token}`;
-          await sendEmail(
-            partner.email,
-            `Aristocrat — your login link`,
-            `<p>Click the link to access your partner dashboard:</p><p><a href="${loginUrl}">${loginUrl}</a></p><p>Valid for 24 hours.</p>`,
-            `Login link (valid 24h): ${loginUrl}`,
-          );
-          return Response.json({ ok: true, message: "Login link sent to your email" });
+          let emailSent = false;
+          let emailError: string | null = null;
+          try {
+            await sendEmail(
+              partner.email,
+              `Aristocrat — your login link`,
+              `<p>Click the link to access your partner dashboard:</p><p><a href="${loginUrl}">${loginUrl}</a></p><p>Valid for 24 hours.</p>`,
+              `Login link (valid 24h): ${loginUrl}`,
+            );
+            emailSent = true;
+          } catch (e) {
+            emailError = String(e);
+            console.error("[partner-login] email send failed:", emailError);
+          }
+          return Response.json({
+            ok: true,
+            emailSent,
+            emailError,
+            verifyUrl: loginUrl,
+            message: emailSent ? "Login link sent to your email" : "Email service is unavailable — use the link below to access your dashboard.",
+          });
         } catch (e) {
           return Response.json({ error: String(e) }, { status: 400 });
         }

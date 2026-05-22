@@ -148,7 +148,8 @@ function Landing() {
 function ApplyForm() {
   const [form, setForm] = useState({ email: "", name: "", social_handle: "", country: "", estimated_reach: "" });
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
-  const [msg, setMsg] = useState<string>("");
+  const [result, setResult] = useState<{ code: string; verifyUrl: string; emailSent: boolean; emailError: string | null } | null>(null);
+  const [errMsg, setErrMsg] = useState<string>("");
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -161,11 +162,11 @@ function ApplyForm() {
       });
       const j = await res.json();
       if (!res.ok) throw new Error(j?.error ?? `HTTP ${res.status}`);
+      setResult({ code: j.code, verifyUrl: j.verifyUrl, emailSent: j.emailSent, emailError: j.emailError });
       setStatus("success");
-      setMsg(`Your partner code: ${j.code}. Check your email for a login link to access your dashboard and sign the partner agreement.`);
     } catch (e) {
       setStatus("error");
-      setMsg(e instanceof Error ? e.message : String(e));
+      setErrMsg(e instanceof Error ? e.message : String(e));
     }
   }
 
@@ -178,10 +179,36 @@ function ApplyForm() {
           You'll receive your unique partner code immediately. We'll email you a login link to access your dashboard and sign the partner agreement.
         </p>
 
-        {status === "success" ? (
-          <div className="rounded-md border border-emerald-300 bg-emerald-50 p-5">
-            <div className="font-semibold text-emerald-900 mb-2">✓ Application received</div>
-            <p className="text-[14px] text-emerald-900 leading-relaxed">{msg}</p>
+        {status === "success" && result ? (
+          <div className="space-y-4">
+            <div className="rounded-md border-2 border-emerald-400 bg-emerald-50 p-5">
+              <div className="font-semibold text-emerald-900 mb-2">✓ Application received</div>
+              <p className="text-[14px] text-emerald-900 mb-3">Your unique partner code:</p>
+              <div className="font-mono-mark text-[24px] font-bold text-emerald-900 bg-white px-4 py-2 rounded-sm inline-block">{result.code}</div>
+            </div>
+
+            {result.emailSent ? (
+              <div className="rounded-md border border-emerald-300 bg-emerald-50/50 p-4 text-[14px] text-emerald-900">
+                📧 We've sent a login link to your email. Check your inbox (and spam folder).
+              </div>
+            ) : (
+              <div className="rounded-md border border-amber-400 bg-amber-50 p-5">
+                <div className="font-semibold text-amber-900 mb-2">⚠ Email service unavailable</div>
+                <p className="text-[13px] text-amber-900 mb-3">We couldn't send the login email right now. Use the direct link below to access your dashboard:</p>
+                <a
+                  href={result.verifyUrl}
+                  className="inline-block rounded-sm bg-amber-600 hover:bg-amber-700 text-white px-5 py-2.5 text-sm font-semibold"
+                >
+                  Open dashboard →
+                </a>
+                {result.emailError && (
+                  <details className="mt-3 text-[11px] text-amber-700">
+                    <summary className="cursor-pointer">Technical details</summary>
+                    <code className="break-all">{result.emailError}</code>
+                  </details>
+                )}
+              </div>
+            )}
           </div>
         ) : (
           <form onSubmit={submit} className="space-y-4">
@@ -190,7 +217,7 @@ function ApplyForm() {
             <Field label="Primary social handle (X, IG, TikTok, LinkedIn URL)" value={form.social_handle} onChange={v => setForm({ ...form, social_handle: v })} />
             <Field label="Country of residence" value={form.country} onChange={v => setForm({ ...form, country: v })} />
             <Field label="Estimated audience reach" value={form.estimated_reach} onChange={v => setForm({ ...form, estimated_reach: v })} placeholder="e.g. 25k followers on X + 8k on LinkedIn" />
-            {status === "error" && <div className="text-sm text-rose-700">{msg}</div>}
+            {status === "error" && <div className="text-sm text-rose-700">{errMsg}</div>}
             <button
               type="submit"
               disabled={status === "submitting"}
@@ -227,7 +254,8 @@ function Field({ label, value, onChange, type = "text", required, placeholder }:
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
-  const [msg, setMsg] = useState("");
+  const [result, setResult] = useState<{ verifyUrl: string; emailSent: boolean; emailError: string | null } | null>(null);
+  const [errMsg, setErrMsg] = useState("");
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -240,11 +268,11 @@ function LoginForm() {
       });
       const j = await res.json();
       if (!res.ok) throw new Error(j?.error ?? `HTTP ${res.status}`);
+      setResult({ verifyUrl: j.verifyUrl, emailSent: j.emailSent, emailError: j.emailError });
       setStatus("success");
-      setMsg("Check your email for a login link (valid 24h).");
     } catch (e) {
       setStatus("error");
-      setMsg(e instanceof Error ? e.message : String(e));
+      setErrMsg(e instanceof Error ? e.message : String(e));
     }
   }
 
@@ -253,12 +281,24 @@ function LoginForm() {
       <div className="max-w-md">
         <h1 className="font-serif-display text-[28px] text-[var(--aris-ink)] mb-3">Partner sign in</h1>
         <p className="text-[14px] text-[var(--aris-muted)] mb-6">Enter your email — we'll send you a login link.</p>
-        {status === "success" ? (
-          <div className="rounded-md border border-emerald-300 bg-emerald-50 p-4 text-[14px] text-emerald-900">{msg}</div>
+        {status === "success" && result ? (
+          result.emailSent ? (
+            <div className="rounded-md border border-emerald-300 bg-emerald-50 p-4 text-[14px] text-emerald-900">
+              📧 Check your email for a login link (valid 24h).
+            </div>
+          ) : (
+            <div className="rounded-md border border-amber-400 bg-amber-50 p-5">
+              <div className="font-semibold text-amber-900 mb-2">⚠ Email service unavailable</div>
+              <p className="text-[13px] text-amber-900 mb-3">Use the direct link below to access your dashboard:</p>
+              <a href={result.verifyUrl} className="inline-block rounded-sm bg-amber-600 hover:bg-amber-700 text-white px-5 py-2.5 text-sm font-semibold">
+                Open dashboard →
+              </a>
+            </div>
+          )
         ) : (
           <form onSubmit={submit} className="space-y-4">
             <Field label="Email" type="email" value={email} onChange={setEmail} required />
-            {status === "error" && <div className="text-sm text-rose-700">{msg}</div>}
+            {status === "error" && <div className="text-sm text-rose-700">{errMsg}</div>}
             <button
               type="submit"
               disabled={status === "submitting"}

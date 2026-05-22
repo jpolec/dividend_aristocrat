@@ -59,6 +59,11 @@ type Dict = {
   howWeFilterIntro: string;
   howWeFilterMetrics: { label: string; desc: string }[];
   howWeFilterStat: string;
+  // Quality-First intro
+  qualityFirstEyebrow: string;
+  qualityFirstTitle: string;
+  qualityFirstBody: string;
+  qualityFirstBadges: string[];
   // sample research
   sampleResearchTitle: string;
   sampleResearchIntro: string;
@@ -71,6 +76,18 @@ type Dict = {
   comparisonRight: string;
   comparisonRows: { dimension: string; left: string; right: string }[];
   comparisonNote: string;
+  // concrete example
+  comparisonExampleEyebrow: string;
+  comparisonExampleTitle: string;
+  comparisonExampleCapital: string;
+  comparisonExamplePropertyLabel: string;
+  comparisonExamplePropertyDetail: string;
+  comparisonExamplePropertyValue: string;
+  comparisonExampleDividendLabel: string;
+  comparisonExampleDividendDetail: string;
+  comparisonExampleDividendValue: string;
+  comparisonExampleDelta: string;
+  comparisonExampleNote: string;
   // sharia
   shariaTitle: string;
   shariaIntro: string;
@@ -233,6 +250,16 @@ const en: Dict = {
   ],
   howWeFilterStat:
     "From ~3,000 dividend-paying companies in the U.S. market, the methodology typically narrows to ~40–80 names per quarter.",
+  qualityFirstEyebrow: "Quality-First Approach",
+  qualityFirstTitle: "Established companies with proven payment track records",
+  qualityFirstBody:
+    "Our screening focuses on companies with multi-decade dividend histories — established, cash-generative businesses with disciplined capital allocation. Every name passes a structured 8-dimension financial quality screen. We do not pursue speculative or unproven names; the research is positioned for long-term income builders, not traders.",
+  qualityFirstBadges: [
+    "Multi-decade dividend records",
+    "Cash-flow-funded payouts",
+    "Conservative balance sheets",
+    "Disciplined screening",
+  ],
   sampleResearchTitle: "Sample research preview",
   sampleResearchIntro:
     "An indicative view of what the weekly research looks like. Live values are fetched against our screening criteria.",
@@ -261,6 +288,18 @@ const en: Dict = {
   ],
   comparisonNote:
     "This is illustrative. Both asset classes have distinct risks, costs and benefits. Diversification across both may be more durable than concentration in either.",
+  comparisonExampleEyebrow: "Concrete example",
+  comparisonExampleTitle: "What AED 1,500,000 could mean",
+  comparisonExampleCapital: "Starting capital",
+  comparisonExamplePropertyLabel: "Property path",
+  comparisonExamplePropertyDetail: "AED 1.5M apartment · 4% rental yield",
+  comparisonExamplePropertyValue: "AED 60,000 / year",
+  comparisonExampleDividendLabel: "Dividend portfolio path",
+  comparisonExampleDividendDetail: "Same capital · 10% target yield",
+  comparisonExampleDividendValue: "AED 150,000 / year",
+  comparisonExampleDelta: "Difference",
+  comparisonExampleNote:
+    "Illustrative only. Net rental yields after maintenance, vacancies, agency and service-charge fees are typically lower. Dividend yields are not guaranteed and can be reduced or suspended. Both paths carry risk including loss of capital.",
   shariaTitle: "Halal-aware screening",
   shariaIntro:
     "The research methodology applies sector-level exclusions designed to respect Islamic finance principles. We do NOT claim formal Sharia certification.",
@@ -585,6 +624,16 @@ const pl: Dict = {
   ],
   howWeFilterStat:
     "Z ~3 000 spółek dywidendowych w USA metodologia zawęża zwykle do ~40–80 nazwisk kwartalnie.",
+  qualityFirstEyebrow: "Podejście Quality-First",
+  qualityFirstTitle: "Sprawdzone spółki z udokumentowaną historią wypłat",
+  qualityFirstBody:
+    "Screening skupia się na spółkach z wieloletnią historią dywidend — biznesy ustabilizowane, generujące gotówkę, ze zdyscyplinowaną alokacją kapitału. Każda nazwa przechodzi 8-wymiarowy screen jakości finansowej. Nie zajmujemy się spekulacją ani niesprawdzonymi nazwami; research jest dla budowania dochodu w długim terminie, nie dla traderów.",
+  qualityFirstBadges: [
+    "Wieloletnie historie dywidend",
+    "Wypłaty pokryte cash flow",
+    "Konserwatywne bilanse",
+    "Zdyscyplinowany screening",
+  ],
   sampleResearchTitle: "Próbka researchu",
   sampleResearchIntro:
     "Poglądowy widok cotygodniowego researchu. Bieżące wartości pobierane są względem kryteriów screeningu.",
@@ -613,6 +662,18 @@ const pl: Dict = {
   ],
   comparisonNote:
     "To ilustracja. Obie klasy aktywów mają odrębne ryzyka, koszty i korzyści. Dywersyfikacja między nimi może być trwalsza niż koncentracja w jednej.",
+  comparisonExampleEyebrow: "Konkretny przykład",
+  comparisonExampleTitle: "Co może dać 1 500 000 AED",
+  comparisonExampleCapital: "Kapitał startowy",
+  comparisonExamplePropertyLabel: "Ścieżka nieruchomościowa",
+  comparisonExamplePropertyDetail: "Mieszkanie za 1,5 mln AED · 4% yield z najmu",
+  comparisonExamplePropertyValue: "60 000 AED / rok",
+  comparisonExampleDividendLabel: "Ścieżka dywidendowa",
+  comparisonExampleDividendDetail: "Ten sam kapitał · 10% docelowy yield",
+  comparisonExampleDividendValue: "150 000 AED / rok",
+  comparisonExampleDelta: "Różnica",
+  comparisonExampleNote:
+    "Wyłącznie ilustracja. Netto yield z najmu po opłatach (utrzymanie, pustostany, prowizje agencji, opłaty wspólnoty) jest zwykle niższy. Stopy dywidend nie są gwarantowane — mogą zostać obniżone lub zawieszone. Obie ścieżki niosą ryzyko, w tym utraty kapitału.",
   shariaTitle: "Halal-aware screening",
   shariaIntro:
     "Metodologia stosuje wyłączenia sektorowe respektujące zasady finansów islamskich. NIE ogłaszamy formalnej certyfikacji Sharia.",
@@ -937,6 +998,16 @@ const ar: Dict = {
   ],
   howWeFilterStat:
     "من ~3,000 شركة موزعة لأرباح في السوق الأمريكي، تضيق المنهجية عادةً إلى ~40–80 اسمًا كل ربع سنة.",
+  qualityFirstEyebrow: "منهج الجودة أولاً",
+  qualityFirstTitle: "شركات راسخة بسجل دفع موثّق",
+  qualityFirstBody:
+    "يركّز الفحص على شركات بسجل توزيعات يمتدّ لعقود — شركات راسخة ومولّدة للنقد بتخصيص منضبط لرأس المال. كلّ اسم يجتاز فحص جودة مالية من 8 أبعاد. لا نسعى للمضاربة أو لأسماء غير مثبتة؛ الأبحاث موجّهة لبناء دخل طويل الأجل، لا للتداول.",
+  qualityFirstBadges: [
+    "سجل توزيعات عبر عقود",
+    "توزيعات مدفوعة من التدفق النقدي",
+    "ميزانيات محافظة",
+    "فحص منضبط",
+  ],
   sampleResearchTitle: "معاينة الأبحاث",
   sampleResearchIntro:
     "عرض توضيحي لكيفية ظهور الأبحاث الأسبوعية. تُحدَّث القيم الحية مقابل معايير الفحص.",
@@ -965,6 +1036,18 @@ const ar: Dict = {
   ],
   comparisonNote:
     "هذا للتوضيح. لكلتا فئتي الأصول مخاطرها وتكاليفها وفوائدها. التنويع بينهما قد يكون أكثر متانة من التركز في واحدة.",
+  comparisonExampleEyebrow: "مثال ملموس",
+  comparisonExampleTitle: "ماذا قد يعني 1,500,000 درهم",
+  comparisonExampleCapital: "رأس المال الابتدائي",
+  comparisonExamplePropertyLabel: "مسار العقار",
+  comparisonExamplePropertyDetail: "شقة بـ 1.5 مليون درهم · عائد إيجار 4%",
+  comparisonExamplePropertyValue: "60,000 درهم / سنة",
+  comparisonExampleDividendLabel: "مسار توزيعات الأرباح",
+  comparisonExampleDividendDetail: "نفس رأس المال · 10% عائد مستهدف",
+  comparisonExampleDividendValue: "150,000 درهم / سنة",
+  comparisonExampleDelta: "الفرق",
+  comparisonExampleNote:
+    "للتوضيح فقط. صافي عائد الإيجار بعد الصيانة، الفترات الفارغة، عمولات الوكلاء ورسوم الخدمة يكون عادةً أقل. عوائد توزيعات الأرباح ليست مضمونة وقد تُخفض أو تُعلَّق. كلا المسارين ينطوي على مخاطر، بما فيها خسارة رأس المال.",
   shariaTitle: "فحص متوافق مع الحلال",
   shariaIntro:
     "تطبّق منهجية البحث استبعادات قطاعية مصممة لاحترام مبادئ التمويل الإسلامي. لا نزعم شهادة شرعية رسمية.",

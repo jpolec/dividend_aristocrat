@@ -61,6 +61,81 @@ export function Comparison() {
         <p className="text-center mt-8 text-[13px] text-[var(--aris-paper)]/50 italic max-w-2xl mx-auto leading-relaxed">
           {t.comparisonNote}
         </p>
+
+        {/* Concrete example callout */}
+        <div className="mt-14 sm:mt-16">
+          <div className="text-center mb-8">
+            <div className="eyebrow">{t.comparisonExampleEyebrow}</div>
+            <h3 className="font-serif-display text-[22px] sm:text-[30px] lg:text-[36px] text-[var(--aris-paper)] mt-3">
+              {t.comparisonExampleTitle}
+            </h3>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 max-w-4xl mx-auto">
+            {/* Property card */}
+            <div
+              className="rounded-xl border border-[var(--aris-line)] p-6 sm:p-7"
+              style={{ background: "rgba(15,40,29,.35)" }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="font-mono-mark text-[10.5px] tracking-wider uppercase text-[var(--aris-muted-light)]">
+                  {t.comparisonExamplePropertyLabel}
+                </span>
+                <span className="text-2xl" aria-hidden="true">🏠</span>
+              </div>
+              <div className="text-[13px] text-[var(--aris-paper)]/65 mb-4">
+                {t.comparisonExamplePropertyDetail}
+              </div>
+              <div className="font-serif-display text-[28px] sm:text-[36px] text-[var(--aris-paper)]/85 leading-none">
+                {t.comparisonExamplePropertyValue}
+              </div>
+              <div className="mt-2 text-[12px] text-[var(--aris-muted-light)]">
+                gross rental income
+              </div>
+            </div>
+
+            {/* Dividend card — featured */}
+            <div
+              className="relative rounded-xl p-6 sm:p-7"
+              style={{
+                background: "linear-gradient(135deg, rgba(198,166,103,.18), rgba(198,166,103,.04))",
+                border: "1px solid var(--aris-gold)",
+              }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="font-mono-mark text-[10.5px] tracking-wider uppercase text-[var(--aris-gold)]">
+                  {t.comparisonExampleDividendLabel}
+                </span>
+                <span className="text-2xl" aria-hidden="true">◈</span>
+              </div>
+              <div className="text-[13px] text-[var(--aris-paper)]/75 mb-4">
+                {t.comparisonExampleDividendDetail}
+              </div>
+              <div className="font-serif-display text-[28px] sm:text-[36px] text-[var(--aris-gold-soft)] leading-none">
+                {t.comparisonExampleDividendValue}
+              </div>
+              <div className="mt-2 text-[12px] text-[var(--aris-gold)]/80">
+                target annual dividend income
+              </div>
+            </div>
+          </div>
+
+          {/* Delta */}
+          <div className="mt-5 mx-auto max-w-md text-center">
+            <div className="inline-flex items-center gap-3 rounded-full border border-[var(--aris-gold)]/40 bg-[var(--aris-green-950)]/60 px-5 py-2.5">
+              <span className="font-mono-mark text-[10.5px] tracking-wider uppercase text-[var(--aris-gold)]">
+                {t.comparisonExampleDelta}
+              </span>
+              <span className="font-serif-display text-[18px] sm:text-[22px] text-[var(--aris-paper)]">
+                +AED 90,000 / year
+              </span>
+            </div>
+          </div>
+
+          <p className="text-center mt-6 text-[12px] text-[var(--aris-paper)]/50 italic max-w-3xl mx-auto leading-relaxed">
+            {t.comparisonExampleNote}
+          </p>
+        </div>
       </div>
     </section>
   );

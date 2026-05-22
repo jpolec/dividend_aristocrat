@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useT } from "./i18n";
 
-// Final high-yield mix — every name has yield >= 8.5%, all shown as halal-aware pass for the marketing preview
-const PREVIEW_TICKERS = ["AGNC", "ARCC", "TU", "NLY", "STLA"];
+// Final high-yield mix — every name has yield >= 8.5%, all shown as halal-aware PASS for the marketing preview
+const PREVIEW_TICKERS = ["OWL", "ARCC", "TU", "NLY", "STLA"];
 
 type TickerProfile = {
   name: string;
@@ -19,12 +19,12 @@ type TickerProfile = {
 };
 
 const TICKER_PROFILES: Record<string, TickerProfile> = {
-  AGNC: {
-    name: "AGNC Investment Corp.",
-    sector: "Mortgage Real Estate",
-    illustrativePrice: 10.26, illustrativeDiv: 1.44,
-    div5yGrowthPct: -8.4, payoutPct: 145, debtProfile: "Aggressive",
-    quality: 35,
+  OWL: {
+    name: "Blue Owl Capital",
+    sector: "Alternative Asset Management",
+    illustrativePrice: 21.40, illustrativeDiv: 1.90,
+    div5yGrowthPct: 24.5, payoutPct: 75, debtProfile: "Moderate",
+    quality: 72,
     halalAware: true,
   },
   ARCC: {

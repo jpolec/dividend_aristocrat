@@ -16,7 +16,7 @@ export function HowWeFilter() {
   return (
     <section id="method" className="py-14 sm:py-20 lg:py-24" style={{ background: "var(--aris-paper-2)" }}>
       <div className="mx-auto max-w-[1240px] px-4 sm:px-7">
-        <div className="max-w-3xl mb-12">
+        <div className="max-w-3xl mb-10">
           <div className="eyebrow">{t.howWeFilterTitle === "How we filter" ? "Our Methodology" : "Methodology"}</div>
           <h2 className="font-serif-display text-[24px] sm:text-[32px] md:text-[40px] lg:text-[46px] text-[var(--aris-ink)] my-4">
             {t.howWeFilterTitle}
@@ -24,6 +24,34 @@ export function HowWeFilter() {
           <p className="text-[15px] sm:text-[17px] text-[var(--aris-muted)] leading-relaxed max-w-2xl">
             {t.howWeFilterIntro}
           </p>
+        </div>
+
+        {/* Quality-First Approach callout */}
+        <div
+          className="mb-12 rounded-xl px-5 sm:px-7 py-6 sm:py-7"
+          style={{ background: "linear-gradient(135deg, rgba(15,40,29,.94), var(--aris-green-950))", color: "var(--aris-paper)" }}
+        >
+          <div className="flex items-center gap-2 text-[var(--aris-gold)] text-[11px] uppercase tracking-[0.2em] font-semibold mb-2">
+            <span className="text-base">◈</span>
+            {t.qualityFirstEyebrow}
+          </div>
+          <h3 className="font-serif-display text-[20px] sm:text-[26px] lg:text-[30px] text-[var(--aris-paper)] mb-3 leading-[1.2]">
+            {t.qualityFirstTitle}
+          </h3>
+          <p className="text-[14px] sm:text-[15.5px] text-[var(--aris-paper)]/75 leading-relaxed max-w-3xl">
+            {t.qualityFirstBody}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {t.qualityFirstBadges.map(b => (
+              <span
+                key={b}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--aris-gold)]/40 bg-[var(--aris-gold)]/8 px-3 py-1.5 text-[11px] font-medium text-[var(--aris-gold-soft)]"
+              >
+                <span className="text-[var(--aris-gold)]">✓</span>
+                {b}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-10 items-center">

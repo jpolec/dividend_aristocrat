@@ -1,25 +1,64 @@
 import { useEffect, useState } from "react";
 import { useT } from "./i18n";
 
-// High-yield mix: pipeline MLPs (8%) + a BDC + an mREIT (9-13%)
-const PREVIEW_TICKERS = ["MPLX", "WES", "ET", "ARCC", "AGNC"];
+// Final high-yield mix in user-specified order
+const PREVIEW_TICKERS = ["AGNC", "ARCC", "MPLX", "ORC", "ET"];
 
 type TickerProfile = {
   name: string;
   sector: string;
+  // Illustrative fallback used when ticker isn't in the screener output (BDCs/mREITs are typically excluded by FMP's screener)
+  illustrativePrice: number;
+  illustrativeDiv: number;
   div5yGrowthPct: number;
   payoutPct: number;
   debtProfile: "Conservative" | "Moderate" | "Aggressive";
+  quality: number; // 0-100, hardcoded realistic — API confidence over-scores BDCs/mREITs that have actually cut
   halalAware: boolean;
-  excludeReason?: string; // shown when halalAware === false
+  excludeReason?: string;
 };
 
 const TICKER_PROFILES: Record<string, TickerProfile> = {
-  MPLX: { name: "MPLX LP", sector: "Pipelines · Midstream", div5yGrowthPct: 5.2, payoutPct: 78, debtProfile: "Moderate", halalAware: true },
-  WES: { name: "Western Midstream Partners", sector: "Pipelines · Midstream", div5yGrowthPct: 7.8, payoutPct: 75, debtProfile: "Moderate", halalAware: true },
-  ET: { name: "Energy Transfer LP", sector: "Pipelines · Midstream", div5yGrowthPct: 3.1, payoutPct: 82, debtProfile: "Moderate", halalAware: true },
-  ARCC: { name: "Ares Capital", sector: "BDC · Lending", div5yGrowthPct: 4.8, payoutPct: 95, debtProfile: "Moderate", halalAware: false, excludeReason: "lending / interest income" },
-  AGNC: { name: "AGNC Investment", sector: "mREIT · Mortgage", div5yGrowthPct: -8.4, payoutPct: 145, debtProfile: "Aggressive", halalAware: false, excludeReason: "mortgage-rate exposure" },
+  AGNC: {
+    name: "AGNC Investment Corp.",
+    sector: "mREIT · Mortgage",
+    illustrativePrice: 10.26, illustrativeDiv: 1.44,
+    div5yGrowthPct: -8.4, payoutPct: 145, debtProfile: "Aggressive",
+    quality: 35,
+    halalAware: false, excludeReason: "mortgage-rate / interest income",
+  },
+  ARCC: {
+    name: "Ares Capital Corp.",
+    sector: "BDC · Lending",
+    illustrativePrice: 18.74, illustrativeDiv: 1.92,
+    div5yGrowthPct: 4.8, payoutPct: 95, debtProfile: "Moderate",
+    quality: 65,
+    halalAware: false, excludeReason: "lending / interest income",
+  },
+  MPLX: {
+    name: "MPLX LP",
+    sector: "Pipelines · Midstream",
+    illustrativePrice: 55.62, illustrativeDiv: 4.31,
+    div5yGrowthPct: 5.2, payoutPct: 78, debtProfile: "Moderate",
+    quality: 78,
+    halalAware: true,
+  },
+  ORC: {
+    name: "Orchid Island Capital",
+    sector: "mREIT · Mortgage",
+    illustrativePrice: 8.50, illustrativeDiv: 1.44,
+    div5yGrowthPct: -22, payoutPct: 180, debtProfile: "Aggressive",
+    quality: 20,
+    halalAware: false, excludeReason: "mortgage-rate / interest income",
+  },
+  ET: {
+    name: "Energy Transfer LP",
+    sector: "Pipelines · Midstream",
+    illustrativePrice: 20.01, illustrativeDiv: 1.33,
+    div5yGrowthPct: 3.1, payoutPct: 82, debtProfile: "Moderate",
+    quality: 68,
+    halalAware: true,
+  },
 };
 
 type Enriched = {
@@ -80,10 +119,10 @@ export function SampleResearch() {
 
         const built: Row[] = PREVIEW_TICKERS.map(sym => {
           const b = baseRows.find(r => r.symbol === sym);
-          const e = eMap.get(sym);
           const profile = TICKER_PROFILES[sym]!;
-          const price = b?.price ?? 0;
-          const div = b?.lastAnnualDividend ?? 0;
+          // Use live price/dividend when present in screener (MPLX, ET), illustrative otherwise (AGNC, ARCC, ORC)
+          const price = b?.price ?? profile.illustrativePrice;
+          const div = b?.lastAnnualDividend ?? profile.illustrativeDiv;
           const yieldPct = price > 0 ? (div / price) * 100 : 0;
           return {
             symbol: sym,
@@ -95,21 +134,23 @@ export function SampleResearch() {
             div5yGrowthPct: profile.div5yGrowthPct,
             payoutPct: profile.payoutPct,
             debtProfile: profile.debtProfile,
-            quality: Math.min(100, e?.confidence ?? 0),
+            quality: profile.quality, // realistic per-ticker (API confidence over-scores names that have cut)
             halalAware: profile.halalAware,
             excludeReason: profile.excludeReason,
           };
         });
         setRows(built);
       } catch {
-        // Static fallback (used only if API down) — illustrative yields
-        setRows([
-          { symbol: "MPLX", companyName: "MPLX LP", price: 48, lastAnnualDividend: 4.10, marketCap: 49e9, yieldPct: 8.5, div5yGrowthPct: 5.2, payoutPct: 78, debtProfile: "Moderate", quality: 78, halalAware: true },
-          { symbol: "WES",  companyName: "Western Midstream Partners", price: 39, lastAnnualDividend: 3.20, marketCap: 14e9, yieldPct: 8.2, div5yGrowthPct: 7.8, payoutPct: 75, debtProfile: "Moderate", quality: 75, halalAware: true },
-          { symbol: "ET",   companyName: "Energy Transfer LP", price: 16, lastAnnualDividend: 1.27, marketCap: 55e9, yieldPct: 7.8, div5yGrowthPct: 3.1, payoutPct: 82, debtProfile: "Moderate", quality: 68, halalAware: true },
-          { symbol: "ARCC", companyName: "Ares Capital", price: 21, lastAnnualDividend: 1.92, marketCap: 13e9, yieldPct: 9.5, div5yGrowthPct: 4.8, payoutPct: 95, debtProfile: "Moderate", quality: 65, halalAware: false, excludeReason: "lending / interest income" },
-          { symbol: "AGNC", companyName: "AGNC Investment", price: 10, lastAnnualDividend: 1.44, marketCap: 6e9, yieldPct: 13.5, div5yGrowthPct: -8.4, payoutPct: 145, debtProfile: "Aggressive", quality: 35, halalAware: false, excludeReason: "mortgage-rate exposure" },
-        ]);
+        // Fallback: build entirely from profiles
+        setRows(PREVIEW_TICKERS.map(sym => {
+          const p = TICKER_PROFILES[sym]!;
+          const yieldPct = p.illustrativePrice > 0 ? (p.illustrativeDiv / p.illustrativePrice) * 100 : 0;
+          return {
+            symbol: sym, companyName: p.name, price: p.illustrativePrice, lastAnnualDividend: p.illustrativeDiv,
+            marketCap: null, yieldPct, div5yGrowthPct: p.div5yGrowthPct, payoutPct: p.payoutPct,
+            debtProfile: p.debtProfile, quality: p.quality, halalAware: p.halalAware, excludeReason: p.excludeReason,
+          };
+        }));
       } finally {
         setLoading(false);
       }
@@ -139,7 +180,7 @@ export function SampleResearch() {
           <div className="flex justify-between items-center px-4 sm:px-7 py-4 sm:py-5 bg-[var(--aris-green-950)] text-[var(--aris-paper)] flex-wrap gap-2">
             <div className="font-serif-display text-[16px] sm:text-[20px]">Weekly Research — Income & Quality Screen</div>
             <div className="font-mono-mark text-[10px] sm:text-[11px] tracking-wider text-[var(--aris-gold)]">
-              LIVE DATA · NOT ADVICE
+              SAMPLE RESEARCH · NOT ADVICE
             </div>
           </div>
 

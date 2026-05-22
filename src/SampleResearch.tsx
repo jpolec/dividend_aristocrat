@@ -4,7 +4,7 @@ import { useT } from "./i18n";
 // Final high-yield mix — every name has yield >= 8.5%, all shown as halal-aware PASS for the marketing preview
 const PREVIEW_TICKERS = ["OWL", "ARCC", "TU", "NLY", "STLA"];
 
-type TickerProfile = {
+export type TickerProfile = {
   name: string;
   sector: string;
   // Illustrative fallback used when ticker isn't in the screener output (BDCs/mREITs are typically excluded by FMP's screener)
@@ -16,9 +16,14 @@ type TickerProfile = {
   quality: number; // 0-100, hardcoded realistic — API confidence over-scores BDCs/mREITs that have actually cut
   halalAware: boolean;
   excludeReason?: string;
+  description?: string;
+  founded?: string;
+  hq?: string;
+  employees?: string;
+  brands?: string;
 };
 
-const TICKER_PROFILES: Record<string, TickerProfile> = {
+export const TICKER_PROFILES: Record<string, TickerProfile> = {
   OWL: {
     name: "Blue Owl Capital",
     sector: "Alternative Asset Management",
@@ -26,6 +31,10 @@ const TICKER_PROFILES: Record<string, TickerProfile> = {
     div5yGrowthPct: 24.5, payoutPct: 75, debtProfile: "Moderate",
     quality: 72,
     halalAware: true,
+    description: "Blue Owl Capital is a global alternative asset manager with three multi-strategy platforms: Credit, GP Strategic Capital, and Real Estate. Founded through the merger of Owl Rock and Dyal Capital Partners in 2021, it now manages over $200 billion in AUM. The firm's direct lending business focuses on senior secured loans to U.S. middle-market companies, providing predictable income streams.",
+    founded: "2021 (Owl Rock + Dyal merger)",
+    hq: "New York, NY · USA",
+    employees: "~1,000",
   },
   ARCC: {
     name: "Ares Capital Corp.",
@@ -34,6 +43,10 @@ const TICKER_PROFILES: Record<string, TickerProfile> = {
     div5yGrowthPct: 4.8, payoutPct: 95, debtProfile: "Moderate",
     quality: 65,
     halalAware: true,
+    description: "Ares Capital is the largest publicly traded Business Development Company (BDC) in the United States, externally managed by Ares Management. The company lends primarily to U.S. middle-market companies through senior secured loans, second-lien debt and selected equity investments. ARCC has paid uninterrupted quarterly dividends since its 2004 IPO.",
+    founded: "2004 (IPO)",
+    hq: "New York, NY · USA",
+    employees: "Externally managed by Ares",
   },
   TU: {
     name: "TELUS Corporation",
@@ -42,6 +55,10 @@ const TICKER_PROFILES: Record<string, TickerProfile> = {
     div5yGrowthPct: 7.3, payoutPct: 95, debtProfile: "Moderate",
     quality: 70,
     halalAware: true,
+    description: "TELUS Corporation is one of Canada's largest telecommunications operators, providing wireless, internet and TV services to over 19 million customer connections. The company has diversified beyond telecom into TELUS Health (digital health) and TELUS Agriculture & Consumer Goods. TELUS has raised its dividend consistently since 2004.",
+    founded: "1990",
+    hq: "Vancouver, BC · Canada",
+    employees: "~110,000",
   },
   NLY: {
     name: "Annaly Capital Management",
@@ -50,6 +67,10 @@ const TICKER_PROFILES: Record<string, TickerProfile> = {
     div5yGrowthPct: -3.2, payoutPct: 110, debtProfile: "Aggressive",
     quality: 45,
     halalAware: true,
+    description: "Annaly Capital Management is the largest mortgage REIT in the United States, investing primarily in agency mortgage-backed securities (MBS) guaranteed by Fannie Mae, Freddie Mac and Ginnie Mae. The company uses leverage to amplify yield, making earnings sensitive to interest-rate movements and yield-curve shape.",
+    founded: "1997",
+    hq: "New York, NY · USA",
+    employees: "~150",
   },
   STLA: {
     name: "Stellantis N.V.",
@@ -58,6 +79,11 @@ const TICKER_PROFILES: Record<string, TickerProfile> = {
     div5yGrowthPct: 12.5, payoutPct: 50, debtProfile: "Conservative",
     quality: 72,
     halalAware: true,
+    description: "Stellantis N.V. is a multinational automotive manufacturer formed in January 2021 from the merger of Fiat Chrysler Automobiles (FCA) and PSA Group. The company operates 14 well-known brands across mass-market, premium and luxury segments, with manufacturing in 30+ countries and a strong electrification roadmap targeting 100% BEV sales in Europe by 2030.",
+    founded: "2021 (FCA + PSA merger)",
+    hq: "Hoofddorp · Netherlands",
+    employees: "~258,000",
+    brands: "Jeep, Peugeot, Fiat, Citroën, Ram, Dodge, Chrysler, Opel, Vauxhall, Alfa Romeo, Maserati, Lancia, DS, Abarth",
   },
 };
 
@@ -207,10 +233,14 @@ export function SampleResearch() {
                     }`}
                   >
                     <td className="px-4 sm:px-5 py-4 text-[14px]">
-                      <div className="font-semibold text-[var(--aris-ink)] flex items-center gap-2">
-                        <span className="font-mono-mark text-[var(--aris-emerald)]">{r.symbol}</span>
+                      <a
+                        href={`/research/${r.symbol}`}
+                        className="font-semibold text-[var(--aris-ink)] flex items-center gap-2 hover:text-[var(--aris-gold)] transition-colors group"
+                      >
+                        <span className="font-mono-mark text-[var(--aris-emerald)] group-hover:text-[var(--aris-gold)]">{r.symbol}</span>
                         <span className={r.halalAware ? "" : "text-[var(--aris-muted)]"}>{r.companyName}</span>
-                      </div>
+                        <span className="text-[12px] text-[var(--aris-muted)] group-hover:text-[var(--aris-gold)]">→</span>
+                      </a>
                     </td>
                     <td className="px-4 sm:px-5 py-4 text-[14px] font-mono-mark font-semibold" style={{ color: r.yieldPct >= 9 ? "#9c7c3a" : "var(--aris-ink)" }}>
                       {r.yieldPct > 0 ? `${r.yieldPct.toFixed(2)}%` : "—"}

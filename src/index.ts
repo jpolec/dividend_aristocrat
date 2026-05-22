@@ -231,6 +231,66 @@ const server = serve({
       },
     },
 
+    // Single-ticker research aggregator
+    "/api/research/:symbol": async req => {
+      if (!QJ_TOKEN) return Response.json({ error: "QJ_TOKEN env var is not set" }, { status: 500 });
+      const symbol = (new URL(req.url).pathname.split("/").pop() ?? "").toUpperCase();
+      if (!/^[A-Z]{1,8}$/.test(symbol)) return Response.json({ error: "invalid symbol" }, { status: 400 });
+
+      const today = new Date();
+      const start = new Date(today);
+      start.setFullYear(today.getFullYear() - 5);
+
+      try {
+        const [prices, cashFlow, profile] = await Promise.allSettled([
+          qjCall<{ data?: { value?: Record<string, PriceRow[]> } }>(
+            "equity.pricing.get_historical_prices",
+            { symbols: symbol, start_date: start.toISOString().slice(0, 10), end_date: today.toISOString().slice(0, 10), frequency: "1d" },
+          ),
+          qjCall<{ data?: { value?: CashFlowRow[] } }>(
+            "equity.fundamentals.get_cash_flow_statement",
+            { symbol, period: "annual", limit: 5 },
+          ),
+          qjCall<{ data?: { value?: unknown } }>(
+            "equity.fundamentals.get_company_profile",
+            { symbol },
+          ),
+        ]);
+
+        const priceSeries = prices.status === "fulfilled" ? prices.value?.data?.value?.[symbol] ?? [] : [];
+        const cashFlowRows = cashFlow.status === "fulfilled" ? cashFlow.value?.data?.value ?? [] : [];
+        const companyProfile = profile.status === "fulfilled" ? profile.value?.data?.value ?? null : null;
+
+        // Downsample prices to ~weekly points for chart (reduce payload)
+        const sorted = priceSeries.slice().sort((a, b) => a.date.localeCompare(b.date));
+        const stride = Math.max(1, Math.floor(sorted.length / 200));
+        const sampledPrices = sorted.filter((_, i) => i % stride === 0 || i === sorted.length - 1).map(p => ({ date: p.date, close: p.close }));
+
+        const lastClose = sorted.length ? sorted[sorted.length - 1].close : null;
+        const high52w = sorted.length ? Math.max(...sorted.slice(-260).map(p => p.close)) : null;
+        const low52w = sorted.length ? Math.min(...sorted.slice(-260).map(p => p.close)) : null;
+        const firstYearClose = sorted.length ? sorted[0].close : null;
+        const fiveYearReturnPct = lastClose != null && firstYearClose != null && firstYearClose > 0
+          ? ((lastClose - firstYearClose) / firstYearClose) * 100 : null;
+
+        // Annual dividends paid totals (absolute)
+        const dividendHistory = cashFlowRows.slice(0, 5).map(r => ({
+          year: r.fiscalYear,
+          paid: Math.abs(r.commonDividendsPaid || 0),
+        }));
+
+        return Response.json({
+          symbol,
+          prices: sampledPrices,
+          metrics: { lastClose, high52w, low52w, fiveYearReturnPct },
+          dividendHistory,
+          companyProfile,
+        });
+      } catch (e) {
+        return Response.json({ error: String(e) }, { status: 502 });
+      }
+    },
+
     // ─── Partner program ────────────────────────────────────────────────
     "/r/:code": req => {
       const code = (new URL(req.url).pathname.split("/").pop() ?? "").toUpperCase();

@@ -16,6 +16,7 @@ import { FinalCta } from "./FinalCta";
 import { Footer } from "./Footer";
 import { Admin } from "./Admin";
 import { PartnerApp } from "./PartnerApp";
+import { StockResearch } from "./StockResearch";
 import { DICTS, LangCtx, dirOf, type Lang } from "./i18n";
 import "./index.css";
 
@@ -38,6 +39,9 @@ export function App() {
   }
   if (typeof window !== "undefined" && window.location.pathname.startsWith("/partner")) {
     return <PartnerApp />;
+  }
+  if (typeof window !== "undefined" && window.location.pathname.startsWith("/research/") && window.location.pathname.length > 10) {
+    return <StockResearch />;
   }
   if (typeof window !== "undefined" && window.location.pathname.startsWith("/research")) {
     return (

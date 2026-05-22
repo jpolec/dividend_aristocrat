@@ -4,18 +4,20 @@ import { useT, type Lang } from "./i18n";
 type Currency = "usd" | "aed" | "sar" | "qar" | "pln";
 type Tier = "monthly" | "annual";
 
-const PRICES: Record<Currency, { monthly: string; annual: string; symbol: string }> = {
-  usd: { monthly: "$5", annual: "$50", symbol: "USD" },
-  aed: { monthly: "AED 19", annual: "AED 190", symbol: "AED" },
-  sar: { monthly: "SAR 19", annual: "SAR 190", symbol: "SAR" },
-  qar: { monthly: "QAR 19", annual: "QAR 190", symbol: "QAR" },
-  pln: { monthly: "19 zł", annual: "190 zł", symbol: "PLN" },
+const PRICES: Record<Currency, { monthly: string; annual: string; symbol: string; label: string }> = {
+  aed: { monthly: "AED 19", annual: "AED 199", symbol: "AED", label: "🇦🇪 AED" },
+  sar: { monthly: "SAR 19", annual: "SAR 199", symbol: "SAR", label: "🇸🇦 SAR" },
+  qar: { monthly: "QAR 19", annual: "QAR 199", symbol: "QAR", label: "🇶🇦 QAR" },
+  usd: { monthly: "$5", annual: "$50", symbol: "USD", label: "🇺🇸 USD" },
+  pln: { monthly: "19 zł", annual: "199 zł", symbol: "PLN", label: "🇵🇱 PLN" },
 };
 
+// Default to a Gulf-friendly currency by language; users with explicit AR get AED.
 function defaultCurrency(lang: Lang): Currency {
   if (lang === "pl") return "pln";
   if (lang === "ar") return "aed";
-  return "usd";
+  // English default: AED — the audience is GCC-focused, not US-focused.
+  return "aed";
 }
 
 export function Pricing() {
@@ -111,7 +113,7 @@ export function Pricing() {
               className="h-11 rounded-sm border border-[var(--aris-line-dark)] bg-white px-4 text-[15px] focus:outline-none focus:border-[var(--aris-gold)]"
             >
               {Object.keys(PRICES).map(c => (
-                <option key={c} value={c}>{PRICES[c as Currency].symbol}</option>
+                <option key={c} value={c}>{PRICES[c as Currency].label}</option>
               ))}
             </select>
           </div>

@@ -32,6 +32,16 @@ type Dict = {
   chartGrowth: string;
   chartYearAxis: string;
   chartDisclaimerNote: string;
+  // dual-curve compare chart
+  chartCompareEyebrow: string;
+  chartCompareTitle: string;
+  chartCompareIntro: string;
+  chartDividendYieldLabel: string;
+  chartRealEstateYieldLabel: string;
+  chartDividendPathLabel: string;
+  chartRealEstatePathLabel: string;
+  chartDifferenceLabel: string;
+  chartFlexibilityNote: string;
   // how it works
   howTitle: string;
   howSteps: { title: string; desc: string }[];
@@ -313,6 +323,17 @@ const en: Dict = {
   chartYearAxis: "Year",
   chartDisclaimerNote:
     "Illustrative only. Assumes constant monthly contributions and the chosen annual return reinvested. Actual results vary.",
+  chartCompareEyebrow: "The Math of Compounding",
+  chartCompareTitle: "A few percentage points, multiplied by time, change everything.",
+  chartCompareIntro:
+    "An illustration of monthly investing at different annual yields. The longer you compound, the more the gap widens — and you don't need a large starting capital.",
+  chartDividendYieldLabel: "Dividend portfolio %",
+  chartRealEstateYieldLabel: "Real-estate yield %",
+  chartDividendPathLabel: "Dividend strategy",
+  chartRealEstatePathLabel: "Real-estate baseline",
+  chartDifferenceLabel: "Difference at end",
+  chartFlexibilityNote:
+    "Flexibility matters: you can start with a modest amount such as 2,000 AED / month. Time and consistency tend to matter more than the size of any single contribution.",
   howTitle: "How it works",
   howSteps: [
     {
@@ -418,7 +439,7 @@ const en: Dict = {
     "Every plan includes full research access, weekly updates, the screening library, and Arabic support. Cancel anytime.",
   pricingMonthlyLabel: "Monthly",
   pricingAnnualLabel: "Annual",
-  pricingBestValueBadge: "Best Value · Save 16%",
+  pricingBestValueBadge: "Best Value · 2 months on us",
   pricingPerMonth: "/mo",
   pricingPerYear: "/yr",
   pricingStartMonthly: "Start Monthly",
@@ -654,6 +675,17 @@ const pl: Dict = {
   chartYearAxis: "Rok",
   chartDisclaimerNote:
     "Wyłącznie ilustracja. Zakłada stałe wpłaty i wybrany roczny zwrot reinwestowany. Rzeczywiste wyniki mogą się różnić.",
+  chartCompareEyebrow: "Matematyka procentu składanego",
+  chartCompareTitle: "Kilka punktów procentowych razy czas — to zmienia wszystko.",
+  chartCompareIntro:
+    "Ilustracja miesięcznego inwestowania przy różnych rocznych zwrotach. Im dłużej procent składany pracuje, tym większa różnica — i nie potrzebujesz dużego kapitału na start.",
+  chartDividendYieldLabel: "Yield portfela dywidendowego %",
+  chartRealEstateYieldLabel: "Yield nieruchomości %",
+  chartDividendPathLabel: "Strategia dywidendowa",
+  chartRealEstatePathLabel: "Baza nieruchomości",
+  chartDifferenceLabel: "Różnica na końcu",
+  chartFlexibilityNote:
+    "Elastyczność ma znaczenie: możesz zacząć od skromnej kwoty, na przykład 2 000 AED / miesiąc. Czas i konsekwencja mają większe znaczenie niż wielkość pojedynczej wpłaty.",
   howTitle: "Jak to działa",
   howSteps: [
     {
@@ -759,7 +791,7 @@ const pl: Dict = {
     "Każdy plan zawiera pełen dostęp do researchu, cotygodniowe aktualizacje, bibliotekę screeningu i wsparcie po arabsku. Rezygnacja w każdej chwili.",
   pricingMonthlyLabel: "Miesięcznie",
   pricingAnnualLabel: "Rocznie",
-  pricingBestValueBadge: "Najlepsza wartość · Oszczędź 16%",
+  pricingBestValueBadge: "Najlepsza wartość · 2 miesiące w prezencie",
   pricingPerMonth: "/mies.",
   pricingPerYear: "/rok",
   pricingStartMonthly: "Zacznij miesięcznie",
@@ -995,6 +1027,17 @@ const ar: Dict = {
   chartYearAxis: "السنة",
   chartDisclaimerNote:
     "للتوضيح فقط. يفترض مساهمات شهرية ثابتة وإعادة استثمار العائد المختار. النتائج الفعلية قد تختلف.",
+  chartCompareEyebrow: "حسابات الفائدة المركبة",
+  chartCompareTitle: "نقاط مئوية قليلة، مضروبة في الزمن، تُغيّر كلّ شيء.",
+  chartCompareIntro:
+    "محاكاة للاستثمار الشهري عند عوائد سنوية مختلفة. كلّما طالت فترة تراكم الفائدة المركبة، اتسعت الفجوة — ولا تحتاج إلى رأس مال كبير في البداية.",
+  chartDividendYieldLabel: "% عائد محفظة التوزيعات",
+  chartRealEstateYieldLabel: "% عائد العقارات",
+  chartDividendPathLabel: "استراتيجية التوزيعات",
+  chartRealEstatePathLabel: "خط الأساس العقاري",
+  chartDifferenceLabel: "الفرق في النهاية",
+  chartFlexibilityNote:
+    "المرونة مهمّة: يمكنك البدء بمبلغ متواضع مثل 2,000 درهم شهريًا. الوقت والاستمرارية أهمّ من حجم أي مساهمة منفردة.",
   howTitle: "كيف تعمل المنصة",
   howSteps: [
     {
@@ -1100,7 +1143,7 @@ const ar: Dict = {
     "كلّ خطة تشمل وصولاً كاملاً للأبحاث، وتحديثات أسبوعية، ومكتبة الفحص، ودعماً بالعربية. ألغِ في أيّ وقت.",
   pricingMonthlyLabel: "شهري",
   pricingAnnualLabel: "سنوي",
-  pricingBestValueBadge: "الأفضل قيمةً · وفّر 16%",
+  pricingBestValueBadge: "الأفضل قيمةً · شهران كهدية",
   pricingPerMonth: "/شهر",
   pricingPerYear: "/سنة",
   pricingStartMonthly: "ابدأ شهرياً",

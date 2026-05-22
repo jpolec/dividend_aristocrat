@@ -3,6 +3,7 @@ import { Header } from "./Header";
 import { Hero } from "./Hero";
 import { DividendTable } from "./DividendTable";
 import { Problem } from "./Problem";
+import { CompoundChart } from "./CompoundChart";
 import { WhyDividend } from "./WhyDividend";
 import { HowWeFilter } from "./HowWeFilter";
 import { SampleResearch } from "./SampleResearch";
@@ -52,6 +53,7 @@ export function App() {
       <main>
         <Hero />
         <Problem />
+        <CompoundChart />
         <WhyDividend />
         <HowWeFilter />
         <SampleResearch />

@@ -5,11 +5,11 @@ type Currency = "usd" | "aed" | "sar" | "qar" | "pln";
 type Tier = "monthly" | "annual";
 
 const PRICES: Record<Currency, { monthly: string; annual: string; symbol: string; label: string }> = {
-  aed: { monthly: "AED 19", annual: "AED 199", symbol: "AED", label: "🇦🇪 AED" },
-  sar: { monthly: "SAR 19", annual: "SAR 199", symbol: "SAR", label: "🇸🇦 SAR" },
-  qar: { monthly: "QAR 19", annual: "QAR 199", symbol: "QAR", label: "🇶🇦 QAR" },
-  usd: { monthly: "$5", annual: "$50", symbol: "USD", label: "🇺🇸 USD" },
-  pln: { monthly: "19 zł", annual: "199 zł", symbol: "PLN", label: "🇵🇱 PLN" },
+  aed: { monthly: "AED 59", annual: "AED 499", symbol: "AED", label: "🇦🇪 AED" },
+  sar: { monthly: "SAR 59", annual: "SAR 499", symbol: "SAR", label: "🇸🇦 SAR" },
+  qar: { monthly: "QAR 59", annual: "QAR 499", symbol: "QAR", label: "🇶🇦 QAR" },
+  usd: { monthly: "$15", annual: "$129", symbol: "USD", label: "🇺🇸 USD" },
+  pln: { monthly: "59 zł", annual: "499 zł", symbol: "PLN", label: "🇵🇱 PLN" },
 };
 
 // Default to a Gulf-friendly currency by language; users with explicit AR get AED.

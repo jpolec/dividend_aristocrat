@@ -58,20 +58,23 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-0.5 rounded border border-[var(--aris-line)] p-0.5">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Flag-based language picker — always visible, prominent */}
+          <div className="flex items-center gap-1 rounded-full border border-[var(--aris-line)] bg-[var(--aris-green-900)]/60 backdrop-blur p-1">
             {LANGS.map(l => (
               <button
                 key={l.code}
                 onClick={() => setLang(l.code as Lang)}
-                className={`font-mono-mark text-[11px] tracking-wider px-2 py-1 rounded transition-colors ${
+                className={`flex items-center gap-1.5 rounded-full px-2.5 sm:px-3 py-1.5 text-xs sm:text-[13px] font-medium transition-colors ${
                   lang === l.code
                     ? "bg-[var(--aris-gold)] text-[var(--aris-green-950)]"
-                    : "text-[var(--aris-gold)] hover:bg-[var(--aris-gold)]/10"
+                    : "text-[var(--aris-paper)]/85 hover:bg-[var(--aris-gold)]/10 hover:text-[var(--aris-gold)]"
                 }`}
                 aria-label={l.label}
+                title={l.label}
               >
-                {l.short}
+                <span className="text-[15px] leading-none">{l.flag}</span>
+                <span className="font-mono-mark tracking-wider text-[11px] hidden xs:inline sm:inline">{l.short}</span>
               </button>
             ))}
           </div>
@@ -106,21 +109,13 @@ export function Header() {
               {item.label}
             </a>
           ))}
-          <div className="flex gap-1 mt-1">
-            {LANGS.map(l => (
-              <button
-                key={l.code}
-                onClick={() => { setLang(l.code as Lang); setOpen(false); }}
-                className={`font-mono-mark text-[11px] tracking-wider px-3 py-1.5 rounded border transition ${
-                  lang === l.code
-                    ? "bg-[var(--aris-gold)] text-[var(--aris-green-950)] border-[var(--aris-gold)]"
-                    : "border-[var(--aris-line)] text-[var(--aris-gold)]"
-                }`}
-              >
-                {l.short}
-              </button>
-            ))}
-          </div>
+          <a
+            href="#pricing"
+            onClick={() => setOpen(false)}
+            className="inline-flex items-center justify-center rounded-sm bg-[var(--aris-gold)] hover:bg-[var(--aris-gold-soft)] text-[var(--aris-green-950)] px-4 py-3 text-sm font-semibold transition mt-2"
+          >
+            {t.navStartCta}
+          </a>
         </div>
       )}
     </header>

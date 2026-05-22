@@ -125,13 +125,14 @@ export function CompoundChart() {
             </div>
           </div>
 
-          {/* Result stat cards */}
-          <div className="grid sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[var(--aris-line-dark)]">
+          {/* Result stats — Dividend is the headline; RE + Difference are supporting context */}
+          <div className="grid lg:grid-cols-[1.6fr_1fr_1fr]">
             <StatBlock
               label={t.chartDividendPathLabel}
               value={fmt(divFinal, currency)}
-              sub={`${divYield.toFixed(1)}% · ${years}y`}
-              tone="dividend"
+              sub={`${divYield.toFixed(1)}% · ${years}y · ${t.chartContributed.toLowerCase()}: ${fmt(contributed, currency)}`}
+              tone="hero"
+              emphasize
             />
             <StatBlock
               label={t.chartRealEstatePathLabel}
@@ -141,10 +142,9 @@ export function CompoundChart() {
             />
             <StatBlock
               label={t.chartDifferenceLabel}
-              value={fmt(diff, currency)}
-              sub={`${t.chartContributed.toLowerCase()}: ${fmt(contributed, currency)}`}
+              value={`+${fmt(diff, currency)}`}
+              sub={`vs ${t.chartRealEstatePathLabel.toLowerCase()}`}
               tone="gold"
-              emphasize
             />
           </div>
 
@@ -279,26 +279,48 @@ function StatBlock({
   label: string;
   value: string;
   sub?: string;
-  tone: "dividend" | "muted" | "gold";
+  tone: "hero" | "muted" | "gold";
   emphasize?: boolean;
 }) {
-  const bg = tone === "dividend"
-    ? "linear-gradient(135deg, rgba(198,166,103,.10), rgba(198,166,103,.02))"
+  // Hero = the dividend final value: dark gradient, biggest type, gold accents
+  // Gold = the difference: lighter gold tint, medium type
+  // Muted = real estate: plain offwhite, smaller type
+  const bg = tone === "hero"
+    ? "linear-gradient(135deg, var(--aris-green-950), var(--aris-charcoal))"
     : tone === "gold"
-      ? "linear-gradient(135deg, var(--aris-green-950), var(--aris-charcoal))"
+      ? "linear-gradient(135deg, rgba(198,166,103,.18), rgba(198,166,103,.04))"
       : "var(--aris-offwhite)";
-  const labelColor = tone === "gold" ? "var(--aris-gold)" : "var(--aris-muted)";
-  const valColor = tone === "gold" ? "var(--aris-paper)" : "var(--aris-ink)";
-  const subColor = tone === "gold" ? "var(--aris-paper)/60" : "var(--aris-muted)";
+  const border = tone === "hero" ? "none" : "1px solid var(--aris-line-dark)";
+  const labelColor = tone === "hero"
+    ? "var(--aris-gold)"
+    : tone === "gold"
+      ? "#9c7c3a"
+      : "var(--aris-muted)";
+  const valColor = tone === "hero"
+    ? "var(--aris-paper)"
+    : tone === "gold"
+      ? "#7a5f24"
+      : "var(--aris-ink)";
+  const subColor = tone === "hero" ? "rgba(246,243,234,.6)" : "var(--aris-muted)";
+
+  const sizeCls = emphasize
+    ? "text-[28px] sm:text-[36px] lg:text-[42px]"
+    : tone === "gold"
+      ? "text-[22px] sm:text-[26px]"
+      : "text-[20px] sm:text-[24px]";
+
   return (
-    <div className="px-5 sm:px-7 py-5" style={{ background: bg }}>
-      <div className="font-mono-mark text-[10.5px] tracking-wider uppercase" style={{ color: labelColor }}>
+    <div
+      className={`px-5 sm:px-7 ${emphasize ? "py-7 sm:py-9" : "py-5 sm:py-6"} flex flex-col justify-center`}
+      style={{ background: bg, borderTop: tone === "hero" ? "none" : border }}
+    >
+      <div className="font-mono-mark text-[10.5px] tracking-[0.15em] uppercase" style={{ color: labelColor }}>
         {label}
       </div>
-      <div className={`font-serif-display tabular-nums mt-1.5 ${emphasize ? "text-[28px] sm:text-[32px]" : "text-[22px] sm:text-[24px]"}`} style={{ color: valColor }}>
+      <div className={`font-serif-display tabular-nums mt-1.5 leading-[1.05] ${sizeCls}`} style={{ color: valColor }}>
         {value}
       </div>
-      {sub && <div className="text-[11.5px] mt-1" style={{ color: subColor }}>{sub}</div>}
+      {sub && <div className="text-[11.5px] mt-2 leading-relaxed" style={{ color: subColor }}>{sub}</div>}
     </div>
   );
 }

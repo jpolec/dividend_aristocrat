@@ -173,5 +173,12 @@ html[dir="rtl"] .eyebrow { letter-spacing: 0.04em; font-weight: 600; font-family
     font-family: var(--font-sans);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
+    /* prevent any decorative element (gradient halos, off-canvas circles) from causing horizontal scroll on mobile */
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+  /* Belt-and-braces: keep all sections within viewport even if a child has unexpected width */
+  section {
+    overflow-x: clip;
   }
 }

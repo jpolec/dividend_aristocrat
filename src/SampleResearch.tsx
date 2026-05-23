@@ -216,7 +216,60 @@ export function SampleResearch() {
             </div>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="md:hidden divide-y divide-[var(--aris-line-dark)]">
+            {loading && (
+              <div className="px-5 py-10 text-center text-[var(--aris-muted)] text-sm">…</div>
+            )}
+            {!loading && rows.map(r => (
+              <article
+                key={r.symbol}
+                className={`p-4 ${
+                  r.halalAware ? "bg-[rgba(198,166,103,.04)]" : "bg-[rgba(12,18,14,.025)]"
+                }`}
+              >
+                <a
+                  href={`/research/${r.symbol}`}
+                  className="flex items-start justify-between gap-3 text-[var(--aris-ink)] hover:text-[var(--aris-gold)] transition-colors"
+                >
+                  <span className="min-w-0">
+                    <span className="block font-mono-mark text-[18px] font-semibold text-[var(--aris-emerald)]">{r.symbol}</span>
+                    <span className="mt-1 block text-[14px] font-semibold leading-snug">{r.companyName}</span>
+                  </span>
+                  <span className="font-mono-mark text-[18px] leading-none text-[var(--aris-muted)]">→</span>
+                </a>
+
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  <MobileMetric label={t.sampleResearchHeaders.yield} value={r.yieldPct > 0 ? `${r.yieldPct.toFixed(2)}%` : "—"} strong />
+                  <MobileMetric label={t.sampleResearchHeaders.growth5y} value={`${r.div5yGrowthPct >= 0 ? "+" : ""}${r.div5yGrowthPct.toFixed(1)}%`} tone={r.div5yGrowthPct < 0 ? "warn" : "default"} />
+                  <MobileMetric label={t.sampleResearchHeaders.payout} value={`${r.payoutPct}%`} tone={r.payoutPct > 100 ? "warn" : "default"} />
+                  <div className="rounded-lg border border-[var(--aris-line-dark)] bg-white/70 px-3 py-2.5">
+                    <div className="font-mono-mark text-[10px] uppercase tracking-wider text-[var(--aris-muted)]">{t.sampleResearchHeaders.quality}</div>
+                    <div className="mt-2"><Score value={r.quality} /></div>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <Tag label={r.debtProfile} />
+                  {r.halalAware ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-700/20 bg-emerald-700/10 px-2.5 py-1 text-[11px] font-semibold text-[var(--aris-emerald)]">
+                      <span className="text-[14px] leading-none">◈</span>
+                      PASS
+                    </span>
+                  ) : (
+                    <span
+                      className="inline-flex items-center gap-1.5 rounded-full border border-stone-300 bg-stone-100 px-2.5 py-1 text-[11px] font-semibold text-[var(--aris-muted)]"
+                      title={r.excludeReason}
+                    >
+                      <span className="text-[14px] leading-none">⊘</span>
+                      EXCLUDED
+                    </span>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr>
@@ -251,16 +304,16 @@ export function SampleResearch() {
                     <td className="px-4 sm:px-5 py-4 text-[14px] font-mono-mark font-semibold" style={{ color: r.yieldPct >= 9 ? "#9c7c3a" : "var(--aris-ink)" }}>
                       {r.yieldPct > 0 ? `${r.yieldPct.toFixed(2)}%` : "—"}
                     </td>
-                    <td className={`px-4 sm:px-5 py-4 text-[14px] font-mono-mark bg-rose-50/80 border-s border-rose-200 ${r.div5yGrowthPct < 0 ? "text-rose-700" : "text-[var(--aris-ink)]"}`} title="Mock/model field from TICKER_PROFILES">
+                    <td className={`px-4 sm:px-5 py-4 text-[14px] font-mono-mark ${r.div5yGrowthPct < 0 ? "text-rose-700" : "text-[var(--aris-ink)]"}`}>
                       {`${r.div5yGrowthPct >= 0 ? "+" : ""}${r.div5yGrowthPct.toFixed(1)}%`}
                     </td>
-                    <td className={`px-4 sm:px-5 py-4 text-[14px] font-mono-mark bg-rose-50/80 border-s border-rose-200 ${r.payoutPct > 100 ? "text-rose-700" : "text-[var(--aris-ink)]"}`} title="Mock/model field from TICKER_PROFILES">
+                    <td className={`px-4 sm:px-5 py-4 text-[14px] font-mono-mark ${r.payoutPct > 100 ? "text-rose-700" : "text-[var(--aris-ink)]"}`}>
                       {`${r.payoutPct}%`}
                     </td>
-                    <td className="px-4 sm:px-5 py-4 bg-rose-50/80 border-s border-rose-200" title="Mock/model field from TICKER_PROFILES">
+                    <td className="px-4 sm:px-5 py-4">
                       <Tag label={r.debtProfile} />
                     </td>
-                    <td className="px-4 sm:px-5 py-4 bg-rose-50/80 border-s border-rose-200" title="Mock/model field from TICKER_PROFILES">
+                    <td className="px-4 sm:px-5 py-4">
                       {r.halalAware ? (
                         <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[var(--aris-emerald)]">
                           <span className="text-[14px] leading-none">◈</span>
@@ -276,7 +329,7 @@ export function SampleResearch() {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 sm:px-5 py-4 bg-rose-50/80 border-s border-rose-200" title="Mock/model field from TICKER_PROFILES">
+                    <td className="px-4 sm:px-5 py-4">
                       <Score value={r.quality} />
                     </td>
                   </tr>
@@ -286,12 +339,6 @@ export function SampleResearch() {
           </div>
 
           <div className="px-4 sm:px-7 py-4 bg-[var(--aris-paper-2)] text-[12px] text-[var(--aris-muted)] italic leading-relaxed">
-            <p className="not-italic font-medium text-[var(--aris-ink)] mb-2">
-              <span className="inline-flex items-center rounded-sm border border-rose-400 bg-rose-100 px-2 py-1 font-mono-mark text-[9px] uppercase tracking-wider text-rose-800 me-2">
-                Mock/model
-              </span>
-              Red cells are manually/model-defined in <code>TICKER_PROFILES</code>, not direct QJ API fields.
-            </p>
             <p className="not-italic font-medium text-[var(--aris-ink)] mb-2">
               <span className="text-[var(--aris-emerald)] me-1">◈ PASS</span> = passes our halal-aware screen.
               Quality score reflects 5-year payment consistency, balance-sheet review and earnings stability.
@@ -327,5 +374,26 @@ function Score({ value }: { value: number }) {
       </span>
       <span className="font-mono-mark text-[13px] text-[var(--aris-ink)] tabular-nums">{v}</span>
     </span>
+  );
+}
+
+function MobileMetric({
+  label,
+  value,
+  strong,
+  tone = "default",
+}: {
+  label: string;
+  value: string;
+  strong?: boolean;
+  tone?: "default" | "warn";
+}) {
+  return (
+    <div className="rounded-lg border border-[var(--aris-line-dark)] bg-white/70 px-3 py-2.5">
+      <div className="font-mono-mark text-[10px] uppercase tracking-wider text-[var(--aris-muted)]">{label}</div>
+      <div className={`mt-1 font-mono-mark tabular-nums ${strong ? "text-[18px] font-semibold text-[#9c7c3a]" : tone === "warn" ? "text-[15px] text-rose-700" : "text-[15px] text-[var(--aris-ink)]"}`}>
+        {value}
+      </div>
+    </div>
   );
 }

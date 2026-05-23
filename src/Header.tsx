@@ -14,11 +14,11 @@ export function Header() {
   }, []);
 
   const navItems = [
-    { href: "#problem", label: t.navTheCase },
-    { href: "#method", label: t.navMethodology },
-    { href: "#sample", label: t.navSample },
-    { href: "#pricing", label: t.navMembership },
-    { href: "#faq", label: t.navFaq },
+    { href: "/#problem", label: t.navTheCase },
+    { href: "/#method", label: t.navMethodology },
+    { href: "/#sample", label: t.navSample },
+    { href: "/#pricing", label: t.navMembership },
+    { href: "/#faq", label: t.navFaq },
   ];
 
   return (
@@ -30,7 +30,7 @@ export function Header() {
       }`}
     >
       <div className="mx-auto max-w-[1240px] px-4 sm:px-7 flex items-center justify-between gap-2 sm:gap-4">
-        <a href="#" className="flex items-center gap-2 sm:gap-2.5 text-[var(--aris-paper)] min-w-0">
+        <a href="/" className="flex items-center gap-2 sm:gap-2.5 text-[var(--aris-paper)] min-w-0">
           <svg className="h-7 w-7 shrink-0" viewBox="0 0 40 40" fill="none" aria-hidden="true">
             <path d="M20 3L34 11V29L20 37L6 29V11L20 3Z" stroke="#c6a667" strokeWidth="1.4" />
             <path d="M13 26V18L20 22L27 14V26" stroke="#c6a667" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -79,7 +79,7 @@ export function Header() {
             ))}
           </div>
           <a
-            href="#pricing"
+            href="/#pricing"
             className="hidden sm:inline-flex items-center rounded-sm bg-[var(--aris-gold)] hover:bg-[var(--aris-gold-soft)] text-[var(--aris-green-950)] px-4 py-2 text-sm font-semibold transition shadow-sm"
           >
             {t.navStartCta}
@@ -110,7 +110,7 @@ export function Header() {
             </a>
           ))}
           <a
-            href="#pricing"
+            href="/#pricing"
             onClick={() => setOpen(false)}
             className="inline-flex items-center justify-center rounded-sm bg-[var(--aris-gold)] hover:bg-[var(--aris-gold-soft)] text-[var(--aris-green-950)] px-4 py-3 text-sm font-semibold transition mt-2"
           >

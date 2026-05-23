@@ -276,7 +276,7 @@ const server = serve({
       start.setFullYear(today.getFullYear() - 10);
 
       try {
-        const [prices, cashFlow, quarterlyCashFlow, profile] = await Promise.allSettled([
+        const [prices, cashFlow, quarterlyCashFlow, profile, screener] = await Promise.allSettled([
           qjCall<{ data?: { value?: Record<string, PriceRow[]> } }>(
             "equity.pricing.get_historical_prices",
             { symbols: symbol, start_date: start.toISOString().slice(0, 10), end_date: today.toISOString().slice(0, 10), frequency: "1d" },
@@ -293,12 +293,18 @@ const server = serve({
             "equity.fundamentals.get_company_profile",
             { symbol },
           ),
+          qjCall<{ data?: { value?: ScreenerRow[] } }>(
+            "equity.reference.get_stock_screener",
+            { dividend_more_than: 0.01, limit: 1000, is_actively_trading: true, is_etf: false, is_fund: false },
+          ),
         ]);
 
         const priceSeries = prices.status === "fulfilled" ? prices.value?.data?.value?.[symbol] ?? [] : [];
         const cashFlowRows = cashFlow.status === "fulfilled" ? cashFlow.value?.data?.value ?? [] : [];
         const quarterlyCashFlowRows = quarterlyCashFlow.status === "fulfilled" ? quarterlyCashFlow.value?.data?.value ?? [] : [];
         const companyProfile = profile.status === "fulfilled" ? profile.value?.data?.value ?? null : null;
+        const screenerRows = screener.status === "fulfilled" ? screener.value?.data?.value ?? [] : [];
+        const screenerRow = screenerRows.find(r => String(r.symbol).toUpperCase() === symbol) ?? null;
 
         // Downsample prices to ~weekly points for chart (reduce payload)
         const sorted = priceSeries.slice().sort((a, b) => a.date.localeCompare(b.date));
@@ -332,6 +338,7 @@ const server = serve({
           dividendHistory,
           quarterlyDividendHistory,
           companyProfile,
+          screenerRow,
         });
       } catch (e) {
         return Response.json({ error: String(e) }, { status: 502 });

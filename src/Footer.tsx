@@ -8,7 +8,7 @@ export function Footer() {
         <div className="grid gap-10 lg:grid-cols-[1.6fr_1fr_1fr_1fr] pb-12 border-b border-[var(--aris-paper)]/10">
           {/* Brand column */}
           <div>
-            <a href="#" className="flex items-center gap-2.5 text-[var(--aris-paper)] mb-4">
+            <a href="/" className="flex items-center gap-2.5 text-[var(--aris-paper)] mb-4">
               <svg className="h-8 w-8" viewBox="0 0 40 40" fill="none">
                 <path d="M20 3L34 11V29L20 37L6 29V11L20 3Z" stroke="#c6a667" strokeWidth="1.4" />
                 <path d="M13 26V18L20 22L27 14V26" stroke="#c6a667" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />

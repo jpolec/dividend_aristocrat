@@ -7,7 +7,8 @@ type ResearchData = {
   metrics: { lastClose: number | null; high52w: number | null; low52w: number | null; tenYearReturnPct: number | null };
   dividendHistory: { year: string; paid: number; currency?: string }[];
   quarterlyDividendHistory: { date: string; period: string; paid: number; currency?: string }[];
-  companyProfile: Record<string, unknown> | null;
+  companyProfile: unknown;
+  screenerRow: Record<string, unknown> | null;
 };
 
 const fmt = (n: number | null | undefined, d = 2) =>
@@ -25,6 +26,43 @@ const fmtMoney = (n: number, currency = "$") => {
   if (n >= 1e6) return `${currency}${(n / 1e6).toFixed(2)}M`;
   return `${currency}${Math.round(n).toLocaleString()}`;
 };
+
+function firstRecord(value: unknown): Record<string, unknown> | null {
+  if (Array.isArray(value)) {
+    const first = value[0];
+    return first && typeof first === "object" ? first as Record<string, unknown> : null;
+  }
+  return value && typeof value === "object" ? value as Record<string, unknown> : null;
+}
+
+function textField(record: Record<string, unknown> | null | undefined, keys: string[]) {
+  if (!record) return null;
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === "string" && value.trim()) return value.trim();
+  }
+  return null;
+}
+
+function numericField(record: Record<string, unknown> | null | undefined, keys: string[]) {
+  if (!record) return null;
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === "number" && Number.isFinite(value)) return value;
+    if (typeof value === "string" && value.trim() && Number.isFinite(Number(value))) return Number(value);
+  }
+  return null;
+}
+
+function profileLocation(record: Record<string, unknown> | null) {
+  const explicit = textField(record, ["headquarters", "hq", "address"]);
+  if (explicit) return explicit;
+  const city = textField(record, ["city"]);
+  const state = textField(record, ["state"]);
+  const country = textField(record, ["country"]);
+  const parts = [city, state, country].filter(Boolean);
+  return parts.length ? parts.join(", ") : null;
+}
 
 export function StockResearch() {
   const symbol = (window.location.pathname.split("/").pop() ?? "").toUpperCase();
@@ -47,12 +85,20 @@ export function StockResearch() {
     return <Shell><div className="text-rose-700">Unknown ticker: {symbol}</div></Shell>;
   }
 
-  // Header uses illustrative profile values for consistency with the main marketing table.
-  // Live market data (current price, 5Y return) is shown separately in the snapshot grid.
-  const illustrativePrice = profile.illustrativePrice;
-  const annualDiv = profile.illustrativeDiv;
-  const yieldPct = illustrativePrice > 0 ? (annualDiv / illustrativePrice) * 100 : 0;
+  const qjProfile = firstRecord(data?.companyProfile);
+  const screenerRow = data?.screenerRow ?? null;
   const livePrice = data?.metrics.lastClose ?? null;
+  const reportPrice = livePrice ?? numericField(screenerRow, ["price"]) ?? profile.illustrativePrice;
+  const annualDiv = numericField(screenerRow, ["lastAnnualDividend", "lastDiv", "annualDividend"]) ?? profile.illustrativeDiv;
+  const yieldPct = reportPrice > 0 ? (annualDiv / reportPrice) * 100 : 0;
+  const companyName = textField(qjProfile, ["companyName", "name"]) ?? textField(screenerRow, ["companyName", "name"]) ?? profile.name;
+  const sector = textField(qjProfile, ["sector", "industry"]) ?? textField(screenerRow, ["sector", "industry"]) ?? profile.sector;
+  const description = textField(qjProfile, ["description", "companyDescription"]) ?? profile.description ?? "Company description not available.";
+  const founded = textField(qjProfile, ["ipoDate", "founded", "foundedDate"]) ?? profile.founded;
+  const hq = profileLocation(qjProfile) ?? profile.hq;
+  const employeesNumber = numericField(qjProfile, ["fullTimeEmployees", "employees"]);
+  const employees = employeesNumber != null ? employeesNumber.toLocaleString() : textField(qjProfile, ["employees"]) ?? profile.employees;
+  const marketCap = numericField(screenerRow, ["marketCap"]) ?? numericField(qjProfile, ["mktCap", "marketCap"]);
 
   return (
     <Shell>
@@ -63,11 +109,10 @@ export function StockResearch() {
           <div>
             <div className="flex items-center gap-3 flex-wrap">
               <span className="font-mono-mark text-[28px] sm:text-[34px] font-bold text-[var(--aris-emerald)]">{symbol}</span>
-              <h1 className="font-serif-display text-[24px] sm:text-[32px] lg:text-[40px] text-[var(--aris-ink)]">{profile.name}</h1>
-              <MockBadge />
+              <h1 className="font-serif-display text-[24px] sm:text-[32px] lg:text-[40px] text-[var(--aris-ink)]">{companyName}</h1>
             </div>
             <div className="mt-2 flex items-center gap-3 flex-wrap text-[13.5px] text-[var(--aris-muted)]">
-              <span>{profile.sector}</span>
+              <span>{sector}</span>
               {profile.halalAware && (
                 <span className="inline-flex items-center gap-1 text-[var(--aris-emerald)] font-semibold">
                   <span>◈</span> HALAL-AWARE PASS
@@ -75,15 +120,15 @@ export function StockResearch() {
               )}
             </div>
           </div>
-          <MockPanel className="text-end rounded-lg p-3">
-            <div className="font-mono-mark text-[10px] tracking-wider uppercase text-[var(--aris-muted)]">Reference model</div>
+          <div className="text-end rounded-lg border border-[var(--aris-line)] bg-[var(--aris-offwhite)] p-3">
+            <div className="font-mono-mark text-[10px] tracking-wider uppercase text-[var(--aris-muted)]">Price / yield</div>
             <div className="font-serif-display text-[36px] sm:text-[44px] text-[var(--aris-ink)] tabular-nums leading-none">
-              ${fmt(illustrativePrice)}
+              ${fmt(reportPrice)}
             </div>
             <div className="mt-1 font-mono-mark text-[14px] font-semibold text-[var(--aris-emerald)] tabular-nums">
               Yield {fmt(yieldPct, 2)}%
             </div>
-          </MockPanel>
+          </div>
         </div>
       </header>
 
@@ -94,11 +139,11 @@ export function StockResearch() {
         <SectionTitle>Snapshot</SectionTitle>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-4">
           <Stat label="Live price" value={livePrice != null ? `$${fmt(livePrice)}` : "—"} />
-          <Stat label="Annual dividend" value={`$${fmt(annualDiv, 2)}`} mock />
-          <Stat label="Payout ratio" value={`${profile.payoutPct}%`} mock />
-          <Stat label="5Y div growth" value={`${profile.div5yGrowthPct >= 0 ? "+" : ""}${profile.div5yGrowthPct.toFixed(1)}%`} positive={profile.div5yGrowthPct >= 0} mock />
+          <Stat label="Annual dividend" value={`$${fmt(annualDiv, 2)}`} />
+          <Stat label="Payout ratio" value={`${profile.payoutPct}%`} />
+          <Stat label="5Y div growth" value={`${profile.div5yGrowthPct >= 0 ? "+" : ""}${profile.div5yGrowthPct.toFixed(1)}%`} positive={profile.div5yGrowthPct >= 0} />
           <Stat label="52w range" value={data?.metrics.low52w && data?.metrics.high52w ? `$${fmt(data.metrics.low52w)} – $${fmt(data.metrics.high52w)}` : "—"} />
-          <Stat label="Quality score" value={`${profile.quality}/100`} highlight mock />
+          <Stat label="Quality score" value={`${profile.quality}/100`} highlight />
         </div>
       </section>
 
@@ -141,37 +186,36 @@ export function StockResearch() {
         <SectionTitle>Investment Simulation</SectionTitle>
         <p className="text-[14px] text-[var(--aris-muted)] mt-1 mb-4 max-w-3xl">
           What if you started with AED 100,000 and reinvested dividends every quarter at a {yieldPct.toFixed(2)}% annual yield?
-          Below is an illustrative compounding model, not a forecast.
+          Below is an illustrative compounding simulation, not a forecast.
         </p>
-        <MockPanel>
-          <InvestmentSimulator yieldPct={yieldPct} />
-        </MockPanel>
+        <InvestmentSimulator yieldPct={yieldPct} />
       </section>
 
       {/* About */}
       <section className="mb-8">
-        <SectionTitle>About {profile.name}</SectionTitle>
-        <MockPanel className="mt-3 rounded-xl p-5 sm:p-6">
-          <p className="text-[15px] text-[var(--aris-ink)] leading-relaxed">{profile.description ?? "Company description not available."}</p>
+        <SectionTitle>About {companyName}</SectionTitle>
+        <div className="mt-3 rounded-xl border border-[var(--aris-line)] bg-[var(--aris-offwhite)] p-5 sm:p-6">
+          <p className="text-[15px] text-[var(--aris-ink)] leading-relaxed">{description}</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-5 text-[13px]">
-            {profile.founded && <Info label="Founded" value={profile.founded} />}
-            {profile.hq && <Info label="Headquarters" value={profile.hq} />}
-            {profile.employees && <Info label="Employees" value={profile.employees} />}
+            {founded && <Info label="Founded / IPO" value={founded} />}
+            {hq && <Info label="Headquarters" value={hq} />}
+            {employees && <Info label="Employees" value={employees} />}
+            {marketCap != null && <Info label="Market cap" value={fmtCap(marketCap)} />}
             {profile.brands && <Info label="Brands" value={profile.brands} fullWidth />}
           </div>
-        </MockPanel>
+        </div>
       </section>
 
       {/* Methodology check */}
       <section className="mb-8">
         <SectionTitle>Methodology Check</SectionTitle>
-        <MockPanel className="mt-3 rounded-xl p-5 sm:p-6">
+        <div className="mt-3 rounded-xl border border-[var(--aris-line)] bg-[var(--aris-offwhite)] p-5 sm:p-6">
           <MethodCheck label="Dividend history" status={profile.div5yGrowthPct >= 0 ? "pass" : "warn"} note={`5Y growth: ${profile.div5yGrowthPct >= 0 ? "+" : ""}${profile.div5yGrowthPct.toFixed(1)}%`} />
           <MethodCheck label="Payout ratio" status={profile.payoutPct > 100 ? "fail" : profile.payoutPct > 80 ? "warn" : "pass"} note={`${profile.payoutPct}% of earnings`} />
           <MethodCheck label="Balance sheet" status={profile.debtProfile === "Conservative" ? "pass" : profile.debtProfile === "Moderate" ? "warn" : "fail"} note={`${profile.debtProfile} leverage`} />
           <MethodCheck label="Halal-aware screen" status={profile.halalAware ? "pass" : "fail"} note={profile.halalAware ? "Passes sector exclusions" : (profile.excludeReason ?? "Excluded")} />
           <MethodCheck label="Composite quality" status={profile.quality >= 70 ? "pass" : profile.quality >= 50 ? "warn" : "fail"} note={`${profile.quality}/100`} />
-        </MockPanel>
+        </div>
       </section>
 
       <p className="text-[12px] text-[var(--aris-muted)] italic mt-8 max-w-3xl">
@@ -199,34 +243,12 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   return <h2 className="font-serif-display text-[20px] sm:text-[24px] text-[var(--aris-ink)] tracking-tight">{children}</h2>;
 }
 
-function MockBadge() {
-  return (
-    <span className="inline-flex items-center rounded-sm border border-rose-400 bg-rose-100 px-2 py-1 font-mono-mark text-[9px] uppercase tracking-wider text-rose-800">
-      Mock/model
-    </span>
-  );
-}
-
-function MockPanel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`relative border border-rose-400 bg-rose-50/80 ${className}`}>
-      <div className="absolute right-2 top-2 z-10">
-        <MockBadge />
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function Stat({ label, value, positive, highlight, mock }: { label: string; value: string; positive?: boolean; highlight?: boolean; mock?: boolean }) {
+function Stat({ label, value, positive, highlight }: { label: string; value: string; positive?: boolean; highlight?: boolean }) {
   return (
     <div className={`rounded-lg border px-4 py-3 ${
-      mock ? "border-rose-400 bg-rose-50/85" : highlight ? "border-[var(--aris-gold)] bg-amber-50/70" : "border-[var(--aris-line)] bg-[var(--aris-offwhite)]"
+      highlight ? "border-[var(--aris-gold)] bg-amber-50/70" : "border-[var(--aris-line)] bg-[var(--aris-offwhite)]"
     }`}>
-      <div className="flex items-center justify-between gap-2">
-        <div className="font-mono-mark text-[10px] tracking-wider uppercase text-[var(--aris-muted)]">{label}</div>
-        {mock && <MockBadge />}
-      </div>
+      <div className="font-mono-mark text-[10px] tracking-wider uppercase text-[var(--aris-muted)]">{label}</div>
       <div className={`mt-1 font-serif-display text-[18px] sm:text-[20px] tabular-nums ${
         positive === false ? "text-rose-700" : positive === true ? "text-emerald-700" : "text-[var(--aris-ink)]"
       }`}>{value}</div>
@@ -313,12 +335,7 @@ function QuarterlyDividendTable({
             <tr className="text-[10px] uppercase tracking-wider text-[var(--aris-muted)] font-mono-mark">
               <th className="px-4 py-2 text-start font-medium">Quarter</th>
               <th className="px-4 py-2 text-end font-medium">Company cash paid</th>
-              <th className="px-4 py-2 text-end font-medium">
-                <span className="inline-flex items-center justify-end gap-2">
-                  Approx. / share
-                  <MockBadge />
-                </span>
-              </th>
+              <th className="px-4 py-2 text-end font-medium">Approx. / share</th>
             </tr>
           </thead>
           <tbody>
@@ -328,7 +345,7 @@ function QuarterlyDividendTable({
                 <td className="px-4 py-2.5 text-end font-mono-mark text-[13px] text-[var(--aris-ink)]">
                   {hasCashFlowRows ? fmtMoney(row.paid, row.currency ? `${row.currency} ` : "$") : "—"}
                 </td>
-                <td className="px-4 py-2.5 text-end font-mono-mark text-[13px] text-rose-800 bg-rose-50/80">
+                <td className="px-4 py-2.5 text-end font-mono-mark text-[13px] text-[var(--aris-ink)]">
                   ${fmt(quarterlyPerShare, 2)}
                 </td>
               </tr>

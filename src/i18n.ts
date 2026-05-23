@@ -126,6 +126,8 @@ type Dict = {
   finalEyebrow: string;
   finalTitle: string;
   finalIntro: string;
+  riskNoticeTitle: string;
+  riskNoticeBody: string;
   // footer
   footerDisclaimer: string;
   disclaimerWarningTitle: string;
@@ -502,6 +504,9 @@ const en: Dict = {
   finalTitle: "Access institutional-style dividend intelligence.",
   finalIntro:
     "Start with sample research, explore the methodology, and decide for yourself. Backed by a 30-day money-back guarantee.",
+  riskNoticeTitle: "Educational research only — you control your money",
+  riskNoticeBody:
+    "We do not manage your money, access your brokerage account, place trades, rebalance portfolios, monitor holdings, or decide what you should buy or sell. You make every investment decision yourself. The platform provides general research and education only, not investment advice.",
   footerBrandTagline:
     "Premium, income-focused investment research for sophisticated investors across the GCC. Educational research and screening — not investment advice.",
   footerColPlatform: "Platform",
@@ -877,6 +882,9 @@ const pl: Dict = {
   finalTitle: "Sięgnij po dywidendowy research w stylu instytucjonalnym.",
   finalIntro:
     "Zacznij od próbki, poznaj metodologię i zdecyduj samodzielnie. Wszystko z 30-dniową gwarancją zwrotu.",
+  riskNoticeTitle: "Wyłącznie edukacyjny research — Ty kontrolujesz swoje pieniądze",
+  riskNoticeBody:
+    "Nie zarządzamy Twoimi pieniędzmi, nie mamy dostępu do rachunku maklerskiego, nie składamy zleceń, nie rebalansujemy portfela, nie monitorujemy pozycji i nie decydujemy, co masz kupić lub sprzedać. Każdą decyzję inwestycyjną podejmujesz samodzielnie. Platforma dostarcza ogólny research i edukację, nie poradę inwestycyjną.",
   footerBrandTagline:
     "Premium research inwestycyjny skupiony na dochodzie, dla świadomych inwestorów z regionu GCC. Research i screening edukacyjny — nie porada inwestycyjna.",
   footerColPlatform: "Platforma",
@@ -1252,6 +1260,9 @@ const ar: Dict = {
   finalTitle: "احصل على ذكاء توزيعات الأرباح بأسلوب مؤسّسي.",
   finalIntro:
     "ابدأ بنموذج الأبحاث، استكشف المنهجية، وقرّر بنفسك. مدعوماً بضمان استرداد المال خلال 30 يومًا.",
+  riskNoticeTitle: "أبحاث تعليمية فقط — أنت تتحكم في أموالك",
+  riskNoticeBody:
+    "نحن لا ندير أموالك، ولا ندخل إلى حساب الوساطة الخاص بك، ولا نضع الأوامر، ولا نعيد موازنة المحافظ، ولا نراقب ممتلكاتك، ولا نقرر ما يجب عليك شراؤه أو بيعه. أنت تتخذ كل قرار استثماري بنفسك. تقدم المنصة أبحاثا وتعليما عاما فقط، وليست استشارة استثمارية.",
   footerBrandTagline:
     "أبحاث استثمارية متميّزة ومُركّزة على الدخل لمستثمرين متمرّسين في دول الخليج. أبحاث وفحص تعليمي — وليست نصيحة استثمارية.",
   footerColPlatform: "المنصة",

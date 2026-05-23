@@ -13,6 +13,7 @@ import { Testimonials } from "./Testimonials";
 import { Pricing } from "./Pricing";
 import { FAQ } from "./FAQ";
 import { FinalCta } from "./FinalCta";
+import { RiskNotice } from "./RiskNotice";
 import { Footer } from "./Footer";
 import { Admin } from "./Admin";
 import { PartnerApp } from "./PartnerApp";
@@ -79,6 +80,7 @@ export function App() {
         <ShariaSection />
         <Comparison />
         <Testimonials />
+        <RiskNotice />
         <Pricing />
         <FAQ />
         <FinalCta />

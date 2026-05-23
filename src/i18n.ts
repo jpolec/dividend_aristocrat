@@ -207,7 +207,7 @@ const en: Dict = {
   trustBar: [
     "30-day money-back guarantee",
     "Cancel anytime",
-    "Apple Pay & Mada",
+    "Secure card checkout",
     "Arabic & English support",
   ],
   whyTitle: "Why dividend companies",
@@ -581,7 +581,7 @@ const pl: Dict = {
   trustBar: [
     "30-dniowa gwarancja zwrotu",
     "Rezygnacja w każdej chwili",
-    "Apple Pay i Mada",
+    "Bezpieczna płatność kartą",
     "Wsparcie po arabsku i angielsku",
   ],
   whyTitle: "Dlaczego spółki dywidendowe",
@@ -955,7 +955,7 @@ const ar: Dict = {
   trustBar: [
     "ضمان استرداد المال خلال 30 يومًا",
     "إلغاء في أي وقت",
-    "Apple Pay وMada",
+    "دفع آمن بالبطاقة",
     "دعم بالعربية والإنجليزية",
   ],
   whyTitle: "لماذا شركات توزيعات الأرباح",

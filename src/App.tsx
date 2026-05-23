@@ -17,6 +17,7 @@ import { Footer } from "./Footer";
 import { Admin } from "./Admin";
 import { PartnerApp } from "./PartnerApp";
 import { StockResearch } from "./StockResearch";
+import { StaticPage } from "./StaticPage";
 import { DICTS, LangCtx, dirOf, type Lang } from "./i18n";
 import "./index.css";
 
@@ -33,23 +34,33 @@ export function App() {
   }, [lang]);
 
   const t = DICTS[lang];
+  const path = typeof window !== "undefined" ? window.location.pathname : "/";
 
-  if (typeof window !== "undefined" && window.location.pathname.startsWith("/admin")) {
+  if (path.startsWith("/admin")) {
     return <Admin />;
   }
-  if (typeof window !== "undefined" && window.location.pathname.startsWith("/partner")) {
+  if (path.startsWith("/partner")) {
     return <PartnerApp />;
   }
-  if (typeof window !== "undefined" && window.location.pathname.startsWith("/research/") && window.location.pathname.length > 10) {
+  if (path.startsWith("/research/") && path.length > 10) {
     return <StockResearch />;
   }
-  if (typeof window !== "undefined" && window.location.pathname.startsWith("/research")) {
+  if (path.startsWith("/research")) {
     return (
       <LangCtx.Provider value={{ lang, setLang, t }}>
         <Header />
         <main className="pt-24 pb-16 px-4 sm:px-6 max-w-7xl mx-auto">
           <DividendTable />
         </main>
+        <Footer />
+      </LangCtx.Provider>
+    );
+  }
+  if (["/terms", "/privacy", "/risk", "/refund", "/arabic-support", "/contact", "/about"].includes(path)) {
+    return (
+      <LangCtx.Provider value={{ lang, setLang, t }}>
+        <Header />
+        <StaticPage path={path} />
         <Footer />
       </LangCtx.Provider>
     );

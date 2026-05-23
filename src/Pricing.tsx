@@ -209,7 +209,7 @@ export function Pricing() {
         )}
 
         <div className="flex items-center justify-center gap-2 flex-wrap mt-9">
-          {["Apple Pay", "Mada", "Tabby", "Tamara", "Visa", "Mastercard"].map(p => (
+          {["Secure Stripe checkout", "Visa", "Mastercard"].map(p => (
             <span
               key={p}
               className="font-mono-mark text-[11px] text-[var(--aris-muted)] border border-[var(--aris-line-dark)] rounded-sm px-3 py-2 bg-[var(--aris-offwhite)]"

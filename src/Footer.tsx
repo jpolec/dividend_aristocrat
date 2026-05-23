@@ -22,19 +22,15 @@ export function Footer() {
               </span>
             </a>
             <p className="text-[13.5px] leading-[1.6] max-w-[300px]">{t.footerBrandTagline}</p>
-            <div className="flex flex-wrap gap-2 mt-4">
-              {["Apple Pay", "Mada", "Tabby", "Tamara"].map(p => (
-                <span key={p} className="font-mono-mark text-[11px] border border-[var(--aris-paper)]/15 rounded-sm px-3 py-1.5 text-[var(--aris-paper)]/50">
-                  {p}
-                </span>
-              ))}
-            </div>
+            <p className="mt-4 font-mono-mark text-[11px] uppercase tracking-wider text-[var(--aris-gold)]">
+              Secure checkout via Stripe
+            </p>
           </div>
 
           {[
-            { title: t.footerColPlatform, links: t.footerLinks.platform, hrefs: ["#method", "#sample", "#sharia", "#pricing"] },
-            { title: t.footerColCompany, links: t.footerLinks.company, hrefs: ["#", "#faq", "#", "#"] },
-            { title: t.footerColLegal, links: t.footerLinks.legal, hrefs: ["#", "#", "#", "#"] },
+            { title: t.footerColPlatform, links: t.footerLinks.platform, hrefs: ["/#method", "/#sample", "/#sharia", "/#pricing"] },
+            { title: t.footerColCompany, links: t.footerLinks.company, hrefs: ["/about", "/#faq", "/contact", "/arabic-support"] },
+            { title: t.footerColLegal, links: t.footerLinks.legal, hrefs: ["/terms", "/privacy", "/risk", "/refund"] },
           ].map(col => (
             <div key={col.title}>
               <h4 className="font-mono-mark text-[11px] tracking-wider uppercase text-[var(--aris-gold)] mb-4 font-medium">

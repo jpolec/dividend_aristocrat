@@ -6,7 +6,16 @@
   }
 
   body {
-    @apply grid place-items-center min-w-[320px] min-h-screen relative m-0 bg-background text-foreground;
+    @apply min-w-[320px] min-h-screen relative m-0;
+    background:
+      radial-gradient(90% 65% at 82% 12%, rgba(198, 166, 103, 0.14), transparent 55%),
+      linear-gradient(180deg, var(--aris-paper-2), var(--aris-paper));
+    color: var(--aris-ink);
+  }
+
+  #root {
+    width: 100%;
+    min-height: 100vh;
   }
 }
 

@@ -3,7 +3,13 @@ import { useT } from "./i18n";
 export function Problem() {
   const { t } = useT();
   return (
-    <section id="problem" className="py-14 sm:py-20 lg:py-24" style={{ background: "var(--aris-paper)" }}>
+    <section
+      id="problem"
+      className="py-14 sm:py-20 lg:py-24"
+      style={{
+        background: "linear-gradient(180deg, var(--aris-paper-2) 0%, #f5ecd4 48%, var(--aris-paper-2) 100%)",
+      }}
+    >
       <div className="mx-auto max-w-[1240px] px-4 sm:px-7">
         <div className="max-w-3xl mb-12">
           <div className="eyebrow">{t.problemEyebrow}</div>
@@ -20,7 +26,7 @@ export function Problem() {
             <div
               key={i}
               className="rounded-md px-6 py-7 transition-all hover:-translate-y-1 hover:shadow-[0_22px_50px_-28px_rgba(12,18,14,.25)]"
-              style={{ background: "var(--aris-offwhite)", border: "1px solid var(--aris-line-dark)" }}
+              style={{ background: "rgba(250,248,242,.78)", border: "1px solid var(--aris-line)" }}
             >
               <div className="font-mono-mark text-[12px] text-[var(--aris-gold)] tracking-wider">
                 {String(i + 1).padStart(2, "0")}

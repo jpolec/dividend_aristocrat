@@ -70,7 +70,13 @@ export function Pricing() {
   const price = PRICES[currency];
 
   return (
-    <section id="pricing" className="py-14 sm:py-20 lg:py-24" style={{ background: "var(--aris-paper)" }}>
+    <section
+      id="pricing"
+      className="py-14 sm:py-20 lg:py-24"
+      style={{
+        background: "linear-gradient(180deg, var(--aris-paper-2) 0%, #f6eed8 55%, var(--aris-paper-2) 100%)",
+      }}
+    >
       <div className="mx-auto max-w-[1240px] px-4 sm:px-7">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <div className="eyebrow">{t.pricingEyebrow}</div>

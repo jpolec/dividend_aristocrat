@@ -51,7 +51,12 @@ export function CompoundChart() {
   const path = (pts: typeof dividend) => pts.map((p, i) => `${i === 0 ? "M" : "L"} ${xAt(i)} ${yAt(p.balance)}`).join(" ");
 
   return (
-    <section className="py-14 sm:py-20 lg:py-24" style={{ background: "var(--aris-paper)" }}>
+    <section
+      className="py-14 sm:py-20 lg:py-24"
+      style={{
+        background: "linear-gradient(180deg, var(--aris-paper-2) 0%, #f5ecd4 100%)",
+      }}
+    >
       <div className="mx-auto max-w-[1240px] px-4 sm:px-7">
         <div className="max-w-3xl mb-10">
           <div className="eyebrow">{t.chartCompareEyebrow}</div>
@@ -68,7 +73,7 @@ export function CompoundChart() {
           style={{ background: "var(--aris-offwhite)", border: "1px solid var(--aris-line-dark)", boxShadow: "0 30px 70px -45px rgba(12,18,14,.3)" }}
         >
           {/* Controls */}
-          <div className="px-4 sm:px-7 py-5 border-b border-[var(--aris-line-dark)] bg-white">
+          <div className="px-4 sm:px-7 py-5 border-b border-[var(--aris-line)] bg-amber-50/45">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
               <Slider
                 label={`${t.chartMonthly} (${currency})`}

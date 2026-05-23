@@ -1,4 +1,5 @@
 import { serve } from "bun";
+import { readFileSync, statSync } from "node:fs";
 import index from "./index.html";
 import { cacheGet, cacheGetWithAge, cachePut, cacheClear, cacheStats } from "./cache";
 import {
@@ -15,6 +16,7 @@ import {
 import { runDigest, selectTopPicks, renderDigestHtml, shouldRunWeekly, sendEmail } from "./digest";
 import { createCheckoutSession, verifyStripeSignature, defaultCurrencyForLang, type Currency } from "./stripe";
 import { analyticsSummary, recordAnalyticsEvent } from "./analytics";
+import { checkpointDatabases, getActiveDatabasePath } from "./db";
 import {
   applyAsPartner,
   getPartnerByCode,
@@ -1024,6 +1026,32 @@ const server = serve({
           recent: partners.slice(0, 10),
         },
       });
+    },
+
+    "/api/admin/backup": req => {
+      const auth = requireAdmin(req);
+      if (auth) return auth;
+      const dbPath = getActiveDatabasePath();
+      if (dbPath === ":memory:") {
+        return Response.json({ error: "in-memory database cannot be downloaded" }, { status: 400 });
+      }
+      try {
+        checkpointDatabases();
+        const file = readFileSync(dbPath);
+        const size = statSync(dbPath).size;
+        const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+        const filename = `dividend-aristocrat-${stamp}.sqlite`;
+        return new Response(file, {
+          headers: {
+            "Content-Type": "application/vnd.sqlite3",
+            "Content-Length": String(size),
+            "Content-Disposition": `attachment; filename="${filename}"`,
+            "Cache-Control": "no-store",
+          },
+        });
+      } catch (e) {
+        return Response.json({ error: String(e), dbPath }, { status: 500 });
+      }
     },
 
     // Admin

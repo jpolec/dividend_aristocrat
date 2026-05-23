@@ -12,6 +12,9 @@ function configuredDbPath(): string {
   return value;
 }
 
+const openDatabases = new Set<Database>();
+let activeDbPath: string | null = null;
+
 function ensureParentDir(dbPath: string) {
   if (dbPath === ":memory:") return;
   const dir = dirname(dbPath);
@@ -29,6 +32,8 @@ export function openAppDatabase(label: string): Database {
       ensureParentDir(dbPath);
       const db = new Database(dbPath);
       db.exec("PRAGMA journal_mode = WAL;");
+      openDatabases.add(db);
+      activeDbPath = dbPath;
       return db;
     } catch (error) {
       lastError = error;
@@ -37,4 +42,18 @@ export function openAppDatabase(label: string): Database {
   }
 
   throw lastError;
+}
+
+export function getActiveDatabasePath() {
+  return activeDbPath ?? configuredDbPath();
+}
+
+export function checkpointDatabases() {
+  for (const db of openDatabases) {
+    try {
+      db.exec("PRAGMA wal_checkpoint(TRUNCATE);");
+    } catch (error) {
+      console.error("[db] WAL checkpoint failed:", error);
+    }
+  }
 }

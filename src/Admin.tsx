@@ -231,7 +231,16 @@ export function Admin() {
               className="max-w-md"
             />
             <Button variant="outline" onClick={load}>Load with token</Button>
+            <a
+              href={withToken("/api/admin/backup")}
+              className="inline-flex h-10 items-center justify-center rounded-md border px-4 text-sm font-medium hover:bg-muted"
+            >
+              Download DB backup
+            </a>
           </div>
+          <p className="text-xs text-muted-foreground">
+            Backup downloads the full SQLite database after a WAL checkpoint. Keep it private; it contains subscribers, partner data, analytics, and cache.
+          </p>
         </CardContent>
       </Card>
 

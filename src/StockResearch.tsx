@@ -64,6 +64,7 @@ export function StockResearch() {
             <div className="flex items-center gap-3 flex-wrap">
               <span className="font-mono-mark text-[28px] sm:text-[34px] font-bold text-[var(--aris-emerald)]">{symbol}</span>
               <h1 className="font-serif-display text-[24px] sm:text-[32px] lg:text-[40px] text-[var(--aris-ink)]">{profile.name}</h1>
+              <MockBadge />
             </div>
             <div className="mt-2 flex items-center gap-3 flex-wrap text-[13.5px] text-[var(--aris-muted)]">
               <span>{profile.sector}</span>
@@ -74,7 +75,7 @@ export function StockResearch() {
               )}
             </div>
           </div>
-          <div className="text-end">
+          <MockPanel className="text-end rounded-lg p-3">
             <div className="font-mono-mark text-[10px] tracking-wider uppercase text-[var(--aris-muted)]">Reference model</div>
             <div className="font-serif-display text-[36px] sm:text-[44px] text-[var(--aris-ink)] tabular-nums leading-none">
               ${fmt(illustrativePrice)}
@@ -82,7 +83,7 @@ export function StockResearch() {
             <div className="mt-1 font-mono-mark text-[14px] font-semibold text-[var(--aris-emerald)] tabular-nums">
               Yield {fmt(yieldPct, 2)}%
             </div>
-          </div>
+          </MockPanel>
         </div>
       </header>
 
@@ -93,11 +94,11 @@ export function StockResearch() {
         <SectionTitle>Snapshot</SectionTitle>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-4">
           <Stat label="Live price" value={livePrice != null ? `$${fmt(livePrice)}` : "—"} />
-          <Stat label="Annual dividend" value={`$${fmt(annualDiv, 2)}`} />
-          <Stat label="Payout ratio" value={`${profile.payoutPct}%`} />
-          <Stat label="5Y div growth" value={`${profile.div5yGrowthPct >= 0 ? "+" : ""}${profile.div5yGrowthPct.toFixed(1)}%`} positive={profile.div5yGrowthPct >= 0} />
+          <Stat label="Annual dividend" value={`$${fmt(annualDiv, 2)}`} mock />
+          <Stat label="Payout ratio" value={`${profile.payoutPct}%`} mock />
+          <Stat label="5Y div growth" value={`${profile.div5yGrowthPct >= 0 ? "+" : ""}${profile.div5yGrowthPct.toFixed(1)}%`} positive={profile.div5yGrowthPct >= 0} mock />
           <Stat label="52w range" value={data?.metrics.low52w && data?.metrics.high52w ? `$${fmt(data.metrics.low52w)} – $${fmt(data.metrics.high52w)}` : "—"} />
-          <Stat label="Quality score" value={`${profile.quality}/100`} highlight />
+          <Stat label="Quality score" value={`${profile.quality}/100`} highlight mock />
         </div>
       </section>
 
@@ -142,13 +143,15 @@ export function StockResearch() {
           What if you started with AED 100,000 and reinvested dividends every quarter at a {yieldPct.toFixed(2)}% annual yield?
           Below is an illustrative compounding model, not a forecast.
         </p>
-        <InvestmentSimulator yieldPct={yieldPct} />
+        <MockPanel>
+          <InvestmentSimulator yieldPct={yieldPct} />
+        </MockPanel>
       </section>
 
       {/* About */}
       <section className="mb-8">
         <SectionTitle>About {profile.name}</SectionTitle>
-        <div className="mt-3 rounded-xl border border-[var(--aris-line)] bg-[var(--aris-offwhite)] p-5 sm:p-6">
+        <MockPanel className="mt-3 rounded-xl p-5 sm:p-6">
           <p className="text-[15px] text-[var(--aris-ink)] leading-relaxed">{profile.description ?? "Company description not available."}</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-5 text-[13px]">
             {profile.founded && <Info label="Founded" value={profile.founded} />}
@@ -156,19 +159,19 @@ export function StockResearch() {
             {profile.employees && <Info label="Employees" value={profile.employees} />}
             {profile.brands && <Info label="Brands" value={profile.brands} fullWidth />}
           </div>
-        </div>
+        </MockPanel>
       </section>
 
       {/* Methodology check */}
       <section className="mb-8">
         <SectionTitle>Methodology Check</SectionTitle>
-        <div className="mt-3 rounded-xl border border-[var(--aris-line)] bg-[var(--aris-offwhite)] p-5 sm:p-6">
+        <MockPanel className="mt-3 rounded-xl p-5 sm:p-6">
           <MethodCheck label="Dividend history" status={profile.div5yGrowthPct >= 0 ? "pass" : "warn"} note={`5Y growth: ${profile.div5yGrowthPct >= 0 ? "+" : ""}${profile.div5yGrowthPct.toFixed(1)}%`} />
           <MethodCheck label="Payout ratio" status={profile.payoutPct > 100 ? "fail" : profile.payoutPct > 80 ? "warn" : "pass"} note={`${profile.payoutPct}% of earnings`} />
           <MethodCheck label="Balance sheet" status={profile.debtProfile === "Conservative" ? "pass" : profile.debtProfile === "Moderate" ? "warn" : "fail"} note={`${profile.debtProfile} leverage`} />
           <MethodCheck label="Halal-aware screen" status={profile.halalAware ? "pass" : "fail"} note={profile.halalAware ? "Passes sector exclusions" : (profile.excludeReason ?? "Excluded")} />
           <MethodCheck label="Composite quality" status={profile.quality >= 70 ? "pass" : profile.quality >= 50 ? "warn" : "fail"} note={`${profile.quality}/100`} />
-        </div>
+        </MockPanel>
       </section>
 
       <p className="text-[12px] text-[var(--aris-muted)] italic mt-8 max-w-3xl">
@@ -196,12 +199,34 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   return <h2 className="font-serif-display text-[20px] sm:text-[24px] text-[var(--aris-ink)] tracking-tight">{children}</h2>;
 }
 
-function Stat({ label, value, positive, highlight }: { label: string; value: string; positive?: boolean; highlight?: boolean }) {
+function MockBadge() {
+  return (
+    <span className="inline-flex items-center rounded-sm border border-rose-400 bg-rose-100 px-2 py-1 font-mono-mark text-[9px] uppercase tracking-wider text-rose-800">
+      Mock/model
+    </span>
+  );
+}
+
+function MockPanel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`relative border border-rose-400 bg-rose-50/80 ${className}`}>
+      <div className="absolute right-2 top-2 z-10">
+        <MockBadge />
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function Stat({ label, value, positive, highlight, mock }: { label: string; value: string; positive?: boolean; highlight?: boolean; mock?: boolean }) {
   return (
     <div className={`rounded-lg border px-4 py-3 ${
-      highlight ? "border-[var(--aris-gold)] bg-amber-50/70" : "border-[var(--aris-line)] bg-[var(--aris-offwhite)]"
+      mock ? "border-rose-400 bg-rose-50/85" : highlight ? "border-[var(--aris-gold)] bg-amber-50/70" : "border-[var(--aris-line)] bg-[var(--aris-offwhite)]"
     }`}>
-      <div className="font-mono-mark text-[10px] tracking-wider uppercase text-[var(--aris-muted)]">{label}</div>
+      <div className="flex items-center justify-between gap-2">
+        <div className="font-mono-mark text-[10px] tracking-wider uppercase text-[var(--aris-muted)]">{label}</div>
+        {mock && <MockBadge />}
+      </div>
       <div className={`mt-1 font-serif-display text-[18px] sm:text-[20px] tabular-nums ${
         positive === false ? "text-rose-700" : positive === true ? "text-emerald-700" : "text-[var(--aris-ink)]"
       }`}>{value}</div>
@@ -288,7 +313,12 @@ function QuarterlyDividendTable({
             <tr className="text-[10px] uppercase tracking-wider text-[var(--aris-muted)] font-mono-mark">
               <th className="px-4 py-2 text-start font-medium">Quarter</th>
               <th className="px-4 py-2 text-end font-medium">Company cash paid</th>
-              <th className="px-4 py-2 text-end font-medium">Approx. / share</th>
+              <th className="px-4 py-2 text-end font-medium">
+                <span className="inline-flex items-center justify-end gap-2">
+                  Approx. / share
+                  <MockBadge />
+                </span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -298,7 +328,7 @@ function QuarterlyDividendTable({
                 <td className="px-4 py-2.5 text-end font-mono-mark text-[13px] text-[var(--aris-ink)]">
                   {hasCashFlowRows ? fmtMoney(row.paid, row.currency ? `${row.currency} ` : "$") : "—"}
                 </td>
-                <td className="px-4 py-2.5 text-end font-mono-mark text-[13px] text-[var(--aris-gold)]">
+                <td className="px-4 py-2.5 text-end font-mono-mark text-[13px] text-rose-800 bg-rose-50/80">
                   ${fmt(quarterlyPerShare, 2)}
                 </td>
               </tr>

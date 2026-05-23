@@ -251,16 +251,16 @@ export function SampleResearch() {
                     <td className="px-4 sm:px-5 py-4 text-[14px] font-mono-mark font-semibold" style={{ color: r.yieldPct >= 9 ? "#9c7c3a" : "var(--aris-ink)" }}>
                       {r.yieldPct > 0 ? `${r.yieldPct.toFixed(2)}%` : "—"}
                     </td>
-                    <td className={`px-4 sm:px-5 py-4 text-[14px] font-mono-mark ${r.div5yGrowthPct < 0 ? "text-rose-700" : "text-[var(--aris-ink)]"}`}>
+                    <td className={`px-4 sm:px-5 py-4 text-[14px] font-mono-mark bg-rose-50/80 border-s border-rose-200 ${r.div5yGrowthPct < 0 ? "text-rose-700" : "text-[var(--aris-ink)]"}`} title="Mock/model field from TICKER_PROFILES">
                       {`${r.div5yGrowthPct >= 0 ? "+" : ""}${r.div5yGrowthPct.toFixed(1)}%`}
                     </td>
-                    <td className={`px-4 sm:px-5 py-4 text-[14px] font-mono-mark ${r.payoutPct > 100 ? "text-rose-700" : "text-[var(--aris-ink)]"}`}>
+                    <td className={`px-4 sm:px-5 py-4 text-[14px] font-mono-mark bg-rose-50/80 border-s border-rose-200 ${r.payoutPct > 100 ? "text-rose-700" : "text-[var(--aris-ink)]"}`} title="Mock/model field from TICKER_PROFILES">
                       {`${r.payoutPct}%`}
                     </td>
-                    <td className="px-4 sm:px-5 py-4">
+                    <td className="px-4 sm:px-5 py-4 bg-rose-50/80 border-s border-rose-200" title="Mock/model field from TICKER_PROFILES">
                       <Tag label={r.debtProfile} />
                     </td>
-                    <td className="px-4 sm:px-5 py-4">
+                    <td className="px-4 sm:px-5 py-4 bg-rose-50/80 border-s border-rose-200" title="Mock/model field from TICKER_PROFILES">
                       {r.halalAware ? (
                         <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[var(--aris-emerald)]">
                           <span className="text-[14px] leading-none">◈</span>
@@ -276,7 +276,7 @@ export function SampleResearch() {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 sm:px-5 py-4">
+                    <td className="px-4 sm:px-5 py-4 bg-rose-50/80 border-s border-rose-200" title="Mock/model field from TICKER_PROFILES">
                       <Score value={r.quality} />
                     </td>
                   </tr>
@@ -286,6 +286,12 @@ export function SampleResearch() {
           </div>
 
           <div className="px-4 sm:px-7 py-4 bg-[var(--aris-paper-2)] text-[12px] text-[var(--aris-muted)] italic leading-relaxed">
+            <p className="not-italic font-medium text-[var(--aris-ink)] mb-2">
+              <span className="inline-flex items-center rounded-sm border border-rose-400 bg-rose-100 px-2 py-1 font-mono-mark text-[9px] uppercase tracking-wider text-rose-800 me-2">
+                Mock/model
+              </span>
+              Red cells are manually/model-defined in <code>TICKER_PROFILES</code>, not direct QJ API fields.
+            </p>
             <p className="not-italic font-medium text-[var(--aris-ink)] mb-2">
               <span className="text-[var(--aris-emerald)] me-1">◈ PASS</span> = passes our halal-aware screen.
               Quality score reflects 5-year payment consistency, balance-sheet review and earnings stability.

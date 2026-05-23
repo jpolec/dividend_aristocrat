@@ -14,6 +14,7 @@ import {
 } from "./subscribers";
 import { runDigest, selectTopPicks, renderDigestHtml, shouldRunWeekly, sendEmail } from "./digest";
 import { createCheckoutSession, verifyStripeSignature, defaultCurrencyForLang, type Currency } from "./stripe";
+import { analyticsSummary, recordAnalyticsEvent } from "./analytics";
 import {
   applyAsPartner,
   getPartnerByCode,
@@ -363,6 +364,13 @@ const server = serve({
         return Response.redirect(BASE_URL + "/", 302);
       }
       recordClick(code, req.headers.get("user-agent"), req.headers.get("referer"));
+      recordAnalyticsEvent({
+        type: "referral_landing",
+        path: `/r/${code}`,
+        referrer: req.headers.get("referer"),
+        targetText: code,
+        metadata: { code },
+      }, req);
       const maxAge = 90 * 24 * 60 * 60;
       return new Response(null, {
         status: 302,
@@ -385,6 +393,11 @@ const server = serve({
             country: body.country,
             estimated_reach: body.estimated_reach,
           });
+          recordAnalyticsEvent({
+            type: "partner_apply",
+            path: "/partner/apply",
+            metadata: { country: body.country ?? null, hasSocialHandle: Boolean(body.social_handle), code: partner.code },
+          }, req);
           const token = signMagicToken(partner.email);
           const loginUrl = `${BASE_URL}/partner/verify?token=${token}`;
           let emailSent = false;
@@ -682,6 +695,39 @@ const server = serve({
       },
     },
 
+    "/api/analytics/event": {
+      async POST(req) {
+        try {
+          const body = (await req.json()) as {
+            visitorId?: string;
+            sessionId?: string;
+            type?: string;
+            path?: string;
+            referrer?: string;
+            targetTag?: string;
+            targetText?: string;
+            targetHref?: string;
+            metadata?: Record<string, unknown>;
+          };
+          if (!body.type) return Response.json({ error: "type required" }, { status: 400 });
+          recordAnalyticsEvent({
+            visitorId: body.visitorId,
+            sessionId: body.sessionId,
+            type: body.type,
+            path: body.path,
+            referrer: body.referrer,
+            targetTag: body.targetTag,
+            targetText: body.targetText,
+            targetHref: body.targetHref,
+            metadata: body.metadata,
+          }, req);
+          return Response.json({ ok: true });
+        } catch (e) {
+          return Response.json({ error: String(e) }, { status: 400 });
+        }
+      },
+    },
+
     // Subscription (free / unpaid)
     "/api/subscribe": {
       async POST(req) {
@@ -691,6 +737,11 @@ const server = serve({
             return Response.json({ error: "invalid email" }, { status: 400 });
           }
           subscribe(email, normalizeLang(lang));
+          recordAnalyticsEvent({
+            type: "subscribe",
+            path: "/api/subscribe",
+            metadata: { lang: normalizeLang(lang) },
+          }, req);
           return Response.json({ ok: true });
         } catch (e) {
           return Response.json({ error: String(e) }, { status: 400 });
@@ -714,6 +765,11 @@ const server = serve({
           }
           const lng = normalizeLang(lang);
           const cur = currency ?? defaultCurrencyForLang(lng);
+          recordAnalyticsEvent({
+            type: "checkout_request",
+            path: "/api/checkout",
+            metadata: { lang: lng, currency: cur, tier: tier ?? "monthly", referralCodePresent: Boolean(referralCode) },
+          }, req);
           // Validate referral code if provided
           let validRef: string | null = null;
           if (referralCode) {
@@ -768,6 +824,15 @@ const server = serve({
                 currency: obj.currency,
               });
               console.log(`[stripe] paid: ${email} (${obj.currency})`);
+              recordAnalyticsEvent({
+                type: "stripe_paid",
+                path: "/api/stripe/webhook",
+                metadata: {
+                  currency: obj.currency,
+                  amountTotal: obj.amount_total ?? null,
+                  referralCodePresent: Boolean(obj.metadata?.referral_code || obj.client_reference_id),
+                },
+              }, req);
 
               // Partner attribution + commission
               const refCode = obj.metadata?.referral_code || obj.client_reference_id;
@@ -800,6 +865,11 @@ const server = serve({
           } else if (event.type === "customer.subscription.deleted") {
             const obj = event.data.object as { id: string; customer: string };
             markCanceledBySubscription(obj.id);
+            recordAnalyticsEvent({
+              type: "stripe_subscription_canceled",
+              path: "/api/stripe/webhook",
+              metadata: { subscriptionIdPresent: Boolean(obj.id) },
+            }, req);
             console.log(`[stripe] canceled: subscription ${obj.id}`);
           } else if (event.type === "customer.deleted") {
             const obj = event.data.object as { id: string };
@@ -904,6 +974,56 @@ const server = serve({
           headers: { "Set-Cookie": `${ADMIN_SESSION_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax` },
         });
       },
+    },
+
+    "/api/admin/analytics": req => {
+      const auth = requireAdmin(req);
+      if (auth) return auth;
+      autoConfirmPending();
+      const subscribers = listSubscribers();
+      const partners = listPartnersWithStats();
+      const partnerOverview = partnersOverview();
+      const now = Date.now();
+      const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+      const activeCustomers = subscribers.filter(s => s.paid_status === "active");
+      const pendingCustomers = subscribers.filter(s => (s.paid_status ?? "pending") === "pending");
+      const canceledCustomers = subscribers.filter(s => s.paid_status === "canceled");
+      const recentCustomers = subscribers
+        .filter(s => s.paid_at != null)
+        .sort((a, b) => (b.paid_at ?? 0) - (a.paid_at ?? 0))
+        .slice(0, 20)
+        .map(s => ({
+          email: s.email,
+          lang: s.lang,
+          paid_status: s.paid_status,
+          paid_at: s.paid_at,
+          currency: s.currency,
+        }));
+
+      return Response.json({
+        analytics: analyticsSummary(),
+        customers: {
+          subscribers: subscribers.length,
+          active: activeCustomers.length,
+          pending: pendingCustomers.length,
+          canceled: canceledCustomers.length,
+          newSubscribers7d: subscribers.filter(s => s.created_at >= weekAgo).length,
+          newPaid7d: subscribers.filter(s => (s.paid_at ?? 0) >= weekAgo).length,
+          byCurrency: Object.fromEntries(
+            [...new Set(activeCustomers.map(s => s.currency ?? "unknown"))].map(currency => [
+              currency,
+              activeCustomers.filter(s => (s.currency ?? "unknown") === currency).length,
+            ]),
+          ),
+          recent: recentCustomers,
+        },
+        partners: {
+          overview: partnerOverview,
+          topByClicks: partners.slice().sort((a, b) => b.clicks_count - a.clicks_count).slice(0, 10),
+          topByConversions: partners.slice().sort((a, b) => b.conversions_count - a.conversions_count).slice(0, 10),
+          recent: partners.slice(0, 10),
+        },
+      });
     },
 
     // Admin

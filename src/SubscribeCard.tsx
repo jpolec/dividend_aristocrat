@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useT, LANGS, type Lang } from "./i18n";
+import { trackEvent } from "./analyticsClient";
 
 type Currency = "usd" | "pln" | "aed" | "sar" | "qar";
 
@@ -40,6 +41,7 @@ export function SubscribeCard() {
     const paid = params.get("paid");
     if (paid === "success") setStatus("paid_success");
     else if (paid === "canceled") setStatus("paid_canceled");
+    if (paid === "success" || paid === "canceled") trackEvent(`checkout_${paid}_return`);
     if (paid) {
       // clean query
       const u = new URL(window.location.href);
@@ -56,6 +58,7 @@ export function SubscribeCard() {
       return;
     }
     setStatus("submitting");
+    trackEvent("checkout_start", { metadata: { currency, lang: subLang, source: "subscribe_card" } });
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",

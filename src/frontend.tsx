@@ -8,6 +8,9 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
+import { initAnalytics } from "./analyticsClient";
+
+initAnalytics();
 
 const elem = document.getElementById("root")!;
 const app = (

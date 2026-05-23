@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useT, type Lang } from "./i18n";
+import { trackEvent } from "./analyticsClient";
 
 type Currency = "usd" | "aed" | "sar" | "qar" | "pln";
 type Tier = "monthly" | "annual";
@@ -34,6 +35,7 @@ export function Pricing() {
     const p = new URLSearchParams(window.location.search).get("paid");
     if (p === "success") setPaid("success");
     if (p === "canceled") setPaid("canceled");
+    if (p === "success" || p === "canceled") trackEvent(`checkout_${p}_return`);
     if (p) {
       const u = new URL(window.location.href);
       u.searchParams.delete("paid");
@@ -48,6 +50,7 @@ export function Pricing() {
       return;
     }
     setBusyTier(tier);
+    trackEvent("checkout_start", { metadata: { tier, currency, referral: Boolean(document.cookie.includes("aristo_ref=")) } });
     const referralCode = document.cookie
       .split(/;\s*/)
       .find(c => c.startsWith("aristo_ref="))

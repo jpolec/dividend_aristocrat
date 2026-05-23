@@ -240,10 +240,23 @@ export function partnersOverview() {
   ).get()?.n ?? 0;
   const total_clicks = db.prepare<{ n: number }, []>("SELECT COUNT(*) AS n FROM partner_clicks").get()?.n ?? 0;
   const total_conversions = db.prepare<{ n: number }, []>("SELECT COUNT(*) AS n FROM partner_attributions").get()?.n ?? 0;
+  const codes_used = db.prepare<{ n: number }, []>("SELECT COUNT(DISTINCT code) AS n FROM partner_clicks").get()?.n ?? 0;
+  const codes_converted = db.prepare<{ n: number }, []>("SELECT COUNT(DISTINCT code) AS n FROM partner_attributions").get()?.n ?? 0;
   const total_commissions_cents = db.prepare<{ n: number | null }, []>(
     "SELECT SUM(amount_cents) AS n FROM partner_commissions WHERE status IN ('confirmed','paid')",
   ).get()?.n ?? 0;
-  return { total, active, signed, ever_logged_in, total_clicks, total_conversions, total_commissions_cents: total_commissions_cents ?? 0 };
+  return {
+    total,
+    active,
+    signed,
+    ever_logged_in,
+    total_clicks,
+    total_conversions,
+    codes_generated: total,
+    codes_used,
+    codes_converted,
+    total_commissions_cents: total_commissions_cents ?? 0,
+  };
 }
 
 export function signDocument(args: {

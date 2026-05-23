@@ -8,6 +8,9 @@ type Sub = {
   lang: string;
   created_at: number;
   last_sent_at: number | null;
+  paid_status: string | null;
+  paid_at: number | null;
+  currency: string | null;
 };
 type Resp = { count: number; last_run_at: number | null; subscribers: Sub[] };
 type Partner = {
@@ -19,8 +22,29 @@ type Partner = {
   pending_cents: number; confirmed_cents: number; paid_cents: number;
 };
 type Payout = { id: number; code: string; amount_cents: number; currency: string; method: string; method_details: string; status: string; requested_at: number; paid_at: number | null; paid_reference: string | null };
-type Overview = { total: number; active: number; signed: number; ever_logged_in: number; total_clicks: number; total_conversions: number; total_commissions_cents: number };
+type Overview = {
+  total: number; active: number; signed: number; ever_logged_in: number; total_clicks: number; total_conversions: number;
+  codes_generated: number; codes_used: number; codes_converted: number; total_commissions_cents: number;
+};
 type PartnersResp = { partners: Partner[]; payouts: Payout[]; overview: Overview };
+type AnalyticsResp = {
+  analytics: {
+    totals: {
+      events: number; pageViews: number; clicks: number; checkoutStarts: number; visitors: number;
+      visitors24h: number; visitors7d: number; visitors30d: number; pageViews7d: number; clicks7d: number; checkoutStarts7d: number;
+    };
+    topPages: { path: string; views: number; visitors: number }[];
+    topClicks: { target_text: string | null; target_href: string | null; clicks: number; visitors: number }[];
+    recentEvents: { id: number; timestamp: number; type: string; path: string | null; target_text: string | null; target_href: string | null; referrer: string | null }[];
+    daily: { day: string; page_views: number; clicks: number; visitors: number; checkout_starts: number }[];
+  };
+  customers: {
+    subscribers: number; active: number; pending: number; canceled: number; newSubscribers7d: number; newPaid7d: number;
+    byCurrency: Record<string, number>;
+    recent: { email: string; lang: string; paid_status: string | null; paid_at: number | null; currency: string | null }[];
+  };
+  partners: { overview: Overview; topByClicks: Partner[]; topByConversions: Partner[]; recent: Partner[] };
+};
 
 const fmtDate = (ms: number | null) =>
   ms == null ? "—" : new Date(ms).toLocaleString();
@@ -32,7 +56,8 @@ export function Admin() {
   const [loginStatus, setLoginStatus] = useState<string | null>(null);
   const [data, setData] = useState<Resp | null>(null);
   const [partnersData, setPartnersData] = useState<PartnersResp | null>(null);
-  const [tab, setTab] = useState<"subscribers" | "partners">("subscribers");
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsResp | null>(null);
+  const [tab, setTab] = useState<"overview" | "subscribers" | "partners">("overview");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -43,9 +68,10 @@ export function Admin() {
   async function load() {
     setError(null);
     try {
-      const [subRes, partRes] = await Promise.all([
+      const [subRes, partRes, analyticsRes] = await Promise.all([
         fetch(withToken("/api/admin/subscribers")),
         fetch(withToken("/api/admin/partners")),
+        fetch(withToken("/api/admin/analytics")),
       ]);
       if (!subRes.ok) throw new Error(`HTTP ${subRes.status}`);
       const j = (await subRes.json()) as Resp;
@@ -53,6 +79,10 @@ export function Admin() {
       if (partRes.ok) {
         const p = (await partRes.json()) as PartnersResp;
         setPartnersData(p);
+      }
+      if (analyticsRes.ok) {
+        const a = (await analyticsRes.json()) as AnalyticsResp;
+        setAnalyticsData(a);
       }
     } catch (e) {
       setError(String(e));
@@ -98,6 +128,7 @@ export function Admin() {
     setSessionEmail(null);
     setData(null);
     setPartnersData(null);
+    setAnalyticsData(null);
     await fetch("/api/admin/logout", { method: "POST" });
   }
 
@@ -213,6 +244,9 @@ export function Admin() {
       {data && (
         <>
           <div className="flex gap-1 border-b mb-4">
+            <button onClick={() => setTab("overview")} className={`px-4 py-2 text-sm font-medium border-b-2 ${tab === "overview" ? "border-primary" : "border-transparent text-muted-foreground"}`}>
+              Overview
+            </button>
             <button onClick={() => setTab("subscribers")} className={`px-4 py-2 text-sm font-medium border-b-2 ${tab === "subscribers" ? "border-primary" : "border-transparent text-muted-foreground"}`}>
               Subscribers ({data.count})
             </button>
@@ -223,6 +257,9 @@ export function Admin() {
 
           {tab === "partners" && partnersData && (
             <PartnersAdminPanel data={partnersData} onMarkPaid={markPayoutPaid} />
+          )}
+          {tab === "overview" && analyticsData && (
+            <AdminOverviewPanel data={analyticsData} />
           )}
           {tab === "subscribers" && (
           <Card className="mb-6">
@@ -247,6 +284,8 @@ export function Admin() {
                     <tr>
                       <th className="px-3 py-2 text-start font-medium">Email</th>
                       <th className="px-3 py-2 text-start font-medium">Lang</th>
+                      <th className="px-3 py-2 text-start font-medium">Status</th>
+                      <th className="px-3 py-2 text-start font-medium">Paid</th>
                       <th className="px-3 py-2 text-start font-medium">Subscribed</th>
                       <th className="px-3 py-2 text-start font-medium">Last sent</th>
                       <th className="px-3 py-2 text-start font-medium">Actions</th>
@@ -257,6 +296,10 @@ export function Admin() {
                       <tr key={s.email} className="border-t">
                         <td className="px-3 py-2 font-mono">{s.email}</td>
                         <td className="px-3 py-2 uppercase">{s.lang}</td>
+                        <td className="px-3 py-2">
+                          <StatusBadge status={s.paid_status ?? "pending"} />
+                        </td>
+                        <td className="px-3 py-2 text-xs">{s.paid_at ? `${fmtDate(s.paid_at)} ${s.currency ? `· ${s.currency.toUpperCase()}` : ""}` : "—"}</td>
                         <td className="px-3 py-2">{fmtDate(s.created_at)}</td>
                         <td className="px-3 py-2">{fmtDate(s.last_sent_at)}</td>
                         <td className="px-3 py-2">
@@ -269,7 +312,7 @@ export function Admin() {
                     ))}
                     {data.subscribers.length === 0 && (
                       <tr>
-                        <td colSpan={5} className="px-3 py-6 text-center text-muted-foreground">No subscribers yet</td>
+                        <td colSpan={7} className="px-3 py-6 text-center text-muted-foreground">No subscribers yet</td>
                       </tr>
                     )}
                   </tbody>
@@ -294,6 +337,195 @@ function OvCard({ label, value, sub }: { label: string; value: string | number; 
   );
 }
 
+function StatusBadge({ status }: { status: string }) {
+  const cls = status === "active"
+    ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+    : status === "canceled"
+      ? "border-rose-200 bg-rose-50 text-rose-700"
+      : "border-amber-200 bg-amber-50 text-amber-700";
+  return <span className={`inline-flex rounded-full border px-2 py-0.5 text-[11px] font-semibold ${cls}`}>{status}</span>;
+}
+
+function AdminOverviewPanel({ data }: { data: AnalyticsResp }) {
+  const t = data.analytics.totals;
+  const p = data.partners.overview;
+  const maxDaily = Math.max(1, ...data.analytics.daily.map(d => d.page_views));
+  const codeUseRate = p.codes_generated > 0 ? `${((p.codes_used / p.codes_generated) * 100).toFixed(1)}% used` : "no codes";
+  const clickCr = p.total_clicks > 0 ? `${((p.total_conversions / p.total_clicks) * 100).toFixed(1)}% conversion` : "no referral clicks";
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <OvCard label="Visitors 24h" value={t.visitors24h} sub={`${t.visitors7d} in 7d`} />
+        <OvCard label="Visitors 30d" value={t.visitors30d} sub={`${t.visitors} all-time`} />
+        <OvCard label="Page views 7d" value={t.pageViews7d} sub={`${t.pageViews} all-time`} />
+        <OvCard label="Clicks 7d" value={t.clicks7d} sub={`${t.clicks} all-time`} />
+        <OvCard label="Checkout starts 7d" value={t.checkoutStarts7d} sub={`${t.checkoutStarts} all-time`} />
+        <OvCard label="Active customers" value={data.customers.active} sub={`${data.customers.newPaid7d} new paid in 7d`} />
+        <OvCard label="Subscribers" value={data.customers.subscribers} sub={`${data.customers.pending} pending · ${data.customers.canceled} canceled`} />
+        <OvCard label="Partner codes" value={`${p.codes_used}/${p.codes_generated}`} sub={`${codeUseRate} · ${p.codes_converted} converted`} />
+      </div>
+
+      <div className="grid lg:grid-cols-[1.2fr_.8fr] gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Last 14 days</CardTitle>
+            <CardDescription>Visitors, page views, clicks, and checkout starts tracked by the site.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {data.analytics.daily.map(day => (
+                <div key={day.day} className="grid grid-cols-[92px_1fr_72px_72px_72px] items-center gap-3 text-sm">
+                  <div className="font-mono text-xs text-muted-foreground">{day.day.slice(5)}</div>
+                  <div className="h-2 rounded bg-muted overflow-hidden">
+                    <div className="h-full rounded bg-primary" style={{ width: `${Math.max(4, (day.page_views / maxDaily) * 100)}%` }} />
+                  </div>
+                  <div className="text-end tabular-nums">{day.visitors} uv</div>
+                  <div className="text-end tabular-nums">{day.clicks} clk</div>
+                  <div className="text-end tabular-nums">{day.checkout_starts} chk</div>
+                </div>
+              ))}
+              {data.analytics.daily.length === 0 && <div className="py-8 text-center text-sm text-muted-foreground">No analytics events yet</div>}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Customers</CardTitle>
+            <CardDescription>Paid subscription state from Stripe webhook data.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-3 gap-3 mb-4 text-sm">
+              {[
+                ["Active", data.customers.active],
+                ["Pending", data.customers.pending],
+                ["Canceled", data.customers.canceled],
+              ].map(([label, value]) => (
+                <div key={label} className="border-b pb-2">
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">{label}</div>
+                  <div className="mt-1 text-xl font-semibold tabular-nums">{value}</div>
+                </div>
+              ))}
+            </div>
+            <div className="rounded-md border overflow-hidden">
+              <table className="w-full text-sm">
+                <tbody>
+                  {data.customers.recent.map(c => (
+                    <tr key={`${c.email}-${c.paid_at}`} className="border-t first:border-t-0">
+                      <td className="px-3 py-2 font-mono text-xs">{c.email}</td>
+                      <td className="px-3 py-2"><StatusBadge status={c.paid_status ?? "pending"} /></td>
+                      <td className="px-3 py-2 text-end text-xs">{c.currency?.toUpperCase() ?? "—"}</td>
+                    </tr>
+                  ))}
+                  {data.customers.recent.length === 0 && (
+                    <tr><td className="px-3 py-6 text-center text-muted-foreground">No paid customers yet</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Top pages</CardTitle>
+            <CardDescription>Last 30 days.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AdminMiniTable
+              rows={data.analytics.topPages.map(r => [r.path, `${r.views} views`, `${r.visitors} visitors`])}
+              empty="No page views yet"
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Top clicks</CardTitle>
+            <CardDescription>What users click most often in the last 30 days.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AdminMiniTable
+              rows={data.analytics.topClicks.map(r => [r.target_text || r.target_href || "Untitled click", `${r.clicks} clicks`, `${r.visitors} visitors`])}
+              empty="No clicks yet"
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Partner code performance</CardTitle>
+            <CardDescription>{p.total_clicks} referral clicks · {clickCr}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AdminMiniTable
+              rows={data.partners.topByClicks.map(partner => [
+                `${partner.code} · ${partner.name}`,
+                `${partner.clicks_count} clicks`,
+                `${partner.conversions_count} conv.`,
+              ])}
+              empty="No partner clicks yet"
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent events</CardTitle>
+            <CardDescription>Live event stream from site analytics.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="max-h-[360px] overflow-auto rounded-md border">
+              <table className="w-full text-sm">
+                <tbody>
+                  {data.analytics.recentEvents.map(e => (
+                    <tr key={e.id} className="border-t first:border-t-0">
+                      <td className="px-3 py-2 text-xs text-muted-foreground whitespace-nowrap">{fmtDate(e.timestamp)}</td>
+                      <td className="px-3 py-2 font-mono text-xs">{e.type}</td>
+                      <td className="px-3 py-2 text-xs truncate max-w-[260px]" title={e.target_text || e.path || ""}>
+                        {e.target_text || e.path || "—"}
+                      </td>
+                    </tr>
+                  ))}
+                  {data.analytics.recentEvents.length === 0 && (
+                    <tr><td className="px-3 py-6 text-center text-muted-foreground">No events yet</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+function AdminMiniTable({ rows, empty }: { rows: string[][]; empty: string }) {
+  return (
+    <div className="rounded-md border overflow-hidden">
+      <table className="w-full text-sm">
+        <tbody>
+          {rows.map((row, i) => (
+            <tr key={`${row[0]}-${i}`} className="border-t first:border-t-0">
+              <td className="px-3 py-2 font-medium truncate max-w-[280px]" title={row[0]}>{row[0]}</td>
+              <td className="px-3 py-2 text-end tabular-nums text-muted-foreground">{row[1]}</td>
+              <td className="px-3 py-2 text-end tabular-nums text-muted-foreground">{row[2]}</td>
+            </tr>
+          ))}
+          {rows.length === 0 && (
+            <tr><td className="px-3 py-6 text-center text-muted-foreground">{empty}</td></tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 function PartnersAdminPanel({ data, onMarkPaid }: { data: PartnersResp; onMarkPaid: (id: number) => void }) {
   const o = data.overview;
   const cr = o.total_clicks > 0 ? ((o.total_conversions / o.total_clicks) * 100).toFixed(1) : "—";
@@ -304,6 +536,7 @@ function PartnersAdminPanel({ data, onMarkPaid }: { data: PartnersResp; onMarkPa
         <OvCard label="Partners" value={o.total} sub={`${o.active} active`} />
         <OvCard label="Signed both docs" value={o.signed} sub={`${o.total - o.signed} pending`} />
         <OvCard label="Ever logged in" value={o.ever_logged_in} sub={`${o.total - o.ever_logged_in} never`} />
+        <OvCard label="Codes used" value={`${o.codes_used}/${o.codes_generated}`} sub={`${o.codes_converted} converted`} />
         <OvCard label="Total clicks" value={o.total_clicks} sub={`${cr}% CR`} />
         <OvCard label="Conversions" value={o.total_conversions} sub="paying customers" />
         <OvCard label="Earned (confirmed+paid)" value={`$${(o.total_commissions_cents / 100).toFixed(0)}`} sub="across all currencies" />

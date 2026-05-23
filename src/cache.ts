@@ -1,9 +1,8 @@
-import { Database } from "bun:sqlite";
+import { openAppDatabase } from "./db";
 
-const DB_PATH = process.env.CACHE_DB ?? "./cache.sqlite";
 const DEFAULT_TTL_MS = 24 * 60 * 60 * 1000; // 24h
 
-const db = new Database(DB_PATH);
+const db = openAppDatabase("cache");
 db.exec(`
   CREATE TABLE IF NOT EXISTS qj_cache (
     key TEXT PRIMARY KEY,

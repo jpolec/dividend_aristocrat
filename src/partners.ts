@@ -1,8 +1,7 @@
-import { Database } from "bun:sqlite";
 import { createHmac, randomBytes } from "node:crypto";
+import { openAppDatabase } from "./db";
 
-const DB_PATH = process.env.CACHE_DB ?? "./cache.sqlite";
-const db = new Database(DB_PATH);
+const db = openAppDatabase("partners");
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS partners (

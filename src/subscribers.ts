@@ -1,7 +1,6 @@
-import { Database } from "bun:sqlite";
+import { openAppDatabase } from "./db";
 
-const DB_PATH = process.env.CACHE_DB ?? "./cache.sqlite";
-const db = new Database(DB_PATH);
+const db = openAppDatabase("subscribers");
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS subscribers (

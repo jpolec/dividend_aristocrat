@@ -213,9 +213,21 @@ function envValue(key: string): string | null {
 
 function publicBaseUrl(): string {
   const explicit = envValue("PUBLIC_BASE_URL");
-  if (explicit) return withHttpsScheme(explicit).replace(/\/+$/, "");
-
   const railwayDomain = envValue("RAILWAY_PUBLIC_DOMAIN");
+  if (explicit) {
+    const normalized = withHttpsScheme(explicit).replace(/\/+$/, "");
+    const railwayBase = railwayDomain ? withHttpsScheme(railwayDomain).replace(/\/+$/, "") : null;
+    if (
+      railwayBase &&
+      normalized.endsWith(".up.railway.app") &&
+      new URL(normalized).hostname !== new URL(railwayBase).hostname
+    ) {
+      console.warn(`[config] PUBLIC_BASE_URL (${normalized}) does not match RAILWAY_PUBLIC_DOMAIN; using ${railwayBase}`);
+      return railwayBase;
+    }
+    return normalized;
+  }
+
   if (railwayDomain) return withHttpsScheme(railwayDomain).replace(/\/+$/, "");
 
   return "http://localhost:3000";

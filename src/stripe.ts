@@ -29,7 +29,7 @@ function envValue(key: string): string | null {
 function form(params: Record<string, string | number | undefined>) {
   const sp = new URLSearchParams();
   for (const [k, v] of Object.entries(params)) {
-    if (v != null) sp.set(k, String(v));
+    if (v != null && v !== "") sp.set(k, String(v));
   }
   return sp.toString();
 }
@@ -70,11 +70,11 @@ export async function createCheckoutSession(args: {
     cancel_url: `${args.baseUrl}/?paid=canceled`,
     "metadata[email]": args.email,
     "metadata[lang]": args.lang,
-    "metadata[referral_code]": args.referralCode ?? "",
+    "metadata[referral_code]": args.referralCode ?? undefined,
     "subscription_data[metadata][email]": args.email,
     "subscription_data[metadata][lang]": args.lang,
-    "subscription_data[metadata][referral_code]": args.referralCode ?? "",
-    client_reference_id: args.referralCode ?? "",
+    "subscription_data[metadata][referral_code]": args.referralCode ?? undefined,
+    client_reference_id: args.referralCode ?? undefined,
     allow_promotion_codes: "true",
   });
 

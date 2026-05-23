@@ -213,12 +213,16 @@ function envValue(key: string): string | null {
 
 function publicBaseUrl(): string {
   const explicit = envValue("PUBLIC_BASE_URL");
-  if (explicit) return explicit.replace(/\/+$/, "");
+  if (explicit) return withHttpsScheme(explicit).replace(/\/+$/, "");
 
   const railwayDomain = envValue("RAILWAY_PUBLIC_DOMAIN");
-  if (railwayDomain) return `https://${railwayDomain}`.replace(/\/+$/, "");
+  if (railwayDomain) return withHttpsScheme(railwayDomain).replace(/\/+$/, "");
 
   return "http://localhost:3000";
+}
+
+function withHttpsScheme(urlOrDomain: string): string {
+  return /^https?:\/\//i.test(urlOrDomain) ? urlOrDomain : `https://${urlOrDomain}`;
 }
 
 const BASE_URL = publicBaseUrl();

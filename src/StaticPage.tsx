@@ -498,6 +498,7 @@ const legalAdditions: Record<Lang, Partial<Record<string, Page["sections"]>>> = 
         body: [
           "Aristocrat Dividend Research is not acting as your investment adviser, broker, dealer, asset manager, fiduciary, tax adviser, legal adviser, accountant, or financial planner.",
           "No advisory, fiduciary, brokerage, discretionary management, custody, or client relationship is created by your use of the service, by payment of a subscription fee, by receiving research, or by any support response.",
+          "We do not manage your money, do not control your brokerage account, do not place trades for you, do not rebalance your portfolio, and do not monitor whether any position remains suitable for you. You alone decide whether to buy, sell, hold, avoid, size, or rebalance any investment.",
         ],
       },
       {
@@ -526,6 +527,7 @@ const legalAdditions: Record<Lang, Partial<Record<string, Page["sections"]>>> = 
         body: [
           "You are solely responsible for all investment, tax, legal, religious, and financial decisions you make. Before acting, independently verify all information from primary sources and consult licensed professionals in your jurisdiction.",
           "You should not rely on a single table, score, email, chart, yield, simulation, or report as the only basis for buying, selling, holding, avoiding, or sizing any security.",
+          "Any action taken in a brokerage, bank, pension account, crypto account, or other financial account is taken by you, under your own authority, at your own risk, and without our supervision or discretion.",
         ],
       },
       {
@@ -718,6 +720,7 @@ const legalAdditions: Record<Lang, Partial<Record<string, Page["sections"]>>> = 
         title: "Your obligation",
         body: [
           "Before investing, verify data from issuer filings and primary sources, understand the instrument, read relevant risk disclosures, consider your full financial situation, and consult licensed investment, tax, legal, and religious professionals where appropriate.",
+          "You remain responsible for opening accounts, selecting brokers, funding accounts, placing orders, setting position sizes, monitoring holdings, handling taxes, and deciding when to exit. We do not do these things for you.",
         ],
       },
     ],
@@ -736,6 +739,7 @@ const legalAdditions: Record<Lang, Partial<Record<string, Page["sections"]>>> = 
         body: [
           "Aristocrat Dividend Research nie działa jako Twój doradca inwestycyjny, broker, dealer, zarządzający aktywami, powiernik, doradca podatkowy, prawny, księgowy ani planista finansowy.",
           "Korzystanie z usługi, opłacenie subskrypcji, otrzymanie researchu albo odpowiedź wsparcia nie tworzy relacji doradczej, powierniczej, maklerskiej, zarządzania portfelem, przechowywania aktywów ani indywidualnej relacji klienta.",
+          "Nie zarządzamy Twoimi pieniędzmi, nie mamy kontroli nad Twoim rachunkiem maklerskim, nie składamy za Ciebie zleceń, nie rebalansujemy portfela i nie monitorujemy, czy dana pozycja pozostaje dla Ciebie odpowiednia. To Ty sam decydujesz, czy kupić, sprzedać, trzymać, unikać, zwiększyć, zmniejszyć albo zrebalansować jakąkolwiek inwestycję.",
         ],
       },
       {
@@ -764,6 +768,7 @@ const legalAdditions: Record<Lang, Partial<Record<string, Page["sections"]>>> = 
         body: [
           "Wyłącznie Ty odpowiadasz za swoje decyzje inwestycyjne, podatkowe, prawne, religijne i finansowe. Przed działaniem samodzielnie zweryfikuj informacje w źródłach pierwotnych i skonsultuj się z licencjonowanymi specjalistami w swojej jurysdykcji.",
           "Nie należy opierać zakupu, sprzedaży, trzymania, unikania ani wielkości pozycji na jednej tabeli, ocenie, wiadomości email, wykresie, stopie dywidendy, symulacji lub raporcie.",
+          "Każde działanie na rachunku maklerskim, bankowym, emerytalnym, kryptowalutowym albo innym rachunku finansowym podejmujesz samodzielnie, z własnej decyzji, na własne ryzyko i bez naszego nadzoru lub uznania.",
         ],
       },
       {
@@ -956,6 +961,7 @@ const legalAdditions: Record<Lang, Partial<Record<string, Page["sections"]>>> = 
         title: "Twój obowiązek",
         body: [
           "Przed inwestycją zweryfikuj dane w raportach emitentów i źródłach pierwotnych, zrozum instrument, przeczytaj właściwe disclosures, oceń pełną sytuację finansową i skonsultuj się z licencjonowanymi specjalistami inwestycyjnymi, podatkowymi, prawnymi i religijnymi tam, gdzie jest to właściwe.",
+          "Samodzielnie odpowiadasz za otwarcie rachunku, wybór brokera, zasilenie rachunku, składanie zleceń, wielkość pozycji, monitorowanie portfela, podatki i decyzję o wyjściu z inwestycji. My nie wykonujemy tych czynności za Ciebie.",
         ],
       },
     ],
@@ -974,6 +980,7 @@ const legalAdditions: Record<Lang, Partial<Record<string, Page["sections"]>>> = 
         body: [
           "لا تعمل Aristocrat Dividend Research كمستشارك الاستثماري أو وسيطك أو مدير أصولك أو أمينك أو مستشارك الضريبي أو القانوني أو المحاسبي أو مخططك المالي.",
           "لا ينشأ أي ارتباط استشاري أو ائتماني أو وساطة أو إدارة تقديرية أو حفظ أصول أو علاقة عميل بمجرد استخدام الخدمة أو دفع الاشتراك أو تلقي الأبحاث أو الحصول على رد من الدعم.",
+          "نحن لا ندير أموالك، ولا نتحكم في حساب الوساطة الخاص بك، ولا ننفذ الصفقات نيابة عنك، ولا نعيد موازنة محفظتك، ولا نراقب ما إذا كان أي مركز ما زال مناسبا لك. أنت وحدك تقرر الشراء أو البيع أو الاحتفاظ أو التجنب أو تحديد حجم أي استثمار أو إعادة موازنته.",
         ],
       },
       {
@@ -1002,6 +1009,7 @@ const legalAdditions: Record<Lang, Partial<Record<string, Page["sections"]>>> = 
         body: [
           "أنت وحدك مسؤول عن جميع قراراتك الاستثمارية والضريبية والقانونية والدينية والمالية. قبل التصرف، تحقق من المعلومات من المصادر الأصلية واستشر مختصين مرخصين في بلدك.",
           "لا ينبغي الاعتماد على جدول واحد أو درجة واحدة أو بريد واحد أو رسم واحد أو عائد واحد أو محاكاة واحدة أو تقرير واحد كأساس وحيد للشراء أو البيع أو الاحتفاظ أو التجنب أو تحديد حجم المركز.",
+          "أي إجراء يتم في حساب وساطة أو بنك أو تقاعد أو حساب عملات رقمية أو أي حساب مالي آخر يتم بقرارك أنت، وتحت سلطتك، وعلى مسؤوليتك، ومن دون إشرافنا أو تقديرنا.",
         ],
       },
       {
@@ -1194,6 +1202,7 @@ const legalAdditions: Record<Lang, Partial<Record<string, Page["sections"]>>> = 
         title: "واجبك",
         body: [
           "قبل الاستثمار، تحقق من البيانات من إفصاحات الشركات والمصادر الأصلية، وافهم الأداة، واقرأ إفصاحات المخاطر ذات الصلة، وقيّم وضعك المالي الكامل، واستشر مختصين مرخصين في الاستثمار والضرائب والقانون والدين حيث يكون ذلك مناسبا.",
+          "تبقى مسؤولا عن فتح الحسابات، واختيار الوسطاء، وتمويل الحسابات، وإدخال الأوامر، وتحديد أحجام المراكز، ومراقبة الممتلكات، والتعامل مع الضرائب، وتحديد وقت الخروج. نحن لا نقوم بهذه الأمور نيابة عنك.",
         ],
       },
     ],

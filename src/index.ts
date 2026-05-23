@@ -184,6 +184,8 @@ async function fetchEnriched(req: Request) {
 // ─── Partner helpers ────────────────────────────────────────────────────────
 const PARTNER_SESSION_COOKIE = "aristo_partner";
 const REFERRAL_COOKIE = "aristo_ref";
+const ADMIN_SESSION_COOKIE = "aristo_admin";
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL ?? "jpolec@gmail.com").trim().toLowerCase();
 
 function parseCookie(req: Request, name: string): string | null {
   const cookie = req.headers.get("cookie") ?? "";
@@ -200,10 +202,18 @@ function requirePartner(req: Request): { email: string } | Response {
 }
 
 function requireAdmin(req: Request): Response | null {
-  if (!ADMIN_TOKEN) return null; // no auth configured -> open
+  const adminCookie = parseCookie(req, ADMIN_SESSION_COOKIE);
+  const sessionEmail = adminCookie ? verifySessionCookie(adminCookie) : null;
+  if (sessionEmail && sessionEmail.toLowerCase() === ADMIN_EMAIL) return null;
+
+  if (!ADMIN_TOKEN) return null; // no token configured -> open in dev / legacy mode
   const got = new URL(req.url).searchParams.get("token") ?? req.headers.get("x-admin-token");
   if (got !== ADMIN_TOKEN) return new Response("unauthorized", { status: 401 });
   return null;
+}
+
+function adminLoginUrl(token: string) {
+  return `${BASE_URL}/api/admin/verify?token=${encodeURIComponent(token)}`;
 }
 
 function envValue(key: string): string | null {
@@ -823,6 +833,77 @@ const server = serve({
           `<p style="color:#64748b;">${email}</p></body></html>`,
         { headers: { "Content-Type": "text/html; charset=utf-8" } },
       );
+    },
+
+    // Admin auth
+    "/api/admin/session": req => {
+      const auth = requireAdmin(req);
+      if (auth) return Response.json({ authenticated: false });
+      return Response.json({ authenticated: true, email: ADMIN_EMAIL });
+    },
+
+    "/api/admin/login": {
+      async POST(req) {
+        const { email } = (await req.json()) as { email?: string };
+        const normalized = email?.trim().toLowerCase() ?? "";
+        if (!normalized || !isValidEmail(normalized)) {
+          return Response.json({ error: "valid email required" }, { status: 400 });
+        }
+
+        // Generic response prevents confirming which email is allowed.
+        const generic = {
+          ok: true,
+          message: "If this email is authorized, a login link will be sent.",
+        };
+
+        if (normalized !== ADMIN_EMAIL) return Response.json(generic);
+
+        const token = signMagicToken(normalized, 30 * 60 * 1000);
+        const loginUrl = adminLoginUrl(token);
+        try {
+          await sendEmail(
+            normalized,
+            "Aristocrat admin login link",
+            `<p>Use this link to access the admin panel:</p><p><a href="${loginUrl}">${loginUrl}</a></p><p>The link expires in 30 minutes.</p>`,
+            `Use this link to access the admin panel: ${loginUrl}\n\nThe link expires in 30 minutes.`,
+          );
+          return Response.json(generic);
+        } catch (e) {
+          console.error("[admin-login] email send failed:", e);
+          return Response.json({
+            ok: false,
+            error: "email_send_failed",
+            message: "Admin email could not be sent. Use ADMIN_TOKEN fallback.",
+            ...(process.env.NODE_ENV !== "production" ? { verifyUrl: loginUrl } : {}),
+          }, { status: 502 });
+        }
+      },
+    },
+
+    "/api/admin/verify": req => {
+      const token = new URL(req.url).searchParams.get("token") ?? "";
+      const email = verifyMagicToken(token);
+      if (!email || email.toLowerCase() !== ADMIN_EMAIL) {
+        return new Response("invalid or expired admin login link", { status: 400 });
+      }
+      const session = signSessionCookie(email, 30 * 24 * 60 * 60 * 1000);
+      const maxAge = 30 * 24 * 60 * 60;
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: "/admin",
+          "Set-Cookie": `${ADMIN_SESSION_COOKIE}=${session}; Path=/; HttpOnly; Max-Age=${maxAge}; SameSite=Lax`,
+        },
+      });
+    },
+
+    "/api/admin/logout": {
+      POST() {
+        return new Response(null, {
+          status: 200,
+          headers: { "Set-Cookie": `${ADMIN_SESSION_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax` },
+        });
+      },
     },
 
     // Admin

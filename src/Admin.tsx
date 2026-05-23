@@ -27,6 +27,9 @@ const fmtDate = (ms: number | null) =>
 
 export function Admin() {
   const [token, setToken] = useState<string>(() => sessionStorage.getItem("admin_token") ?? "");
+  const [loginEmail, setLoginEmail] = useState("jpolec@gmail.com");
+  const [sessionEmail, setSessionEmail] = useState<string | null>(null);
+  const [loginStatus, setLoginStatus] = useState<string | null>(null);
   const [data, setData] = useState<Resp | null>(null);
   const [partnersData, setPartnersData] = useState<PartnersResp | null>(null);
   const [tab, setTab] = useState<"subscribers" | "partners">("subscribers");
@@ -56,6 +59,48 @@ export function Admin() {
     }
   }
 
+  async function checkSession() {
+    try {
+      const res = await fetch("/api/admin/session");
+      const j = await res.json() as { authenticated?: boolean; email?: string };
+      if (j.authenticated) {
+        setSessionEmail(j.email ?? null);
+        await load();
+      }
+    } catch {
+      // Login form remains available.
+    }
+  }
+
+  async function sendLoginLink() {
+    setBusy(true);
+    setError(null);
+    setLoginStatus(null);
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: loginEmail }),
+      });
+      const j = await res.json() as { message?: string; error?: string };
+      if (!res.ok) throw new Error(j.message ?? j.error ?? `HTTP ${res.status}`);
+      setLoginStatus(j.message ?? "If this email is authorized, a login link will be sent.");
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function logout() {
+    sessionStorage.removeItem("admin_token");
+    setToken("");
+    setSessionEmail(null);
+    setData(null);
+    setPartnersData(null);
+    await fetch("/api/admin/logout", { method: "POST" });
+  }
+
   async function markPayoutPaid(payoutId: number) {
     const reference = prompt("Payment reference (bank ref / Wise ID / etc.)?");
     if (!reference) return;
@@ -74,6 +119,11 @@ export function Admin() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
+
+  useEffect(() => {
+    checkSession();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function dryRun(only?: string) {
     setBusy(true);
@@ -120,18 +170,37 @@ export function Admin() {
         <CardHeader>
           <CardTitle>Auth</CardTitle>
           <CardDescription>
-            If <code>ADMIN_TOKEN</code> env var is set on the server, paste it here. Otherwise leave empty.
+            Login by email magic link, or use <code>ADMIN_TOKEN</code> as a fallback.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex gap-2">
-          <Input
-            type="password"
-            value={token}
-            onChange={e => setToken(e.target.value)}
-            placeholder="admin token (or empty)"
-            className="max-w-md"
-          />
-          <Button onClick={load}>Load</Button>
+        <CardContent className="space-y-4">
+          {sessionEmail && (
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border bg-muted/40 px-3 py-2 text-sm">
+              <span>Logged in as <strong>{sessionEmail}</strong></span>
+              <Button variant="outline" size="sm" onClick={logout}>Logout</Button>
+            </div>
+          )}
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Input
+              type="email"
+              value={loginEmail}
+              onChange={e => setLoginEmail(e.target.value)}
+              placeholder="admin email"
+              className="max-w-md"
+            />
+            <Button disabled={busy} onClick={sendLoginLink}>Send login link</Button>
+          </div>
+          {loginStatus && <p className="text-sm text-muted-foreground">{loginStatus}</p>}
+          <div className="flex flex-col gap-2 border-t pt-4 sm:flex-row">
+            <Input
+              type="password"
+              value={token}
+              onChange={e => setToken(e.target.value)}
+              placeholder="ADMIN_TOKEN fallback"
+              className="max-w-md"
+            />
+            <Button variant="outline" onClick={load}>Load with token</Button>
+          </div>
         </CardContent>
       </Card>
 

@@ -505,6 +505,62 @@ const server = serve({
       },
     },
 
+    // Env var debug — admin-gated, only reports presence/length/prefix (no secrets exposed)
+    "/api/admin/env-debug": req => {
+      const auth = requireAdmin(req);
+      if (auth) return auth;
+      const checked = [
+        "QJ_TOKEN",
+        "STRIPE_SECRET_KEY",
+        "STRIPE_WEBHOOK_SECRET",
+        "STRIPE_PRICE_MONTHLY_AED",
+        "STRIPE_PRICE_MONTHLY_SAR",
+        "STRIPE_PRICE_MONTHLY_QAR",
+        "STRIPE_PRICE_MONTHLY_USD",
+        "STRIPE_PRICE_MONTHLY_PLN",
+        "STRIPE_PRICE_ANNUAL_AED",
+        "STRIPE_PRICE_ANNUAL_SAR",
+        "STRIPE_PRICE_ANNUAL_QAR",
+        "STRIPE_PRICE_ANNUAL_USD",
+        "STRIPE_PRICE_ANNUAL_PLN",
+        "RESEND_API_KEY",
+        "MAILTRAP_API_TOKEN",
+        "ADMIN_TOKEN",
+        "PUBLIC_BASE_URL",
+        "CACHE_DB",
+        "NODE_ENV",
+        "PORT",
+        "DIGEST_FROM",
+      ];
+      const report: Record<string, { present: boolean; length: number; prefix: string; looksTruncated?: boolean }> = {};
+      for (const k of checked) {
+        const v = process.env[k];
+        const length = v?.length ?? 0;
+        let looksTruncated: boolean | undefined = undefined;
+        // Stripe live secret keys are typically ~107 chars
+        if (k === "STRIPE_SECRET_KEY" && length > 0 && length < 80) looksTruncated = true;
+        // Webhook secrets ~50-70 chars
+        if (k === "STRIPE_WEBHOOK_SECRET" && length > 0 && length < 30) looksTruncated = true;
+        // Price IDs ~30 chars
+        if (k.startsWith("STRIPE_PRICE_") && length > 0 && length < 10) looksTruncated = true;
+        report[k] = {
+          present: v != null && v.length > 0,
+          length,
+          prefix: v ? v.slice(0, 12) + (v.length > 12 ? "…" : "") : "",
+          ...(looksTruncated ? { looksTruncated } : {}),
+        };
+      }
+      // Also report the runtime view of STRIPE secret via the stripe module to confirm same value
+      const allKeys = Object.keys(process.env).filter(k => k.includes("STRIPE") || k.includes("QJ") || k.includes("RESEND"));
+      return Response.json({
+        report,
+        allStripeOrQjOrResendKeysSeenByRuntime: allKeys,
+        cwd: process.cwd(),
+        nodeEnv: process.env.NODE_ENV ?? null,
+        timestamp: new Date().toISOString(),
+      });
+    },
+
     "/api/cache/stats": () => Response.json(cacheStats()),
     "/api/cache/clear": {
       async POST() {

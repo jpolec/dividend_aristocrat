@@ -25,12 +25,14 @@ db.exec(`
   );
 `);
 
-// Additive migrations — separate signature + IP per document
+// Additive migrations — separate signature + IP per document, login tracking
 for (const stmt of [
   "ALTER TABLE partners ADD COLUMN signed_nda_signature TEXT",
   "ALTER TABLE partners ADD COLUMN signed_nda_ip TEXT",
   "ALTER TABLE partners ADD COLUMN signed_agreement_signature TEXT",
   "ALTER TABLE partners ADD COLUMN signed_agreement_ip TEXT",
+  "ALTER TABLE partners ADD COLUMN last_login_at INTEGER",
+  "ALTER TABLE partners ADD COLUMN login_count INTEGER DEFAULT 0",
 ]) {
   try { db.exec(stmt); } catch { /* column exists */ }
 }
@@ -157,6 +159,8 @@ export type Partner = {
   signed_signature: string | null;
   created_at: number;
   approved_at: number | null;
+  last_login_at: number | null;
+  login_count: number;
 };
 
 export function applyAsPartner(args: {
@@ -196,6 +200,51 @@ export function getPartnerByCode(code: string): Partner | null {
 }
 export function listPartners(): Partner[] {
   return db.prepare<Partner, []>("SELECT * FROM partners ORDER BY created_at DESC").all();
+}
+
+export function recordLogin(email: string) {
+  db.prepare(
+    "UPDATE partners SET last_login_at = ?, login_count = COALESCE(login_count, 0) + 1 WHERE email = ?",
+  ).run(Date.now(), email.toLowerCase().trim());
+}
+
+// Per-partner click + conversion counts in one query
+export type PartnerWithStats = Partner & {
+  clicks_count: number;
+  conversions_count: number;
+  pending_cents: number;
+  confirmed_cents: number;
+  paid_cents: number;
+};
+
+export function listPartnersWithStats(): PartnerWithStats[] {
+  return db.prepare<PartnerWithStats, []>(`
+    SELECT p.*,
+      COALESCE((SELECT COUNT(*) FROM partner_clicks WHERE code = p.code), 0) AS clicks_count,
+      COALESCE((SELECT COUNT(*) FROM partner_attributions WHERE code = p.code), 0) AS conversions_count,
+      COALESCE((SELECT SUM(amount_cents) FROM partner_commissions WHERE code = p.code AND status = 'pending'), 0) AS pending_cents,
+      COALESCE((SELECT SUM(amount_cents) FROM partner_commissions WHERE code = p.code AND status = 'confirmed'), 0) AS confirmed_cents,
+      COALESCE((SELECT SUM(amount_cents) FROM partner_commissions WHERE code = p.code AND status = 'paid'), 0) AS paid_cents
+    FROM partners p
+    ORDER BY p.created_at DESC
+  `).all();
+}
+
+export function partnersOverview() {
+  const total = db.prepare<{ n: number }, []>("SELECT COUNT(*) AS n FROM partners").get()?.n ?? 0;
+  const active = db.prepare<{ n: number }, []>("SELECT COUNT(*) AS n FROM partners WHERE status = 'active'").get()?.n ?? 0;
+  const signed = db.prepare<{ n: number }, []>(
+    "SELECT COUNT(*) AS n FROM partners WHERE signed_nda_at IS NOT NULL AND signed_agreement_at IS NOT NULL",
+  ).get()?.n ?? 0;
+  const ever_logged_in = db.prepare<{ n: number }, []>(
+    "SELECT COUNT(*) AS n FROM partners WHERE last_login_at IS NOT NULL",
+  ).get()?.n ?? 0;
+  const total_clicks = db.prepare<{ n: number }, []>("SELECT COUNT(*) AS n FROM partner_clicks").get()?.n ?? 0;
+  const total_conversions = db.prepare<{ n: number }, []>("SELECT COUNT(*) AS n FROM partner_attributions").get()?.n ?? 0;
+  const total_commissions_cents = db.prepare<{ n: number | null }, []>(
+    "SELECT SUM(amount_cents) AS n FROM partner_commissions WHERE status IN ('confirmed','paid')",
+  ).get()?.n ?? 0;
+  return { total, active, signed, ever_logged_in, total_clicks, total_conversions, total_commissions_cents: total_commissions_cents ?? 0 };
 }
 
 export function signDocument(args: {

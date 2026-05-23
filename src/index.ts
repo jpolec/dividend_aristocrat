@@ -20,6 +20,9 @@ import {
   getPartnerByEmail,
   listPartners,
   signDocument,
+  recordLogin,
+  listPartnersWithStats,
+  partnersOverview,
   updatePartnerPaymentDetails,
   recordClick,
   recordAttribution,
@@ -396,6 +399,7 @@ const server = serve({
       if (!email) return Response.json({ error: "invalid or expired token" }, { status: 400 });
       const partner = getPartnerByEmail(email);
       if (!partner) return Response.json({ error: "not registered" }, { status: 404 });
+      recordLogin(email);
       const session = signSessionCookie(email);
       return new Response(null, {
         status: 302,
@@ -484,9 +488,10 @@ const server = serve({
       const auth = requireAdmin(req);
       if (auth) return auth;
       autoConfirmPending();
-      const partners = listPartners();
+      const partners = listPartnersWithStats();
       const payouts = listPayouts();
-      return Response.json({ partners, payouts });
+      const overview = partnersOverview();
+      return Response.json({ partners, payouts, overview });
     },
 
     "/api/admin/partners/payout/mark-paid": {

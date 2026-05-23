@@ -206,7 +206,22 @@ function requireAdmin(req: Request): Response | null {
   return null;
 }
 
-const BASE_URL = process.env.PUBLIC_BASE_URL ?? "http://localhost:3000";
+function envValue(key: string): string | null {
+  const value = process.env[key]?.trim();
+  return value ? value : null;
+}
+
+function publicBaseUrl(): string {
+  const explicit = envValue("PUBLIC_BASE_URL");
+  if (explicit) return explicit.replace(/\/+$/, "");
+
+  const railwayDomain = envValue("RAILWAY_PUBLIC_DOMAIN");
+  if (railwayDomain) return `https://${railwayDomain}`.replace(/\/+$/, "");
+
+  return "http://localhost:3000";
+}
+
+const BASE_URL = publicBaseUrl();
 
 const server = serve({
   port: Number(process.env.PORT ?? 3000),
@@ -523,20 +538,36 @@ const server = serve({
         "STRIPE_PRICE_ANNUAL_QAR",
         "STRIPE_PRICE_ANNUAL_USD",
         "STRIPE_PRICE_ANNUAL_PLN",
+        "STRIPE_PRICE_AED",
+        "STRIPE_PRICE_SAR",
+        "STRIPE_PRICE_QAR",
+        "STRIPE_PRICE_USD",
+        "STRIPE_PRICE_PLN",
         "RESEND_API_KEY",
         "MAILTRAP_API_TOKEN",
         "ADMIN_TOKEN",
         "PUBLIC_BASE_URL",
+        "RAILWAY_PUBLIC_DOMAIN",
         "CACHE_DB",
         "NODE_ENV",
         "PORT",
         "DIGEST_FROM",
       ];
-      const report: Record<string, { present: boolean; length: number; prefix: string; looksTruncated?: boolean }> = {};
+      const report: Record<string, {
+        present: boolean;
+        length: number;
+        prefix: string;
+        hasEdgeWhitespace?: boolean;
+        looksTruncated?: boolean;
+        looksLikeReferenceTemplate?: boolean;
+      }> = {};
       for (const k of checked) {
-        const v = process.env[k];
+        const raw = process.env[k];
+        const v = raw?.trim();
         const length = v?.length ?? 0;
         let looksTruncated: boolean | undefined = undefined;
+        const hasEdgeWhitespace = raw != null && raw !== v;
+        const looksLikeReferenceTemplate = v?.startsWith("${{") === true && v.endsWith("}}");
         // Stripe live secret keys are typically ~107 chars
         if (k === "STRIPE_SECRET_KEY" && length > 0 && length < 80) looksTruncated = true;
         // Webhook secrets ~50-70 chars
@@ -547,13 +578,32 @@ const server = serve({
           present: v != null && v.length > 0,
           length,
           prefix: v ? v.slice(0, 12) + (v.length > 12 ? "…" : "") : "",
+          ...(hasEdgeWhitespace ? { hasEdgeWhitespace } : {}),
           ...(looksTruncated ? { looksTruncated } : {}),
+          ...(looksLikeReferenceTemplate ? { looksLikeReferenceTemplate } : {}),
         };
       }
       // Also report the runtime view of STRIPE secret via the stripe module to confirm same value
       const allKeys = Object.keys(process.env).filter(k => k.includes("STRIPE") || k.includes("QJ") || k.includes("RESEND"));
+      const currencies = ["aed", "sar", "qar", "usd", "pln"] as const;
+      const tiers = ["monthly", "annual"] as const;
+      const checkoutPrices = Object.fromEntries(currencies.map(currency => {
+        const upper = currency.toUpperCase();
+        const byTier = Object.fromEntries(tiers.map(tier => {
+          const tierKey = `STRIPE_PRICE_${tier.toUpperCase()}_${upper}`;
+          const legacyKey = tier === "monthly" ? `STRIPE_PRICE_${upper}` : null;
+          const configuredKey = envValue(tierKey) ? tierKey : legacyKey && envValue(legacyKey) ? legacyKey : null;
+          return [tier, { present: configuredKey != null, configuredKey }];
+        }));
+        return [currency, byTier];
+      }));
       return Response.json({
         report,
+        checkoutConfig: {
+          stripeSecretPresent: envValue("STRIPE_SECRET_KEY") != null,
+          effectiveBaseUrl: BASE_URL,
+          prices: checkoutPrices,
+        },
         allStripeOrQjOrResendKeysSeenByRuntime: allKeys,
         cwd: process.cwd(),
         nodeEnv: process.env.NODE_ENV ?? null,
@@ -622,7 +672,7 @@ const server = serve({
     // Stripe webhook — confirms payment, handles cancellations
     "/api/stripe/webhook": {
       async POST(req) {
-        const secret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
+        const secret = envValue("STRIPE_WEBHOOK_SECRET") ?? "";
         if (!secret) return new Response("webhook secret not configured", { status: 500 });
         const rawBody = await req.text();
         const sig = req.headers.get("stripe-signature");

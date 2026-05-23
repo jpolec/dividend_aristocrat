@@ -1,6 +1,5 @@
 import type { Lang } from "./subscribers";
 
-const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY ?? "";
 const STRIPE_API = "https://api.stripe.com/v1";
 
 export type Currency = "usd" | "pln" | "aed" | "sar" | "qar";
@@ -19,7 +18,12 @@ function priceIdFor(currency: Currency, tier: Tier = "monthly"): string | null {
   const key = `STRIPE_PRICE_${tier.toUpperCase()}_${currency.toUpperCase()}`;
   // Backwards-compatible fallback to the older monthly-only env var name
   const fallback = tier === "monthly" ? `STRIPE_PRICE_${currency.toUpperCase()}` : null;
-  return process.env[key] ?? (fallback ? process.env[fallback] ?? null : null);
+  return envValue(key) ?? (fallback ? envValue(fallback) : null);
+}
+
+function envValue(key: string): string | null {
+  const value = process.env[key]?.trim();
+  return value ? value : null;
 }
 
 function form(params: Record<string, string | number | undefined>) {
@@ -30,11 +34,11 @@ function form(params: Record<string, string | number | undefined>) {
   return sp.toString();
 }
 
-async function stripeFetch<T>(path: string, body?: string): Promise<T> {
+async function stripeFetch<T>(path: string, secret: string, body?: string): Promise<T> {
   const res = await fetch(`${STRIPE_API}${path}`, {
     method: body == null ? "GET" : "POST",
     headers: {
-      Authorization: `Bearer ${STRIPE_SECRET}`,
+      Authorization: `Bearer ${secret}`,
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body,
@@ -51,7 +55,8 @@ export async function createCheckoutSession(args: {
   referralCode?: string | null;
   baseUrl: string;
 }): Promise<{ url: string; sessionId: string }> {
-  if (!STRIPE_SECRET) throw new Error("STRIPE_SECRET_KEY not configured");
+  const stripeSecret = envValue("STRIPE_SECRET_KEY");
+  if (!stripeSecret) throw new Error("STRIPE_SECRET_KEY not configured");
   const tier: Tier = args.tier ?? "monthly";
   const priceId = priceIdFor(args.currency, tier);
   if (!priceId) throw new Error(`No price ID configured for ${tier}/${args.currency} (set STRIPE_PRICE_${tier.toUpperCase()}_${args.currency.toUpperCase()})`);
@@ -73,7 +78,7 @@ export async function createCheckoutSession(args: {
     allow_promotion_codes: "true",
   });
 
-  const session = await stripeFetch<{ id: string; url: string }>("/checkout/sessions", body);
+  const session = await stripeFetch<{ id: string; url: string }>("/checkout/sessions", stripeSecret, body);
   return { url: session.url, sessionId: session.id };
 }
 

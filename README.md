@@ -44,10 +44,20 @@ Admin panel: http://localhost:3000/admin (set `ADMIN_TOKEN` in `.env` to require
 | `QJ_TOKEN`        | yes      | QuantJourney bearer token                                   |
 | `RESEND_API_KEY`  | no       | If unset, emails are logged to stdout instead of sent       |
 | `DIGEST_FROM`     | no       | From-address for digests                                    |
-| `PUBLIC_BASE_URL` | no       | Used in unsubscribe links (default: `http://localhost:3000`) |
+| `PUBLIC_BASE_URL` | no       | Used in unsubscribe and Stripe redirect links. On Railway, falls back to `https://$RAILWAY_PUBLIC_DOMAIN`; locally defaults to `http://localhost:3000` |
+| `STRIPE_SECRET_KEY` | yes for paid checkout | Stripe secret key used by `/api/checkout` |
+| `STRIPE_WEBHOOK_SECRET` | yes for webhooks | Stripe endpoint signing secret used by `/api/stripe/webhook` |
+| `STRIPE_PRICE_MONTHLY_USD` | yes for USD checkout | Stripe recurring monthly Price ID. Legacy `STRIPE_PRICE_USD` is also accepted |
+| `STRIPE_PRICE_MONTHLY_PLN` | yes for PLN checkout | Stripe recurring monthly Price ID. Legacy `STRIPE_PRICE_PLN` is also accepted |
+| `STRIPE_PRICE_MONTHLY_AED` | yes for AED checkout | Stripe recurring monthly Price ID. Legacy `STRIPE_PRICE_AED` is also accepted |
+| `STRIPE_PRICE_MONTHLY_SAR` | yes for SAR checkout | Stripe recurring monthly Price ID. Legacy `STRIPE_PRICE_SAR` is also accepted |
+| `STRIPE_PRICE_MONTHLY_QAR` | yes for QAR checkout | Stripe recurring monthly Price ID. Legacy `STRIPE_PRICE_QAR` is also accepted |
+| `STRIPE_PRICE_ANNUAL_USD` etc. | no       | Optional annual Price IDs if annual checkout is enabled     |
 | `ADMIN_TOKEN`     | no       | Gate admin endpoints/panel                                  |
 | `PORT`            | no       | Default `3000`                                              |
 | `CACHE_DB`        | no       | Default `./cache.sqlite`                                    |
+
+On Railway, if these are configured as Shared Variables, share them into the app service or create service variables that reference them with `${{ shared.VARIABLE_NAME }}`. After changing variables, deploy the staged changes. The admin endpoint `/api/admin/env-debug?token=...` reports presence, trimmed length, and the effective checkout config without exposing full secret values.
 
 ## Endpoints
 

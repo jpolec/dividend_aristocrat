@@ -556,6 +556,14 @@ const server = serve({
         "NODE_ENV",
         "PORT",
         "DIGEST_FROM",
+        "RAILWAY_DEPLOYMENT_ID",
+        "RAILWAY_ENVIRONMENT_ID",
+        "RAILWAY_ENVIRONMENT_NAME",
+        "RAILWAY_PROJECT_ID",
+        "RAILWAY_PROJECT_NAME",
+        "RAILWAY_SERVICE_ID",
+        "RAILWAY_SERVICE_NAME",
+        "RAILWAY_GIT_COMMIT_SHA",
       ];
       const report: Record<string, {
         present: boolean;
@@ -589,6 +597,7 @@ const server = serve({
       }
       // Also report the runtime view of STRIPE secret via the stripe module to confirm same value
       const allKeys = Object.keys(process.env).filter(k => k.includes("STRIPE") || k.includes("QJ") || k.includes("RESEND"));
+      const oddEnvKeys = Object.keys(process.env).filter(k => k.trim() !== k || k.length === 0);
       const currencies = ["aed", "sar", "qar", "usd", "pln"] as const;
       const tiers = ["monthly", "annual"] as const;
       const checkoutPrices = Object.fromEntries(currencies.map(currency => {
@@ -609,6 +618,14 @@ const server = serve({
           prices: checkoutPrices,
         },
         allStripeOrQjOrResendKeysSeenByRuntime: allKeys,
+        oddEnvKeys,
+        railway: {
+          deploymentId: envValue("RAILWAY_DEPLOYMENT_ID"),
+          environmentName: envValue("RAILWAY_ENVIRONMENT_NAME"),
+          projectName: envValue("RAILWAY_PROJECT_NAME"),
+          serviceName: envValue("RAILWAY_SERVICE_NAME"),
+          gitCommitSha: envValue("RAILWAY_GIT_COMMIT_SHA"),
+        },
         cwd: process.cwd(),
         nodeEnv: process.env.NODE_ENV ?? null,
         timestamp: new Date().toISOString(),

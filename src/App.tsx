@@ -19,6 +19,9 @@ import { Admin } from "./Admin";
 import { PartnerApp } from "./PartnerApp";
 import { StockResearch } from "./StockResearch";
 import { StaticPage } from "./StaticPage";
+import { DividendBasics } from "./DividendBasics";
+import { InvestorGuidesStrip } from "./InvestorGuidesStrip";
+import { InvestorGuidePage } from "./InvestorGuidePage";
 import { DICTS, LangCtx, dirOf, type Lang } from "./i18n";
 import "./index.css";
 
@@ -66,12 +69,31 @@ export function App() {
       </LangCtx.Provider>
     );
   }
+  if (path.startsWith("/dividend-basics")) {
+    return (
+      <LangCtx.Provider value={{ lang, setLang, t }}>
+        <Header />
+        <DividendBasics />
+        <Footer />
+      </LangCtx.Provider>
+    );
+  }
+  if (path.startsWith("/investor-guides") || path.startsWith("/guides")) {
+    return (
+      <LangCtx.Provider value={{ lang, setLang, t }}>
+        <Header />
+        <InvestorGuidePage />
+        <Footer />
+      </LangCtx.Provider>
+    );
+  }
 
   return (
     <LangCtx.Provider value={{ lang, setLang, t }}>
       <Header />
       <main>
         <Hero />
+        <InvestorGuidesStrip />
         <Problem />
         <CompoundChart />
         <WhyDividend />

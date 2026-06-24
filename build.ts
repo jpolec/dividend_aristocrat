@@ -1,5 +1,5 @@
 import tailwind from "bun-plugin-tailwind";
-import { rm } from "node:fs/promises";
+import { readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const outdir = path.join(process.cwd(), "dist");
@@ -22,3 +22,12 @@ const result = await Bun.build({
 for (const output of result.outputs) {
   console.log(` ${path.relative(process.cwd(), output.path)}  ${(output.size / 1024).toFixed(1)} KB`);
 }
+
+const indexPath = path.join(outdir, "index.html");
+const html = await readFile(indexPath, "utf8");
+await writeFile(
+  indexPath,
+  html
+    .replaceAll('href="./', 'href="/')
+    .replaceAll('src="./', 'src="/'),
+);

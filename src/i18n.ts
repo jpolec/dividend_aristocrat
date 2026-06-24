@@ -97,9 +97,11 @@ type Dict = {
   navTheCase: string;
   navMethodology: string;
   navSample: string;
+  navBasics: string;
   navMembership: string;
   navFaq: string;
   navStartCta: string;
+  dividendBasicsCta: string;
   brandName: string;
   brandSub: string;
   // problem section
@@ -446,9 +448,11 @@ const en: Dict = {
   navTheCase: "The Case",
   navMethodology: "Methodology",
   navSample: "Sample Research",
+  navBasics: "Basics",
   navMembership: "Membership",
   navFaq: "FAQ",
   navStartCta: "Start Membership",
+  dividendBasicsCta: "Learn dividend basics",
   brandName: "Aristocrat",
   brandSub: "Dividend Research",
   problemEyebrow: "The Concentration Question",
@@ -513,7 +517,7 @@ const en: Dict = {
   footerColCompany: "Company",
   footerColLegal: "Legal",
   footerLinks: {
-    platform: ["Methodology", "Sample Research", "Halal-Aware Filtering", "Membership"],
+    platform: ["Investor Guides", "Dividend Basics", "Methodology", "Sample Research", "Halal-Aware Filtering", "Membership"],
     company: ["About", "FAQ", "Contact", "Arabic Support"],
     legal: ["Terms of Service", "Privacy Policy", "Risk Statement", "Refund Policy"],
   },
@@ -824,9 +828,11 @@ const pl: Dict = {
   navTheCase: "Sprawa",
   navMethodology: "Metodologia",
   navSample: "Próbka",
+  navBasics: "Podstawy",
   navMembership: "Członkostwo",
   navFaq: "FAQ",
   navStartCta: "Zacznij członkostwo",
+  dividendBasicsCta: "Poznaj podstawy dywidend",
   brandName: "Aristocrat",
   brandSub: "Dividend Research",
   problemEyebrow: "Pytanie o koncentrację",
@@ -891,7 +897,7 @@ const pl: Dict = {
   footerColCompany: "Spółka",
   footerColLegal: "Aspekty prawne",
   footerLinks: {
-    platform: ["Metodologia", "Próbka", "Halal-Aware Filtering", "Członkostwo"],
+    platform: ["Przewodniki inwestora", "Podstawy dywidend", "Metodologia", "Próbka", "Halal-Aware Filtering", "Członkostwo"],
     company: ["O nas", "FAQ", "Kontakt", "Wsparcie arabskie"],
     legal: ["Regulamin", "Polityka prywatności", "Oświadczenie o ryzyku", "Polityka zwrotów"],
   },
@@ -1202,9 +1208,11 @@ const ar: Dict = {
   navTheCase: "الفكرة",
   navMethodology: "المنهجية",
   navSample: "نموذج الأبحاث",
+  navBasics: "الأساسيات",
   navMembership: "العضوية",
   navFaq: "الأسئلة",
   navStartCta: "ابدأ العضوية",
+  dividendBasicsCta: "تعرّف على أساسيات التوزيعات",
   brandName: "Aristocrat",
   brandSub: "أبحاث توزيعات الأرباح",
   problemEyebrow: "مسألة التركيز",
@@ -1269,7 +1277,7 @@ const ar: Dict = {
   footerColCompany: "الشركة",
   footerColLegal: "قانوني",
   footerLinks: {
-    platform: ["المنهجية", "نموذج الأبحاث", "الفحص الشرعي", "العضوية"],
+    platform: ["أدلة المستثمر", "أساسيات التوزيعات", "المنهجية", "نموذج الأبحاث", "الفحص الشرعي", "العضوية"],
     company: ["عن المنصة", "الأسئلة الشائعة", "تواصل معنا", "الدعم بالعربية"],
     legal: ["شروط الخدمة", "سياسة الخصوصية", "بيان المخاطر", "سياسة الاسترداد"],
   },

@@ -28,7 +28,7 @@ export function Footer() {
           </div>
 
           {[
-            { title: t.footerColPlatform, links: t.footerLinks.platform, hrefs: ["/#method", "/#sample", "/#sharia", "/#pricing"] },
+            { title: t.footerColPlatform, links: t.footerLinks.platform, hrefs: ["/investor-guides", "/dividend-basics", "/#method", "/#sample", "/#sharia", "/#pricing"] },
             { title: t.footerColCompany, links: t.footerLinks.company, hrefs: ["/about", "/#faq", "/contact", "/arabic-support"] },
             { title: t.footerColLegal, links: t.footerLinks.legal, hrefs: ["/terms", "/privacy", "/risk", "/refund"] },
           ].map(col => (

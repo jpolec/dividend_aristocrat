@@ -26,6 +26,13 @@ export function WhyDividend() {
           <p className="text-[15px] sm:text-[17px] text-[var(--aris-paper)]/60 leading-relaxed max-w-2xl">
             {t.whyIntro}
           </p>
+          <a
+            href="/dividend-basics"
+            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[var(--aris-gold)] hover:text-[var(--aris-gold-soft)] transition"
+          >
+            {t.dividendBasicsCta}
+            <span aria-hidden="true">→</span>
+          </a>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {t.whyCards.map((card, i) => (

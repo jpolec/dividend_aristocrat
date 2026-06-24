@@ -17,6 +17,7 @@ export function Header() {
     { href: "/#problem", label: t.navTheCase },
     { href: "/#method", label: t.navMethodology },
     { href: "/#sample", label: t.navSample },
+    { href: "/dividend-basics", label: t.navBasics },
     { href: "/#pricing", label: t.navMembership },
     { href: "/#faq", label: t.navFaq },
   ];
@@ -46,7 +47,7 @@ export function Header() {
           </span>
         </a>
 
-        <nav className="hidden md:flex items-center gap-7">
+        <nav className="hidden md:flex items-center gap-5 lg:gap-7">
           {navItems.map(item => (
             <a
               key={item.href}

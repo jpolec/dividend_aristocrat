@@ -44,7 +44,7 @@ import {
 } from "./partners";
 
 const QJ_BASE = "https://api.quantjourney.cloud";
-const QJ_TOKEN = process.env.QJ_TOKEN;
+const QJ_TOKEN = process.env.QJ_API_KEY || process.env.QJ_TOKEN;
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN; // optional simple auth for admin/send endpoints
 
 async function qjCall<T = unknown>(route: string, params: Record<string, unknown>): Promise<T> {
@@ -259,7 +259,7 @@ const server = serve({
     "/*": index,
 
     "/api/dividends": async req => {
-      if (!QJ_TOKEN) return Response.json({ error: "QJ_TOKEN env var is not set" }, { status: 500 });
+      if (!QJ_TOKEN) return Response.json({ error: "QJ_API_KEY env var is not set" }, { status: 500 });
       try {
         return await fetchScreener(new URL(req.url));
       } catch (e) {
@@ -269,7 +269,7 @@ const server = serve({
 
     "/api/dividends/enriched": {
       async POST(req) {
-        if (!QJ_TOKEN) return Response.json({ error: "QJ_TOKEN env var is not set" }, { status: 500 });
+        if (!QJ_TOKEN) return Response.json({ error: "QJ_API_KEY env var is not set" }, { status: 500 });
         try {
           return await fetchEnriched(req);
         } catch (e) {
@@ -280,7 +280,7 @@ const server = serve({
 
     // Single-ticker research aggregator
     "/api/research/:symbol": async req => {
-      if (!QJ_TOKEN) return Response.json({ error: "QJ_TOKEN env var is not set" }, { status: 500 });
+      if (!QJ_TOKEN) return Response.json({ error: "QJ_API_KEY env var is not set" }, { status: 500 });
       const symbol = (new URL(req.url).pathname.split("/").pop() ?? "").toUpperCase();
       if (!/^[A-Z]{1,8}$/.test(symbol)) return Response.json({ error: "invalid symbol" }, { status: 400 });
 
@@ -586,6 +586,7 @@ const server = serve({
       const auth = requireAdmin(req);
       if (auth) return auth;
       const checked = [
+        "QJ_API_KEY",
         "QJ_TOKEN",
         "STRIPE_SECRET_KEY",
         "STRIPE_WEBHOOK_SECRET",

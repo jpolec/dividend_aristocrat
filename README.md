@@ -29,7 +29,7 @@ A simple **confidence score** is computed per ticker:
 
 ```sh
 bun install
-cp .env.example .env   # then fill in QJ_TOKEN (required) and optionally RESEND_API_KEY
+cp .env.example .env   # then fill in QJ_API_KEY (required) and optionally RESEND_API_KEY
 bun --hot src/index.ts
 ```
 
@@ -41,7 +41,8 @@ Admin panel: http://localhost:3000/admin (set `ADMIN_TOKEN` in `.env` to require
 
 | var               | required | notes                                                       |
 | ----------------- | -------- | ----------------------------------------------------------- |
-| `QJ_TOKEN`        | yes      | QuantJourney bearer token                                   |
+| `QJ_API_KEY`      | yes      | QuantJourney API key                                        |
+| `QJ_TOKEN`        | no       | Legacy fallback for older deployments                       |
 | `RESEND_API_KEY`  | no       | If unset, emails are logged to stdout instead of sent       |
 | `DIGEST_FROM`     | no       | From-address for digests                                    |
 | `PUBLIC_BASE_URL` | no       | Used in unsubscribe and Stripe redirect links. On Railway, falls back to `https://$RAILWAY_PUBLIC_DOMAIN`; locally defaults to `http://localhost:3000` |

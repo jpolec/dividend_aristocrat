@@ -1,0 +1,28 @@
+{
+  "app_id": "app.dividend-aristocrat",
+  "product": {
+    "name": "Dividend Aristocrat",
+    "description": "Dividend Aristocrat research, screening and income-investing product.",
+    "metadata": {
+      "qj_product_family": "income-research"
+    }
+  },
+  "prices": [
+    {
+      "id": "monthly_usd",
+      "nickname": "Monthly",
+      "currency": "usd",
+      "unit_amount": 2500,
+      "interval": "month",
+      "trial_period_days": 7
+    },
+    {
+      "id": "annual_usd",
+      "nickname": "Annual",
+      "currency": "usd",
+      "unit_amount": 30000,
+      "interval": "year",
+      "trial_period_days": 30
+    }
+  ]
+}
